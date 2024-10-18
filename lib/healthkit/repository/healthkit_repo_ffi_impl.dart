@@ -2,6 +2,8 @@
 
 import 'dart:async';
 
+import 'package:giro/core/model/walking_workout.dart';
+import 'package:giro/core/model/workout_route.dart';
 import 'package:giro/healthkit/bindings/healthkit/healthkit.dart';
 import 'package:giro/healthkit/repository/healthkit_repo.dart';
 import 'package:objective_c/objective_c.dart';
@@ -50,7 +52,9 @@ class HealthKitRepoFFIImpl implements HealthkitRepo {
   }
 
   @override
-  Future<void> retrieveLastWalkingWorkout({int limit = 10}) async {
+  Future<List<WalkingWorkout>> retrieveLastWalkingWorkouts({
+    int limit = 10,
+  }) async {
     final workoutPredicate =
         HKQuery.predicateForWorkoutsWithWorkoutActivityType_(
       HKWorkoutActivityType.HKWorkoutActivityTypeWalking,
@@ -83,5 +87,14 @@ class HealthKitRepoFFIImpl implements HealthkitRepo {
     );
 
     health.executeQuery_(query);
+
+    // TODO: Get the actual data from the query
+    return [];
+  }
+
+  @override
+  Future<WorkoutRoute> retrieveRouteForWorkout() {
+    // TODO: Implement retrieveRouteForWorkout
+    throw UnimplementedError();
   }
 }

@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:giro/extensions.dart';
+import 'package:giro/core/extensions.dart';
 import 'package:giro/healthkit/cubit/healthkit_cubit.dart';
 import 'package:giro/healthkit/repository/healthkit_repo_method_channel_impl.dart';
 import 'package:giro/map/widgets/draggable_sheet.dart';

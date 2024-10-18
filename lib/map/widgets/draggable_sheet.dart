@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:giro/extensions.dart';
+import 'package:giro/core/extensions.dart';
 
 class DraggableSheet extends StatefulWidget {
   const DraggableSheet({
