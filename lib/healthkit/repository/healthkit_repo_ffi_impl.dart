@@ -1,6 +1,7 @@
 import 'dart:async';
 
-import 'package:giro/bindings/healthkit2/healthkit2.dart';
+import 'package:giro/healthkit/bindings/healthkit/healthkit.dart';
+import 'package:giro/healthkit/repository/healthkit_repo.dart';
 import 'package:objective_c/objective_c.dart';
 
 enum SortIdentifier {
@@ -10,7 +11,7 @@ enum SortIdentifier {
   NSString get asNSString => NSString(name);
 }
 
-class HealthKitImpl {
+class HealthKitRepoFFIImpl implements HealthkitRepo {
   late HKHealthStore health;
   final workoutType = HKObjectType.workoutType();
   static final hKSampleSortIdentifierEndDate =
@@ -24,14 +25,14 @@ class HealthKitImpl {
     health.init();
   }
 
-  void requestHealthAccess() {
+  @override
+  Future<bool> requestAuthorization() {
     print("Authorize Health");
-
     final typesToShare = NSSet.new1().setByAddingObject_(workoutType);
     final typesToRead =
         typesToShare.setByAddingObject_(HKSeriesType.workoutRouteType());
 
-    final completer = Completer<bool?>();
+    final completer = Completer<bool>();
     final handler =
         ObjCBlock_ffiVoid_bool_NSError.listener((bool? result, NSError? error) {
       if (result != null) {
@@ -48,9 +49,12 @@ class HealthKitImpl {
       typesToRead,
       handler,
     );
+
+    return completer.future;
   }
 
-  void retrieveLastWalkingWorkout() {
+  @override
+  Future<void> retrieveLastWalkingWorkout({int limit = 10}) async {
     final workoutPredicate =
         HKQuery.predicateForWorkoutsWithWorkoutActivityType_(
             HKWorkoutActivityType.HKWorkoutActivityTypeWalking);

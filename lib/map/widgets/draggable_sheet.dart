@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:giro/extensions.dart';
 
 class DraggableSheet extends StatefulWidget {
   const DraggableSheet({
@@ -16,43 +17,6 @@ class _DraggableSheetState extends State<DraggableSheet> {
   double _sheetPosition = 0.4;
   final double _dragSensitivity = 600;
 
-  @override
-  Widget build(BuildContext context) {
-    final ColorScheme colorScheme = Theme.of(context).colorScheme;
-
-    return DraggableScrollableSheet(
-      initialChildSize: _sheetPosition,
-      builder: (BuildContext context, ScrollController scrollController) {
-        return ColoredBox(
-          color: colorScheme.surface,
-          child: Column(
-            children: <Widget>[
-              Grabber(
-                onVerticalDragUpdate: (DragUpdateDetails details) {
-                  setState(() {
-                    _sheetPosition -= details.delta.dy / _dragSensitivity;
-                    if (_sheetPosition < 0.25) {
-                      _sheetPosition = 0.25;
-                    }
-                    if (_sheetPosition > 1.0) {
-                      _sheetPosition = 1.0;
-                    }
-                  });
-                },
-              ),
-              Flexible(
-                child: ListView(
-                  controller: _isOnDesktopAndWeb ? null : scrollController,
-                  children: widget.children,
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
   bool get _isOnDesktopAndWeb {
     if (kIsWeb) {
       return true;
@@ -68,6 +32,40 @@ class _DraggableSheetState extends State<DraggableSheet> {
         return false;
     }
   }
+
+  void _onVerticalDrag(DragUpdateDetails details) {
+    setState(() {
+      _sheetPosition -= details.delta.dy / _dragSensitivity;
+      if (_sheetPosition < 0.25) {
+        _sheetPosition = 0.25;
+      }
+      if (_sheetPosition > 1.0) {
+        _sheetPosition = 1.0;
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) => DraggableScrollableSheet(
+        initialChildSize: _sheetPosition,
+        builder: (BuildContext context, ScrollController scrollController) =>
+            ColoredBox(
+          color: context.colorScheme.surface,
+          child: Column(
+            children: <Widget>[
+              Grabber(
+                onVerticalDragUpdate: _onVerticalDrag,
+              ),
+              Flexible(
+                child: ListView(
+                  controller: _isOnDesktopAndWeb ? null : scrollController,
+                  children: widget.children,
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
 }
 
 class Grabber extends StatelessWidget {

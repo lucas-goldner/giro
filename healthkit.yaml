@@ -5,6 +5,10 @@ exclude-all-by-default: true
 objc-interfaces:
   include:
     - "HKHealthStore"
+    - "HKSampleQuery"
+    - "NSSortDescriptor"
 headers:
   entry-points:
-    - "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/HealthKit.framework/Headers/HealthKit.h"
+    - "/Library/Developer/CommandLineTools/SDKs/MacOSX14.4.sdk/System/Library/Frameworks/HealthKit.framework/Versions/A/Headers/HealthKit.h"
+    # Alternative entry point
+    # - "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/HealthKit.framework/Headers/HealthKit.h"
