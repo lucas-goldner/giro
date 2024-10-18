@@ -27,15 +27,15 @@ class _MainAppState extends State<MainApp> {
   }
 
   Future<void> _authorizeHealth() async {
-    final result = healthKit.requestHealthAccess();
+    healthKit.requestHealthAccess();
     // setState(() {
     //   requested = true;
     // });
   }
 
   Future<void> _readData() async {
-    print("Authorize Health");
-    var now = DateTime.now();
+    print("Read Route");
+    healthKit.retrieveLastWalkingWorkout();
 
     print("Fetched");
   }

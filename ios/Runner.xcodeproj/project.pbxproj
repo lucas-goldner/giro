@@ -11,6 +11,8 @@
 		331C808B294A63AB00263BE5 /* RunnerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331C807B294A618700263BE5 /* RunnerTests.swift */; };
 		3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */; };
 		4D9782832CC0A9B2000E7C7F /* HealthKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D9782812CC0A9A9000E7C7F /* HealthKit.framework */; };
+		4D9782A32CC2D58A000E7C7F /* HealthKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D9782812CC0A9A9000E7C7F /* HealthKit.framework */; };
+		4D9782A42CC2D58A000E7C7F /* HealthKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D9782812CC0A9A9000E7C7F /* HealthKit.framework */; };
 		74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74858FAE1ED2DC5600515810 /* AppDelegate.swift */; };
 		97C146FC1CF9000F007C117D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FA1CF9000F007C117D /* Main.storyboard */; };
 		97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FD1CF9000F007C117D /* Assets.xcassets */; };
@@ -39,6 +41,7 @@
 		4ADC76942FF28EA1C9EBE802 /* Pods-RunnerTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RunnerTests.release.xcconfig"; path = "Target Support Files/Pods-RunnerTests/Pods-RunnerTests.release.xcconfig"; sourceTree = "<group>"; };
 		4D9782802CC09DDD000E7C7F /* Runner.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Runner.entitlements; sourceTree = "<group>"; };
 		4D9782812CC0A9A9000E7C7F /* HealthKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HealthKit.framework; path = System/Library/Frameworks/HealthKit.framework; sourceTree = SDKROOT; };
+		4D9782A52CC2D8EF000E7C7F /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
 		719925AC9340F8B8F4451FB0 /* Pods-Runner.profile.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.profile.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.profile.xcconfig"; sourceTree = "<group>"; };
 		74858FAD1ED2DC5600515810 /* Runner-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Runner-Bridging-Header.h"; sourceTree = "<group>"; };
 		74858FAE1ED2DC5600515810 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -62,6 +65,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4D9782A32CC2D58A000E7C7F /* HealthKit.framework in Frameworks */,
+				4D9782A42CC2D58A000E7C7F /* HealthKit.framework in Frameworks */,
 				DDD5B08527CAB9852543697D /* Pods_Runner.framework in Frameworks */,
 				4D9782832CC0A9B2000E7C7F /* HealthKit.framework in Frameworks */,
 			);
@@ -89,6 +94,7 @@
 		4C5AB002FA466DB364DF1AE8 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				4D9782A52CC2D8EF000E7C7F /* CoreMotion.framework */,
 				4D9782812CC0A9A9000E7C7F /* HealthKit.framework */,
 				924662B12FD2AD49D443CEA7 /* Pods_Runner.framework */,
 				F56E141CCC011E12DF6C6351 /* Pods_RunnerTests.framework */,
