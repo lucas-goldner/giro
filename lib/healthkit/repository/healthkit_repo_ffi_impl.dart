@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'dart:async';
 
 import 'package:giro/healthkit/bindings/healthkit/healthkit.dart';
@@ -21,27 +23,21 @@ class HealthKitRepoFFIImpl implements HealthkitRepo {
 
   void initialize() {
     health = HKHealthStore.new1();
-    print("Initialized");
+    print('Initialized');
     health.init();
   }
 
   @override
   Future<bool> requestAuthorization() {
-    print("Authorize Health");
+    print('Authorize Health');
     final typesToShare = NSSet.new1().setByAddingObject_(workoutType);
     final typesToRead =
         typesToShare.setByAddingObject_(HKSeriesType.workoutRouteType());
 
     final completer = Completer<bool>();
-    final handler =
-        ObjCBlock_ffiVoid_bool_NSError.listener((bool? result, NSError? error) {
-      if (result != null) {
-        print("Auth result: $result");
-        completer.complete(result);
-      } else {
-        print("Authorization failed:: ${error?.localizedDescription}");
-        completer.completeError(error ?? Exception("Unknown error"));
-      }
+    final handler = ObjCBlock_ffiVoid_bool_NSError.listener((result, error) {
+      print('Auth result: $result');
+      completer.complete(result);
     });
 
     health.requestAuthorizationToShareTypes_readTypes_completion_(
@@ -57,7 +53,8 @@ class HealthKitRepoFFIImpl implements HealthkitRepo {
   Future<void> retrieveLastWalkingWorkout({int limit = 10}) async {
     final workoutPredicate =
         HKQuery.predicateForWorkoutsWithWorkoutActivityType_(
-            HKWorkoutActivityType.HKWorkoutActivityTypeWalking);
+      HKWorkoutActivityType.HKWorkoutActivityTypeWalking,
+    );
     final sortDescriptor = NSSortDescriptor.sortDescriptorWithKey_ascending_(
       hKSampleSortIdentifierEndDate,
       false,
@@ -65,13 +62,13 @@ class HealthKitRepoFFIImpl implements HealthkitRepo {
     final sortDescriptors = NSArray.arrayWithObject_(sortDescriptor);
 
     final handler = ObjCBlock_ffiVoid_HKSampleQuery_NSArray_NSError.listener(
-      (HKSampleQuery query, NSArray? results, NSError? error) {
+      (query, results, error) {
         if (results != null) {
-          final workout = results.firstObject as HKWorkout;
-          print("Workout found: $workout");
+          final workout = results.firstObject! as HKWorkout;
+          print('Workout found: $workout');
           // retrieveRouteForWorkout(workout);
         } else {
-          print("No workout found: ${error?.localizedDescription}");
+          print('No workout found: ${error?.localizedDescription}');
         }
       },
     );

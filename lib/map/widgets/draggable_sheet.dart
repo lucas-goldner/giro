@@ -48,8 +48,7 @@ class _DraggableSheetState extends State<DraggableSheet> {
   @override
   Widget build(BuildContext context) => DraggableScrollableSheet(
         initialChildSize: _sheetPosition,
-        builder: (BuildContext context, ScrollController scrollController) =>
-            ColoredBox(
+        builder: (context, scrollController) => ColoredBox(
           color: context.colorScheme.surface,
           child: Column(
             children: <Widget>[
@@ -70,15 +69,15 @@ class _DraggableSheetState extends State<DraggableSheet> {
 
 class Grabber extends StatelessWidget {
   const Grabber({
-    super.key,
     required this.onVerticalDragUpdate,
+    super.key,
   });
 
   final ValueChanged<DragUpdateDetails> onVerticalDragUpdate;
 
   @override
   Widget build(BuildContext context) {
-    final ColorScheme colorScheme = Theme.of(context).colorScheme;
+    final colorScheme = Theme.of(context).colorScheme;
 
     return GestureDetector(
       onVerticalDragUpdate: onVerticalDragUpdate,
@@ -87,12 +86,12 @@ class Grabber extends StatelessWidget {
         child: Align(
           alignment: Alignment.topCenter,
           child: Container(
-            margin: const EdgeInsets.symmetric(vertical: 8.0),
-            width: 32.0,
-            height: 4.0,
+            margin: const EdgeInsets.symmetric(vertical: 8),
+            width: 32,
+            height: 4,
             decoration: BoxDecoration(
               color: colorScheme.surfaceContainerHighest,
-              borderRadius: BorderRadius.circular(8.0),
+              borderRadius: BorderRadius.circular(8),
             ),
           ),
         ),

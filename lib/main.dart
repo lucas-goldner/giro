@@ -14,9 +14,7 @@ class GiroApp extends StatefulWidget {
 
 class _GiroAppState extends State<GiroApp> {
   @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      onGenerateRoute: generateRoutes,
-    );
-  }
+  Widget build(BuildContext context) => const MaterialApp(
+        onGenerateRoute: generateRoutes,
+      );
 }

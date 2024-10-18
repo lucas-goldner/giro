@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:giro/map/widgets/giro_map.dart';
 
-MaterialPageRoute generateRoutes(
+MaterialPageRoute<void> generateRoutes(
   RouteSettings settings,
 ) =>
     switch (settings.name) {

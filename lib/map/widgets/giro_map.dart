@@ -9,9 +9,9 @@ import 'package:platform_maps_flutter/platform_maps_flutter.dart';
 
 class GiroMapPage extends StatelessWidget {
   const GiroMapPage({super.key});
-  static const String routeName = "/";
+  static const String routeName = '/';
 
-  MaterialPageRoute get route => MaterialPageRoute(
+  MaterialPageRoute<void> get route => MaterialPageRoute(
         builder: (_) => this,
       );
 
@@ -34,7 +34,7 @@ class GiroMap extends StatelessWidget {
             PlatformMap(
               initialCameraPosition: const CameraPosition(
                 target: LatLng(35.66318547930317, 139.70270127423208),
-                zoom: 16.0,
+                zoom: 16,
               ),
               circles: <Circle>{
                 Circle(
@@ -44,7 +44,6 @@ class GiroMap extends StatelessWidget {
                   fillColor: Colors.red.withOpacity(0.5),
                   strokeColor: Colors.red,
                   strokeWidth: 2,
-                  visible: true,
                 ),
               },
               // myLocationEnabled: true,
@@ -56,20 +55,20 @@ class GiroMap extends StatelessWidget {
               child: DraggableSheet(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
                     child: Row(
                       children: [
                         Text(
-                          "Giro",
+                          'Giro',
                           style: context.textTheme.titleLarge?.copyWith(
                             color: context.colorScheme.onSurface,
                           ),
                         ),
                         const Spacer(),
                         Text(
-                          context.read<HealthkitCubit>().isAuthorized
-                              ? "Authorized"
-                              : "Not authorized",
+                          context.watch<HealthkitCubit>().isAuthorized
+                              ? 'Authorized'
+                              : 'Not authorized',
                           style: context.textTheme.titleLarge?.copyWith(
                             color: context.colorScheme.onSurface,
                           ),
@@ -79,19 +78,19 @@ class GiroMap extends StatelessWidget {
                   ),
                   const SizedBox(height: 16),
                   CupertinoButton.filled(
-                    child: const Text("Get access"),
+                    child: const Text('Get access'),
                     onPressed: () => context.read<HealthkitCubit>().authorize(),
                   ),
                   const SizedBox(height: 16),
                   CupertinoButton.filled(
-                    child: const Text("Import last route"),
+                    child: const Text('Import last route'),
                     onPressed: () => {
                       print(context.read<HealthkitCubit>().isAuthorized),
                     },
                   ),
                 ],
               ),
-            )
+            ),
           ],
         ),
       ),

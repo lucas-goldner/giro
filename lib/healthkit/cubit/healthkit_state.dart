@@ -1,9 +1,8 @@
 part of 'healthkit_cubit.dart';
 
 sealed class HealthKitState {
-  final bool authorized;
-
   HealthKitState({required this.authorized});
+  final bool authorized;
 }
 
 final class HealthKitStateUninitialized extends HealthKitState {
