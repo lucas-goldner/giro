@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:giro/core/extensions.dart';
 import 'package:giro/healthkit/cubit/healthkit_cubit.dart';
 import 'package:giro/healthkit/repository/healthkit_repo_method_channel_impl.dart';
+import 'package:giro/map/screen/importer_dialog.dart';
 import 'package:giro/map/widgets/draggable_sheet.dart';
 import 'package:platform_maps_flutter/platform_maps_flutter.dart';
 
@@ -26,9 +27,7 @@ class GiroMap extends StatelessWidget {
   const GiroMap({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
+  Widget build(BuildContext context) => Scaffold(
         body: Stack(
           children: [
             PlatformMap(
@@ -46,6 +45,7 @@ class GiroMap extends StatelessWidget {
                   strokeWidth: 2,
                 ),
               },
+              // TODO: Add current location
               // myLocationEnabled: true,
               // myLocationButtonEnabled: true,
               onTap: (location) => print('onTap: $location'),
@@ -54,46 +54,31 @@ class GiroMap extends StatelessWidget {
               alignment: Alignment.bottomCenter,
               child: DraggableSheet(
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Row(
-                      children: [
-                        Text(
-                          'Giro',
-                          style: context.textTheme.titleLarge?.copyWith(
-                            color: context.colorScheme.onSurface,
-                          ),
-                        ),
-                        const Spacer(),
-                        Text(
-                          context.watch<HealthkitCubit>().isAuthorized
-                              ? 'Authorized'
-                              : 'Not authorized',
-                          style: context.textTheme.titleLarge?.copyWith(
-                            color: context.colorScheme.onSurface,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
                   const SizedBox(height: 16),
-                  CupertinoButton.filled(
-                    child: const Text('Get access'),
-                    onPressed: () => context.read<HealthkitCubit>().authorize(),
+                  Row(
+                    children: [
+                      Text(
+                        'Giro',
+                        style: context.textTheme.titleLarge?.copyWith(
+                          color: context.colorScheme.onSurface,
+                        ),
+                      ),
+                      const Spacer(),
+                    ],
                   ),
                   const SizedBox(height: 16),
                   CupertinoButton.filled(
                     child: const Text('Import last route'),
-                    onPressed: () => {
-                      print(context.read<HealthkitCubit>().isAuthorized),
-                    },
+                    onPressed: () => showModalBottomSheet<void>(
+                      useSafeArea: true,
+                      builder: (_) => const ImporterDialogPage(),
+                      context: context,
+                    ),
                   ),
                 ],
               ),
             ),
           ],
         ),
-      ),
-    );
-  }
+      );
 }

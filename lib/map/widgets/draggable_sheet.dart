@@ -5,9 +5,11 @@ import 'package:giro/core/extensions.dart';
 class DraggableSheet extends StatefulWidget {
   const DraggableSheet({
     required this.children,
+    this.padding = const EdgeInsets.symmetric(horizontal: 16),
     super.key,
   });
   final List<Widget> children;
+  final EdgeInsets padding;
 
   @override
   State<DraggableSheet> createState() => _DraggableSheetState();
@@ -57,6 +59,7 @@ class _DraggableSheetState extends State<DraggableSheet> {
               ),
               Flexible(
                 child: ListView(
+                  padding: widget.padding,
                   controller: _isOnDesktopAndWeb ? null : scrollController,
                   children: widget.children,
                 ),

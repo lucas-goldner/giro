@@ -1,69 +1,46 @@
-enum HKWorkoutEventType {
-  pause(1),
-  resume(2),
-  lap(3),
-  marker(4),
-  motionPaused(5),
-  motionResumed(6),
-  segment(7),
-  pauseOrResumeRequest(8);
+import 'package:equatable/equatable.dart';
 
-  const HKWorkoutEventType(this.value);
-  final int value;
-}
-
-class WalkingWorkout {
-  WalkingWorkout({
+class WalkingWorkout extends Equatable {
+  const WalkingWorkout({
+    required this.activityType,
     required this.startDate,
     required this.endDate,
-    this.workoutEvents,
-    this.workoutActivities,
-    this.duration = 0,
-    this.totalEnergyBurned,
-    this.totalDistance,
-    this.metadata,
+    required this.duration,
+    required this.totalDistance,
+    required this.totalEnergyBurned,
   });
 
+  factory WalkingWorkout.fromJson(Map<String, dynamic> json) {
+    return WalkingWorkout(
+      activityType: json['activityType'] as int,
+      startDate: DateTime.fromMillisecondsSinceEpoch(
+        ((json['startDate'] as num) * 1000).round(),
+        isUtc: true,
+      ),
+      endDate: DateTime.fromMillisecondsSinceEpoch(
+        ((json['endDate'] as num) * 1000).round(),
+        isUtc: true,
+      ),
+      duration: (json['duration'] as num).toDouble(),
+      totalDistance: (json['totalDistance'] as num).toDouble(),
+      totalEnergyBurned: (json['totalEnergyBurned'] as num).toDouble(),
+    );
+  }
+
+  final int activityType;
   final DateTime startDate;
   final DateTime endDate;
-  final List<HKWorkoutEvent>? workoutEvents;
-  final List<HKWorkoutActivity>? workoutActivities;
   final double duration;
-  final HKQuantity? totalEnergyBurned;
-  final HKQuantity? totalDistance;
-  final Map<String, dynamic>? metadata;
-}
+  final double totalDistance;
+  final double totalEnergyBurned;
 
-class HKQuantity {
-  HKQuantity({
-    required this.value,
-    required this.unit,
-  });
-  final double value;
-  final String unit;
-}
-
-class HKWorkoutEvent {
-  HKWorkoutEvent({
-    required this.type,
-    required this.startDate,
-    this.endDate,
-    this.metadata,
-  });
-  final HKWorkoutEventType type;
-  final DateTime startDate;
-  final DateTime? endDate;
-  final Map<String, dynamic>? metadata;
-}
-
-class HKWorkoutActivity {
-  HKWorkoutActivity({
-    required this.startDate,
-    required this.endDate,
-    this.metadata,
-  });
-
-  final DateTime startDate;
-  final DateTime endDate;
-  final Map<String, dynamic>? metadata;
+  @override
+  List<Object?> get props => [
+        activityType,
+        startDate,
+        endDate,
+        duration,
+        totalDistance,
+        totalEnergyBurned,
+      ];
 }

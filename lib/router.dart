@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:giro/map/widgets/giro_map.dart';
+import 'package:giro/map/screen/giro_map.dart';
 
 MaterialPageRoute<void> generateRoutes(
   RouteSettings settings,
