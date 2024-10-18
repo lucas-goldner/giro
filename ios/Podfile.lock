@@ -13,11 +13,14 @@ PODS:
   - GoogleMaps/Base (9.1.1)
   - GoogleMaps/Maps (9.1.1):
     - GoogleMaps/Base
+  - objective_c (0.0.1):
+    - Flutter
 
 DEPENDENCIES:
   - apple_maps_flutter (from `.symlinks/plugins/apple_maps_flutter/ios`)
   - Flutter (from `Flutter`)
   - google_maps_flutter_ios (from `.symlinks/plugins/google_maps_flutter_ios/ios`)
+  - objective_c (from `.symlinks/plugins/objective_c/ios`)
 
 SPEC REPOS:
   trunk:
@@ -31,6 +34,8 @@ EXTERNAL SOURCES:
     :path: Flutter
   google_maps_flutter_ios:
     :path: ".symlinks/plugins/google_maps_flutter_ios/ios"
+  objective_c:
+    :path: ".symlinks/plugins/objective_c/ios"
 
 SPEC CHECKSUMS:
   apple_maps_flutter: c59725efea39e13e703cde52a1d2b14866ad68a8
@@ -38,6 +43,7 @@ SPEC CHECKSUMS:
   Google-Maps-iOS-Utils: cfe6a0239c7ca634b7e001ad059a6707143dc8dc
   google_maps_flutter_ios: e31555a04d1986ab130f2b9f24b6cdc861acc6d3
   GoogleMaps: 80ea184ed6bf44139f383a8b0e248ba3ec1cc8c9
+  objective_c: 77e887b5ba1827970907e10e832eec1683f3431d
 
 PODFILE CHECKSUM: 819463e6a0290f5a72f145ba7cde16e8b6ef0796
 

@@ -1,3 +1,5 @@
 # giro
 
-A new Flutter project.
+```bash
+$ dart run ffigen --config healthkit.yaml
+```
