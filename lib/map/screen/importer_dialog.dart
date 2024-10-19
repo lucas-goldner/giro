@@ -1,9 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:giro/core/cubit/walk_routes_cubit.dart';
 import 'package:giro/core/extensions.dart';
-import 'package:giro/healthkit/cubit/healthkit_cubit.dart';
-import 'package:giro/healthkit/repository/healthkit_repo_method_channel_impl.dart';
+import 'package:giro/core/model/walk_workout.dart';
+import 'package:giro/core/repository/walk_routes_repo_impl.dart';
+import 'package:giro/map/cubit/healthkit_cubit.dart';
+import 'package:giro/map/repository/healthkit_repo_method_channel_impl.dart';
 
 class ImporterDialogPage extends StatelessWidget {
   const ImporterDialogPage({super.key});
@@ -14,8 +17,19 @@ class ImporterDialogPage extends StatelessWidget {
       );
 
   @override
-  Widget build(BuildContext context) => BlocProvider(
-        create: (context) => HealthkitCubit(HealthkitRepoMethodChannelImpl()),
+  Widget build(BuildContext context) => MultiBlocProvider(
+        providers: [
+          BlocProvider<HealthkitCubit>(
+            create: (context) => HealthkitCubit(
+              HealthkitRepoMethodChannelImpl(),
+            ),
+          ),
+          BlocProvider<WalkRoutesCubit>(
+            create: (context) => WalkRoutesCubit(
+              WalkRoutesRepoImpl(),
+            ),
+          ),
+        ],
         child: const ImporterDialog(),
       );
 }
@@ -28,14 +42,31 @@ class ImporterDialog extends StatefulWidget {
 }
 
 class _ImporterDialogState extends State<ImporterDialog> {
-  bool _hasImported = false;
+  bool _hasLoaded = false;
+  final List<WalkWorkout> _selectedWorkouts = [];
 
-  Future<void> import() async {
-    await context
-        .read<HealthkitCubit>()
-        .retrieveLastWalkingWorkouts()
-        .then((_) => setState(() => _hasImported = true));
+  Future<void> _loadWalks() async => context
+      .read<HealthkitCubit>()
+      .retrieveLastWalkingWorkouts()
+      .then((_) => setState(() => _hasLoaded = true));
+
+  Future<void> _saveWalks() async => Future.wait(
+        _selectedWorkouts.map(
+          (workout) =>
+              context.read<WalkRoutesCubit>().retrieveRoutesForWorkout(workout),
+        ),
+      ).then((_) => reset());
+
+  void reset() {
+    setState(() => _hasLoaded = false);
+    setState(_selectedWorkouts.clear);
   }
+
+  void _onSelected(WalkWorkout workout) => setState(
+        () => _selectedWorkouts.contains(workout)
+            ? _selectedWorkouts.remove(workout)
+            : _selectedWorkouts.add(workout),
+      );
 
   @override
   Widget build(BuildContext context) => Column(
@@ -53,33 +84,48 @@ class _ImporterDialogState extends State<ImporterDialog> {
                 ),
                 const Spacer(),
                 CupertinoButton.filled(
-                  onPressed: import,
-                  child: const Text('Import'),
+                  onPressed: _hasLoaded ? _saveWalks : _loadWalks,
+                  child: Text(_hasLoaded ? 'Save walks' : 'Import walks'),
                 ),
               ],
             ),
           ),
-          const SizedBox(height: 16),
-          if (_hasImported) ...[
+          if (_hasLoaded) ...[
             const Divider(),
             Expanded(
-              child: ListView.builder(
-                itemBuilder: (context, index) {
-                  return Card(
-                    child: ListTile(
-                      title: Text('Title $index'),
-                      subtitle: const Text('Jul 20, 2019'),
-                      leading: CircleAvatar(
-                        backgroundColor: Colors.green,
-                        child: Text(
-                          '$index',
-                          style: const TextStyle(color: Colors.white),
+              child: BlocBuilder<HealthkitCubit, HealthKitState>(
+                builder: (context, state) {
+                  final workouts = state.workouts;
+                  return ListView.builder(
+                    itemCount: workouts.length,
+                    itemBuilder: (context, index) {
+                      final workout = workouts[index];
+                      return Card(
+                        child: ListTile(
+                          title: Text(
+                            workout.startDate.toLocalizedString(context),
+                          ),
+                          subtitle: Text(
+                            workout.displayDuration(context),
+                          ),
+                          leading: const CircleAvatar(
+                            backgroundColor: Colors.green,
+                            child: Icon(
+                              Icons.directions_walk,
+                              color: Colors.white,
+                            ),
+                          ),
+                          trailing: Checkbox.adaptive(
+                            value: _selectedWorkouts.contains(workout),
+                            onChanged: (_) => _onSelected(
+                              workout,
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
+                      );
+                    },
                   );
                 },
-                itemCount: 15,
               ),
             ),
           ],

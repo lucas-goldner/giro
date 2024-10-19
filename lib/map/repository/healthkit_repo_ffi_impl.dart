@@ -2,10 +2,9 @@
 
 import 'dart:async';
 
-import 'package:giro/core/model/walking_workout.dart';
-import 'package:giro/core/model/workout_route.dart';
-import 'package:giro/healthkit/bindings/healthkit/healthkit.dart';
-import 'package:giro/healthkit/repository/healthkit_repo.dart';
+import 'package:giro/bindings/healthkit/healthkit.dart';
+import 'package:giro/core/model/walk_workout.dart';
+import 'package:giro/map/repository/healthkit_repo.dart';
 import 'package:objective_c/objective_c.dart';
 
 enum SortIdentifier {
@@ -52,7 +51,7 @@ class HealthKitRepoFFIImpl implements HealthkitRepo {
   }
 
   @override
-  Future<List<WalkingWorkout>> retrieveLastWalkingWorkouts({
+  Future<List<WalkWorkout>> retrieveLastWalkingWorkouts({
     int limit = 10,
   }) async {
     final workoutPredicate =
@@ -90,11 +89,5 @@ class HealthKitRepoFFIImpl implements HealthkitRepo {
 
     // TODO: Get the actual data from the query
     return [];
-  }
-
-  @override
-  Future<WorkoutRoute> retrieveRouteForWorkout() {
-    // TODO: Implement retrieveRouteForWorkout
-    throw UnimplementedError();
   }
 }

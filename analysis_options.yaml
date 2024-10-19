@@ -12,6 +12,7 @@ analyzer:
   errors:
     invalid_annotation_target: ignore
     public_member_api_docs: ignore
+    one_member_abstracts: ignore
   exclude:
     - "lib/generated/**"
     - "lib/healthkit/bindings/**"
@@ -95,7 +96,6 @@ linter:
     - prefer_interpolation_to_compose_strings
     - prefer_mixin
     - prefer_null_aware_method_calls
-    - public_member_api_docs: false
     - secure_pubspec_urls
     - sort_pub_dependencies
     - sort_unnamed_constructors_first

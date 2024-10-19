@@ -1,14 +1,12 @@
 import 'dart:convert';
 
 import 'package:flutter/services.dart';
-import 'package:giro/core/model/walking_workout.dart';
-import 'package:giro/core/model/workout_route.dart';
-import 'package:giro/healthkit/repository/healthkit_repo.dart';
+import 'package:giro/core/model/walk_workout.dart';
+import 'package:giro/map/repository/healthkit_repo.dart';
 
 enum MethodChannelHealthkitMethods {
   requestAuthorization,
   retrieveLastWalkingWorkouts,
-  retrieveRouteForWorkout
 }
 
 class HealthkitRepoMethodChannelImpl implements HealthkitRepo {
@@ -21,7 +19,7 @@ class HealthkitRepoMethodChannelImpl implements HealthkitRepo {
       ) as bool;
 
   @override
-  Future<List<WalkingWorkout>> retrieveLastWalkingWorkouts({
+  Future<List<WalkWorkout>> retrieveLastWalkingWorkouts({
     int limit = 10,
   }) async {
     final pastWorkoutsAsJSONStrings = await _channel.invokeMethod(
@@ -35,15 +33,6 @@ class HealthkitRepoMethodChannelImpl implements HealthkitRepo {
         )
         .toList();
 
-    return pastWorkoutsAsJSON.map(WalkingWorkout.fromJson).toList();
-  }
-
-  @override
-  Future<WorkoutRoute> retrieveRouteForWorkout() {
-    _channel.invokeMethod(
-      MethodChannelHealthkitMethods.retrieveRouteForWorkout.name,
-    ) as bool;
-
-    return Future.value();
+    return pastWorkoutsAsJSON.map(WalkWorkout.fromJson).toList();
   }
 }
