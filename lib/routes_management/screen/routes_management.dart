@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:giro/core/cubit/walk_routes_cubit.dart';
 import 'package:giro/core/extensions.dart';
+import 'package:giro/core/widgets/adaptive_scaffold.dart';
 import 'package:giro/route_detail/screen/route_detail.dart';
 import 'package:giro/routes_management/widgets/route_card.dart';
 
@@ -27,11 +28,9 @@ class _RoutesManagementState extends State<RoutesManagement> {
   Widget build(BuildContext context) {
     final routes = context.watch<WalkRoutesCubit>().state.routes;
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Routes Management'),
-      ),
-      body: Column(
+    return AdaptiveScaffold(
+      title: const Text('Routes Management'),
+      child: Column(
         children: [
           if (kDebugMode)
             CupertinoButton.filled(

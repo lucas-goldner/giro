@@ -7,6 +7,7 @@ environment:
   sdk: ^3.5.3
 
 dependencies:
+  cupertino_icons: ^1.0.8
   duration: ^4.0.3
   equatable: ^2.0.5
   ffi: ^2.1.3

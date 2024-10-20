@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:giro/core/model/walk_route.dart';
+import 'package:giro/core/widgets/adaptive_scaffold.dart';
 import 'package:platform_maps_flutter/platform_maps_flutter.dart';
 
 class RouteDetailPage extends StatelessWidget {
@@ -16,11 +17,9 @@ class RouteDetail extends StatelessWidget {
   final WalkRoute route;
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-        appBar: AppBar(
-          title: const Text('Routes Detail'),
-        ),
-        body: PlatformMap(
+  Widget build(BuildContext context) => AdaptiveScaffold(
+        title: const Text('Routes Detail'),
+        child: PlatformMap(
           initialCameraPosition: CameraPosition(
             target: route.coordinates.first,
             zoom: 16,

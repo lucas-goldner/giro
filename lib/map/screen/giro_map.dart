@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:giro/core/cubit/walk_routes_cubit.dart';
 import 'package:giro/core/extensions.dart';
+import 'package:giro/core/widgets/adaptive_scaffold.dart';
 import 'package:giro/map/cubit/healthkit_cubit.dart';
 import 'package:giro/map/repository/healthkit_repo_method_channel_impl.dart';
 import 'package:giro/map/screen/importer_dialog.dart';
@@ -36,8 +37,8 @@ class _GiroMapState extends State<GiroMap> {
   }
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-        body: Stack(
+  Widget build(BuildContext context) => AdaptiveScaffold(
+        child: Stack(
           children: [
             BlocBuilder<WalkRoutesCubit, WalkRoutesState>(
               builder: (context, state) {
