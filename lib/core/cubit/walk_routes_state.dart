@@ -4,6 +4,11 @@ sealed class WalkRoutesState extends Equatable {
   const WalkRoutesState({required this.routes});
   final List<WalkRoute> routes;
 
+  List<LatLng> get coordinates => routes
+      .map((route) => route.coordinates)
+      .expand((element) => element)
+      .toList();
+
   @override
   List<Object?> get props => [routes];
 }

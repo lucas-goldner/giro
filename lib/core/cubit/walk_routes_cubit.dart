@@ -2,6 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:giro/core/model/walk_route.dart';
 import 'package:giro/core/repository/walk_routes_repo.dart';
+import 'package:platform_maps_flutter/platform_maps_flutter.dart';
 
 part 'walk_routes_state.dart';
 

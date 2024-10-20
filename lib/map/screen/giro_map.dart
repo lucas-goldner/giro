@@ -24,8 +24,19 @@ class GiroMapPage extends StatelessWidget {
       );
 }
 
-class GiroMap extends StatelessWidget {
+class GiroMap extends StatefulWidget {
   const GiroMap({super.key});
+
+  @override
+  State<GiroMap> createState() => _GiroMapState();
+}
+
+class _GiroMapState extends State<GiroMap> {
+  @override
+  void initState() {
+    context.read<WalkRoutesCubit>().fetchRoutes();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) => Scaffold(
@@ -40,18 +51,13 @@ class GiroMap extends StatelessWidget {
                     target: LatLng(48.962316599573725, 9.262961877486779),
                     zoom: 16,
                   ),
-                  circles: state.routes
+                  polylines: state.routes
                       .map(
-                        (route) => Circle(
-                          circleId: CircleId(route.id),
-                          center: LatLng(
-                            route.coordinates[0].latitude,
-                            route.coordinates[0].longitude,
-                          ),
-                          radius: 100,
-                          fillColor: Colors.red.withOpacity(0.5),
-                          strokeColor: Colors.red,
-                          strokeWidth: 2,
+                        (route) => Polyline(
+                          polylineId: PolylineId('route_${route.id}'),
+                          color: Colors.red,
+                          width: 5,
+                          points: route.coordinates,
                         ),
                       )
                       .toSet(),

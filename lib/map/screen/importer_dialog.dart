@@ -46,16 +46,14 @@ class _ImporterDialogState extends State<ImporterDialog> {
       .then((_) => setState(() => _hasLoaded = true));
 
   Future<void> _saveWalks() async {
-    await context.read<WalkRoutesCubit>().fetchRoutes();
+    for (final workout in _selectedWorkouts) {
+      context.read<WalkRoutesCubit>().addRoute(workout.toRoute());
+    }
 
-    // for (final workout in _selectedWorkouts) {
-    //   context.read<WalkRoutesCubit>().addRoute(workout.toRoute());
-    // }
-
-    // setState(() {
-    //   _hasLoaded = false;
-    //   _selectedWorkouts.clear();
-    // });
+    setState(() {
+      _hasLoaded = false;
+      _selectedWorkouts.clear();
+    });
   }
 
   void reset() {
