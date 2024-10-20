@@ -21,6 +21,14 @@ final class HealthKitStateUnauthorized extends HealthKitState {
   const HealthKitStateUnauthorized() : super(authorized: false);
 }
 
+final class HealthKitStateLoadingWorkout extends HealthKitState {
+  const HealthKitStateLoadingWorkout()
+      : super(
+          authorized: true,
+          workouts: const [],
+        );
+}
+
 final class HealthKitStateAuthorized extends HealthKitState {
   const HealthKitStateAuthorized({required super.workouts})
       : super(

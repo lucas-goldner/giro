@@ -32,4 +32,7 @@ class WalkRoutesRepoMmkvImpl extends WalkRoutesRepo {
 
   @override
   void removeRouteById(String id) => mmkv.removeValue(id);
+
+  @override
+  void clearAll() => mmkv.removeValues(mmkv.allKeys);
 }

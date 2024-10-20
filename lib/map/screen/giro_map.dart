@@ -7,6 +7,7 @@ import 'package:giro/map/cubit/healthkit_cubit.dart';
 import 'package:giro/map/repository/healthkit_repo_method_channel_impl.dart';
 import 'package:giro/map/screen/importer_dialog.dart';
 import 'package:giro/map/widgets/draggable_sheet.dart';
+import 'package:giro/routes_management/screen/routes_management.dart';
 import 'package:platform_maps_flutter/platform_maps_flutter.dart';
 
 class GiroMapPage extends StatelessWidget {
@@ -104,6 +105,13 @@ class _GiroMapState extends State<GiroMap> {
                       useSafeArea: true,
                       builder: (_) => const ImporterDialogPage(),
                       context: context,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  CupertinoButton.filled(
+                    child: const Text('View walked routes'),
+                    onPressed: () => context.navigator.pushNamed(
+                      RouteManagementPage.routeName,
                     ),
                   ),
                 ],

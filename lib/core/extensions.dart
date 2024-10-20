@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 extension BuildContextExtensions on BuildContext {
   ColorScheme get colorScheme => Theme.of(this).colorScheme;
   TextTheme get textTheme => Theme.of(this).textTheme;
+  NavigatorState get navigator => Navigator.of(this);
   Size sizeOf() => MediaQuery.sizeOf(this);
   String get languageCode => Localizations.localeOf(this).languageCode;
 }

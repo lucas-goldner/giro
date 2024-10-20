@@ -5,4 +5,5 @@ abstract class WalkRoutesRepo {
   void addRoute(WalkRoute route);
   void removeRouteById(String id);
   List<WalkRoute> getRoutes();
+  void clearAll();
 }

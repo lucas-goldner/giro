@@ -1,7 +1,8 @@
+import 'package:equatable/equatable.dart';
 import 'package:platform_maps_flutter/platform_maps_flutter.dart';
 
-class WalkRoute {
-  WalkRoute({
+class WalkRoute extends Equatable {
+  const WalkRoute({
     required this.coordinates,
     required this.startDate,
     required this.endDate,
@@ -44,6 +45,7 @@ ${startDate.millisecondsSinceEpoch}${endDate.millisecondsSinceEpoch}${coordinate
   final List<LatLng> coordinates;
   final DateTime startDate;
   final DateTime endDate;
+  Duration get duration => endDate.difference(startDate);
 
   Map<String, dynamic> toJson() {
     return {
@@ -59,4 +61,11 @@ ${startDate.millisecondsSinceEpoch}${endDate.millisecondsSinceEpoch}${coordinate
       'endDate': endDate.millisecondsSinceEpoch ~/ 1000,
     };
   }
+
+  @override
+  List<Object?> get props => [
+        coordinates,
+        startDate,
+        endDate,
+      ];
 }

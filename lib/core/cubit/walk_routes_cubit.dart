@@ -22,6 +22,12 @@ class WalkRoutesCubit extends Cubit<WalkRoutesState> {
 
   void removeRoute(WalkRoute route) {
     _walkRoutesRepo.removeRouteById(route.id);
-    emit(WalkRoutesStateLoaded([...state.routes]..remove(route)));
+    final filteredRoutes = state.routes.where((r) => r.id != route.id).toList();
+    emit(WalkRoutesStateLoaded([...filteredRoutes]));
+  }
+
+  void clearAll() {
+    _walkRoutesRepo.clearAll();
+    emit(const WalkRoutesStateLoaded([]));
   }
 }

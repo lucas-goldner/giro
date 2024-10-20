@@ -25,7 +25,7 @@ class HealthkitCubit extends Cubit<HealthKitState> {
     if (state is! HealthKitStateAuthorized) {
       return;
     }
-
+    emit(const HealthKitStateLoadingWorkout());
     final workouts =
         await _healthkitRepo.retrieveWorkoutsWithRoutes(limit: limit);
     emit(
