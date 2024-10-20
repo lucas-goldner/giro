@@ -1,6 +1,6 @@
 name: HealthKitLibrary
 language: objc
-output: "lib/bindings/healthkit/healthkit.dart"
+output: "lib/core/bindings/healthkit/healthkit.dart"
 exclude-all-by-default: true
 objc-interfaces:
   include:

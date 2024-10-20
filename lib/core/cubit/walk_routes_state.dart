@@ -9,7 +9,11 @@ sealed class WalkRoutesState extends Equatable {
 }
 
 final class WalkRoutesStateUninitialized extends WalkRoutesState {
-  WalkRoutesStateUninitialized() : super(routes: []);
+  const WalkRoutesStateUninitialized() : super(routes: const []);
+}
+
+final class WalkRoutesStateLoading extends WalkRoutesState {
+  const WalkRoutesStateLoading(List<WalkRoute> routes) : super(routes: routes);
 }
 
 final class WalkRoutesStateLoaded extends WalkRoutesState {

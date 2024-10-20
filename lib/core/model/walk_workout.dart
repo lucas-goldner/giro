@@ -1,6 +1,8 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:giro/core/extensions.dart';
+import 'package:giro/core/model/walk_route.dart';
+import 'package:platform_maps_flutter/platform_maps_flutter.dart';
 
 class WalkWorkout extends Equatable {
   const WalkWorkout({
@@ -10,9 +12,19 @@ class WalkWorkout extends Equatable {
     required this.duration,
     required this.totalDistance,
     required this.totalEnergyBurned,
+    required this.routes,
   });
 
   factory WalkWorkout.fromJson(Map<String, dynamic> json) {
+    final coordinates = (json['routes'] as List<dynamic>)
+        .map(
+          (coordinate) => LatLng(
+            coordinate['latitude'] as double,
+            coordinate['longitude'] as double,
+          ),
+        )
+        .toList();
+
     return WalkWorkout(
       activityType: json['activityType'] as int,
       startDate: DateTime.fromMillisecondsSinceEpoch(
@@ -26,6 +38,7 @@ class WalkWorkout extends Equatable {
       duration: (json['duration'] as num).toDouble(),
       totalDistance: (json['totalDistance'] as num).toDouble(),
       totalEnergyBurned: (json['totalEnergyBurned'] as num).toDouble(),
+      routes: coordinates,
     );
   }
 
@@ -46,6 +59,7 @@ $activityType${startDate.millisecondsSinceEpoch}${endDate.millisecondsSinceEpoch
   final double duration;
   final double totalDistance;
   final double totalEnergyBurned;
+  final List<LatLng> routes;
 
   Map<String, dynamic> toJson() {
     return {
@@ -60,6 +74,12 @@ $activityType${startDate.millisecondsSinceEpoch}${endDate.millisecondsSinceEpoch
 
   String displayDuration(BuildContext context) =>
       duration.toMinutesDuration().toLocalizedString(context);
+
+  WalkRoute toRoute() => WalkRoute(
+        coordinates: routes,
+        startDate: startDate,
+        endDate: endDate,
+      );
 
   @override
   List<Object?> get props => [

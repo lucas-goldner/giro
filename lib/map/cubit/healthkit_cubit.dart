@@ -21,17 +21,15 @@ class HealthkitCubit extends Cubit<HealthKitState> {
     );
   }
 
-  Future<void> retrieveLastWalkingWorkouts({int limit = 10}) async {
-    final workouts =
-        await _healthkitRepo.retrieveLastWalkingWorkouts(limit: limit);
-
+  Future<void> retrieveWorkoutsWithRoutes({int limit = 10}) async {
     if (state is! HealthKitStateAuthorized) {
-      await authorize();
-      emit(HealthKitStateAuthorized(workouts: workouts));
-    } else {
-      emit(
-        HealthKitStateAuthorized(workouts: [...state.workouts, ...workouts]),
-      );
+      return;
     }
+
+    final workouts =
+        await _healthkitRepo.retrieveWorkoutsWithRoutes(limit: limit);
+    emit(
+      HealthKitStateAuthorized(workouts: [...state.workouts, ...workouts]),
+    );
   }
 }

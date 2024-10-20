@@ -2,7 +2,7 @@
 
 import 'dart:async';
 
-import 'package:giro/bindings/healthkit/healthkit.dart';
+import 'package:giro/core/bindings/healthkit/healthkit.dart';
 import 'package:giro/core/model/walk_workout.dart';
 import 'package:giro/map/repository/healthkit_repo.dart';
 import 'package:objective_c/objective_c.dart';
@@ -51,7 +51,7 @@ class HealthKitRepoFFIImpl implements HealthkitRepo {
   }
 
   @override
-  Future<List<WalkWorkout>> retrieveLastWalkingWorkouts({
+  Future<List<WalkWorkout>> retrieveWorkoutsWithRoutes({
     int limit = 10,
   }) async {
     final workoutPredicate =

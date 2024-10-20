@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:giro/core/cubit/walk_routes_cubit.dart';
 import 'package:giro/core/extensions.dart';
 import 'package:giro/map/cubit/healthkit_cubit.dart';
 import 'package:giro/map/repository/healthkit_repo_method_channel_impl.dart';
@@ -30,25 +31,49 @@ class GiroMap extends StatelessWidget {
   Widget build(BuildContext context) => Scaffold(
         body: Stack(
           children: [
-            PlatformMap(
-              initialCameraPosition: const CameraPosition(
-                target: LatLng(35.66318547930317, 139.70270127423208),
-                zoom: 16,
-              ),
-              circles: <Circle>{
-                Circle(
-                  circleId: CircleId('circle_1'),
-                  center: const LatLng(35.663185479303176, 139.70270127423208),
-                  radius: 100,
-                  fillColor: Colors.red.withOpacity(0.5),
-                  strokeColor: Colors.red,
-                  strokeWidth: 2,
-                ),
+            BlocBuilder<WalkRoutesCubit, WalkRoutesState>(
+              builder: (context, state) {
+                return PlatformMap(
+                  initialCameraPosition: const CameraPosition(
+                    // Tokyo
+                    // target: LatLng(35.682839, 139.759455),
+                    target: LatLng(48.962316599573725, 9.262961877486779),
+                    zoom: 16,
+                  ),
+                  circles: state.routes
+                      .map(
+                        (route) => Circle(
+                          circleId: CircleId(route.id),
+                          center: LatLng(
+                            route.coordinates[0].latitude,
+                            route.coordinates[0].longitude,
+                          ),
+                          radius: 100,
+                          fillColor: Colors.red.withOpacity(0.5),
+                          strokeColor: Colors.red,
+                          strokeWidth: 2,
+                        ),
+                      )
+                      .toSet(),
+
+                  //  <Circle>{
+                  //   Circle(
+                  //     circleId: CircleId('circle_1'),
+                  //     center:
+                  //         const LatLng(35.663185479303176, 139.70270127423208),
+                  //     radius: 100,
+                  //     fillColor: Colors.red.withOpacity(0.5),
+                  //     strokeColor: Colors.red,
+                  //     strokeWidth: 2,
+                  //   ),
+                  // },
+
+                  // TODO: Add current location
+                  // myLocationEnabled: true,
+                  // myLocationButtonEnabled: true,
+                  onTap: (location) => print('onTap: $location'),
+                );
               },
-              // TODO: Add current location
-              // myLocationEnabled: true,
-              // myLocationButtonEnabled: true,
-              onTap: (location) => print('onTap: $location'),
             ),
             Align(
               alignment: Alignment.bottomCenter,
