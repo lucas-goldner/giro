@@ -14,10 +14,6 @@ class GiroMapPage extends StatelessWidget {
   const GiroMapPage({super.key});
   static const String routeName = '/';
 
-  MaterialPageRoute<void> get route => MaterialPageRoute(
-        builder: (_) => this,
-      );
-
   @override
   Widget build(BuildContext context) => BlocProvider(
         create: (context) => HealthkitCubit(HealthkitRepoMethodChannelImpl()),
@@ -57,7 +53,7 @@ class _GiroMapState extends State<GiroMap> {
                         (route) => Polyline(
                           polylineId: PolylineId('route_${route.id}'),
                           color: Colors.red,
-                          width: 5,
+                          width: 2,
                           points: route.coordinates,
                         ),
                       )

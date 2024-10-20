@@ -4,15 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:giro/core/cubit/walk_routes_cubit.dart';
 import 'package:giro/core/extensions.dart';
+import 'package:giro/route_detail/screen/route_detail.dart';
 import 'package:giro/routes_management/widgets/route_card.dart';
 
 class RouteManagementPage extends StatelessWidget {
   const RouteManagementPage({super.key});
   static const String routeName = '/routes_management';
-
-  MaterialPageRoute<void> get route => MaterialPageRoute(
-        builder: (_) => this,
-      );
 
   @override
   Widget build(BuildContext context) => const RoutesManagement();
@@ -47,7 +44,7 @@ class _RoutesManagementState extends State<RoutesManagement> {
               itemBuilder: (context, index) => RouteCard(
                 routes[index],
                 onSelected: (route) => context.navigator.pushNamed(
-                  RouteManagementPage.routeName,
+                  RouteDetailPage.routeName,
                   arguments: route,
                 ),
                 onDelete: (route) =>
