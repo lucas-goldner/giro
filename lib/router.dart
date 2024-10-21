@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:giro/core/model/walk_route.dart';
 import 'package:giro/map/screen/giro_map.dart';
+import 'package:giro/poi_management/screen/poi_management.dart';
 import 'package:giro/route_detail/screen/route_detail.dart';
 import 'package:giro/routes_management/screen/routes_management.dart';
 
@@ -17,6 +18,10 @@ Route<void>? generateRoutes(
       RouteDetailPage.routeName => _adaptiveRoute(
           settings,
           RouteDetailPage(settings.arguments! as WalkRoute),
+        ),
+      POIManagementPage.routeName => _adaptiveRoute(
+          settings,
+          const POIManagementPage(),
         ),
       _ => _adaptiveRoute(
           settings,

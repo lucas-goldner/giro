@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:giro/core/cubit/poi_cubit.dart';
 import 'package:giro/core/cubit/walk_routes_cubit.dart';
+import 'package:giro/core/repository/poi_repo_mmkv_impl.dart';
 import 'package:giro/core/repository/walk_routes_repo_mmkv_impl.dart';
 import 'package:giro/router.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -18,7 +20,8 @@ class GiroApp extends StatefulWidget {
 }
 
 class _GiroAppState extends State<GiroApp> {
-  Future<WalkRoutesRepoMmkvImpl>? _appLoader;
+  Future<({WalkRoutesRepoMmkvImpl walkRoutesRepo, PoiRepoMmkvImpl poiRepo})>?
+      _appLoader;
 
   @override
   void initState() {
@@ -32,15 +35,19 @@ class _GiroAppState extends State<GiroApp> {
     _appLoader ??= _loadApp();
   }
 
-  Future<WalkRoutesRepoMmkvImpl> _loadApp() async {
+  Future<({WalkRoutesRepoMmkvImpl walkRoutesRepo, PoiRepoMmkvImpl poiRepo})>
+      _loadApp() async {
     final walkRoutesRepo = WalkRoutesRepoMmkvImpl();
     await walkRoutesRepo.init();
+    final poiRepo = PoiRepoMmkvImpl();
+    await poiRepo.init();
 
-    return walkRoutesRepo;
+    return (walkRoutesRepo: walkRoutesRepo, poiRepo: poiRepo);
   }
 
   @override
-  Widget build(BuildContext context) => FutureBuilder<WalkRoutesRepoMmkvImpl>(
+  Widget build(BuildContext context) => FutureBuilder<
+          ({WalkRoutesRepoMmkvImpl walkRoutesRepo, PoiRepoMmkvImpl poiRepo})>(
         future: _appLoader,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
@@ -52,7 +59,12 @@ class _GiroAppState extends State<GiroApp> {
               providers: [
                 BlocProvider<WalkRoutesCubit>(
                   create: (context) => WalkRoutesCubit(
-                    snapshot.requireData,
+                    snapshot.requireData.walkRoutesRepo,
+                  ),
+                ),
+                BlocProvider<PoiCubit>(
+                  create: (context) => PoiCubit(
+                    snapshot.requireData.poiRepo,
                   ),
                 ),
               ],

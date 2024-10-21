@@ -30,28 +30,30 @@ class _RoutesManagementState extends State<RoutesManagement> {
 
     return AdaptiveScaffold(
       title: const Text('Routes Management'),
-      child: Column(
-        children: [
-          if (kDebugMode)
-            CupertinoButton.filled(
-              onPressed: context.read<WalkRoutesCubit>().clearAll,
-              child: const Text('Clear all'),
-            ),
-          Flexible(
-            child: ListView.builder(
-              itemCount: routes.length,
-              itemBuilder: (context, index) => RouteCard(
-                routes[index],
-                onSelected: (route) => context.navigator.pushNamed(
-                  RouteDetailPage.routeName,
-                  arguments: route,
+      child: SafeArea(
+        child: Column(
+          children: [
+            if (kDebugMode)
+              CupertinoButton.filled(
+                onPressed: context.read<WalkRoutesCubit>().clearAll,
+                child: const Text('Clear all'),
+              ),
+            Flexible(
+              child: ListView.builder(
+                itemCount: routes.length,
+                itemBuilder: (context, index) => RouteCard(
+                  routes[index],
+                  onSelected: (route) => context.navigator.pushNamed(
+                    RouteDetailPage.routeName,
+                    arguments: route,
+                  ),
+                  onDelete: (route) =>
+                      context.read<WalkRoutesCubit>().removeRoute(route),
                 ),
-                onDelete: (route) =>
-                    context.read<WalkRoutesCubit>().removeRoute(route),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

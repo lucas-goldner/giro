@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:giro/core/cubit/poi_cubit.dart';
+import 'package:giro/core/cubit/poi_states.dart';
 import 'package:giro/core/cubit/walk_routes_cubit.dart';
 import 'package:giro/core/extensions.dart';
 import 'package:giro/core/widgets/adaptive_scaffold.dart';
@@ -8,6 +10,8 @@ import 'package:giro/map/cubit/healthkit_cubit.dart';
 import 'package:giro/map/repository/healthkit_repo_method_channel_impl.dart';
 import 'package:giro/map/screen/importer_dialog.dart';
 import 'package:giro/map/widgets/draggable_sheet.dart';
+import 'package:giro/map/widgets/poi_add_dialog.dart';
+import 'package:giro/poi_management/screen/poi_management.dart';
 import 'package:giro/routes_management/screen/routes_management.dart';
 import 'package:platform_maps_flutter/platform_maps_flutter.dart';
 
@@ -36,20 +40,35 @@ class _GiroMapState extends State<GiroMap> {
     super.initState();
   }
 
+  void onLongPress(LatLng location) => showCupertinoDialog<void>(
+        context: context,
+        builder: (context) => PoiAddDialog(
+          location: location,
+          onAdd: (poi) {
+            context.read<PoiCubit>().addPOI(poi);
+            context.navigator.pop();
+          },
+          onCancel: context.navigator.pop,
+        ),
+      );
+
   @override
   Widget build(BuildContext context) => AdaptiveScaffold(
         child: Stack(
           children: [
             BlocBuilder<WalkRoutesCubit, WalkRoutesState>(
-              builder: (context, state) {
-                return PlatformMap(
+              buildWhen: (previous, current) =>
+                  previous.routes != current.routes,
+              builder: (context, walkState) => BlocBuilder<PoiCubit, PoiState>(
+                buildWhen: (previous, current) => previous.pois != current.pois,
+                builder: (context, poiState) => PlatformMap(
                   initialCameraPosition: const CameraPosition(
                     // Tokyo
                     // target: LatLng(35.682839, 139.759455),
                     target: LatLng(48.962316599573725, 9.262961877486779),
                     zoom: 16,
                   ),
-                  polylines: state.routes
+                  polylines: walkState.routes
                       .map(
                         (route) => Polyline(
                           polylineId: PolylineId('route_${route.id}'),
@@ -59,7 +78,21 @@ class _GiroMapState extends State<GiroMap> {
                         ),
                       )
                       .toSet(),
-
+                  markers: poiState.pois
+                      .map(
+                        (poi) => Marker(
+                          markerId: MarkerId(poi.id),
+                          position: poi.coordinates,
+                          infoWindow: InfoWindow(
+                            title: poi.name,
+                          ),
+                          onTap: () {
+                            print('Tapped on ${poi.name}');
+                          },
+                        ),
+                      )
+                      .toSet(),
+                  // TODO: Add heatmap kinda view
                   //  <Circle>{
                   //   Circle(
                   //     circleId: CircleId('circle_1'),
@@ -71,13 +104,12 @@ class _GiroMapState extends State<GiroMap> {
                   //     strokeWidth: 2,
                   //   ),
                   // },
-
                   // TODO: Add current location
                   // myLocationEnabled: true,
                   // myLocationButtonEnabled: true,
-                  onTap: (location) => print('onTap: $location'),
-                );
-              },
+                  onLongPress: onLongPress,
+                ),
+              ),
             ),
             Align(
               alignment: Alignment.bottomCenter,
@@ -109,6 +141,13 @@ class _GiroMapState extends State<GiroMap> {
                     child: const Text('View walked routes'),
                     onPressed: () => context.navigator.pushNamed(
                       RouteManagementPage.routeName,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  CupertinoButton.filled(
+                    child: const Text('View Point of interests'),
+                    onPressed: () => context.navigator.pushNamed(
+                      POIManagementPage.routeName,
                     ),
                   ),
                 ],

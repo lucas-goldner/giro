@@ -21,7 +21,9 @@ class AdaptiveScaffold extends StatelessWidget {
                   middle: title,
                 )
               : null,
-          child: Material(child: child),
+          child: Material(
+            child: child,
+          ),
         )
       : Scaffold(
           appBar: title != null

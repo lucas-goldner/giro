@@ -10,7 +10,7 @@ class WalkRoutesRepoMmkvImpl extends WalkRoutesRepo {
   @override
   Future<void> init() async {
     await MMKV.initialize();
-    mmkv = MMKV.defaultMMKV();
+    mmkv = MMKV('routes');
   }
 
   @override

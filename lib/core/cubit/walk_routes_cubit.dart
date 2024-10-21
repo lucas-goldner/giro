@@ -12,21 +12,27 @@ class WalkRoutesCubit extends Cubit<WalkRoutesState> {
 
   final WalkRoutesRepo _walkRoutesRepo;
 
-  Future<void> fetchRoutes() async =>
-      emit(WalkRoutesStateLoaded([..._walkRoutesRepo.getRoutes()]));
+  void fetchRoutes() {
+    emit(WalkRoutesStateLoading(state.routes));
+    final routes = _walkRoutesRepo.getRoutes();
+    emit(WalkRoutesStateLoaded([...routes]));
+  }
 
   void addRoute(WalkRoute route) {
+    emit(WalkRoutesStateLoading(state.routes));
     _walkRoutesRepo.addRoute(route);
     emit(WalkRoutesStateLoaded([...state.routes, route]));
   }
 
   void removeRoute(WalkRoute route) {
+    emit(WalkRoutesStateLoading(state.routes));
     _walkRoutesRepo.removeRouteById(route.id);
     final filteredRoutes = state.routes.where((r) => r.id != route.id).toList();
     emit(WalkRoutesStateLoaded([...filteredRoutes]));
   }
 
   void clearAll() {
+    emit(WalkRoutesStateLoading(state.routes));
     _walkRoutesRepo.clearAll();
     emit(const WalkRoutesStateLoaded([]));
   }
