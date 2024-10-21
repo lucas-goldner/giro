@@ -1,14 +1,16 @@
+import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:giro/core/cubit/poi_states.dart';
 import 'package:giro/core/model/poi.dart';
 import 'package:giro/core/repository/poi_repo.dart';
+
+part 'poi_states.dart';
 
 class PoiCubit extends Cubit<PoiState> {
   PoiCubit(this._poiRepo) : super(const PoiInitial());
 
   final PoiRepo _poiRepo;
 
-  void fetchRoutes() {
+  void fetchPOIs() {
     emit(PoisLoading(state.pois));
     final pois = _poiRepo.getPOIs();
     emit(PoisLoaded([...pois]));

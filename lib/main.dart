@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:giro/core/cubit/launchable_maps_cubit.dart';
 import 'package:giro/core/cubit/poi_cubit.dart';
 import 'package:giro/core/cubit/walk_routes_cubit.dart';
+import 'package:giro/core/model/app_init_deps.dart';
+import 'package:giro/core/repository/launchable_maps_repo_impl.dart';
 import 'package:giro/core/repository/poi_repo_mmkv_impl.dart';
 import 'package:giro/core/repository/walk_routes_repo_mmkv_impl.dart';
 import 'package:giro/router.dart';
@@ -20,8 +23,7 @@ class GiroApp extends StatefulWidget {
 }
 
 class _GiroAppState extends State<GiroApp> {
-  Future<({WalkRoutesRepoMmkvImpl walkRoutesRepo, PoiRepoMmkvImpl poiRepo})>?
-      _appLoader;
+  Future<AppInitDeps>? _appLoader;
 
   @override
   void initState() {
@@ -35,19 +37,22 @@ class _GiroAppState extends State<GiroApp> {
     _appLoader ??= _loadApp();
   }
 
-  Future<({WalkRoutesRepoMmkvImpl walkRoutesRepo, PoiRepoMmkvImpl poiRepo})>
-      _loadApp() async {
+  Future<AppInitDeps> _loadApp() async {
     final walkRoutesRepo = WalkRoutesRepoMmkvImpl();
     await walkRoutesRepo.init();
     final poiRepo = PoiRepoMmkvImpl();
     await poiRepo.init();
+    final launchableMapsRepo = LaunchableMapsRepoImpl();
 
-    return (walkRoutesRepo: walkRoutesRepo, poiRepo: poiRepo);
+    return AppInitDeps(
+      walkRoutesRepo: walkRoutesRepo,
+      poiRepo: poiRepo,
+      launchableMapsRepo: launchableMapsRepo,
+    );
   }
 
   @override
-  Widget build(BuildContext context) => FutureBuilder<
-          ({WalkRoutesRepoMmkvImpl walkRoutesRepo, PoiRepoMmkvImpl poiRepo})>(
+  Widget build(BuildContext context) => FutureBuilder<AppInitDeps>(
         future: _appLoader,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
@@ -65,6 +70,11 @@ class _GiroAppState extends State<GiroApp> {
                 BlocProvider<PoiCubit>(
                   create: (context) => PoiCubit(
                     snapshot.requireData.poiRepo,
+                  ),
+                ),
+                BlocProvider<LaunchableMapsCubit>(
+                  create: (context) => LaunchableMapsCubit(
+                    snapshot.requireData.launchableMapsRepo,
                   ),
                 ),
               ],

@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:giro/core/cubit/launchable_maps_cubit.dart';
 import 'package:giro/core/cubit/poi_cubit.dart';
-import 'package:giro/core/cubit/poi_states.dart';
 import 'package:giro/core/cubit/walk_routes_cubit.dart';
 import 'package:giro/core/extensions.dart';
 import 'package:giro/core/widgets/adaptive_scaffold.dart';
@@ -34,9 +34,13 @@ class GiroMap extends StatefulWidget {
 }
 
 class _GiroMapState extends State<GiroMap> {
+  late Future<void> _init;
+
   @override
   void initState() {
     context.read<WalkRoutesCubit>().fetchRoutes();
+    context.read<PoiCubit>().fetchPOIs();
+    _init = context.read<LaunchableMapsCubit>().fetchAvailableMaps();
     super.initState();
   }
 
@@ -53,107 +57,109 @@ class _GiroMapState extends State<GiroMap> {
       );
 
   @override
-  Widget build(BuildContext context) => AdaptiveScaffold(
-        child: Stack(
-          children: [
-            BlocBuilder<WalkRoutesCubit, WalkRoutesState>(
-              buildWhen: (previous, current) =>
-                  previous.routes != current.routes,
-              builder: (context, walkState) => BlocBuilder<PoiCubit, PoiState>(
-                buildWhen: (previous, current) => previous.pois != current.pois,
-                builder: (context, poiState) => PlatformMap(
-                  initialCameraPosition: const CameraPosition(
-                    // Tokyo
-                    // target: LatLng(35.682839, 139.759455),
-                    target: LatLng(48.962316599573725, 9.262961877486779),
-                    zoom: 16,
-                  ),
-                  polylines: walkState.routes
-                      .map(
-                        (route) => Polyline(
-                          polylineId: PolylineId('route_${route.id}'),
-                          color: Colors.red,
-                          width: 2,
-                          points: route.coordinates,
-                        ),
-                      )
-                      .toSet(),
-                  markers: poiState.pois
-                      .map(
-                        (poi) => Marker(
-                          markerId: MarkerId(poi.id),
-                          position: poi.coordinates,
-                          infoWindow: InfoWindow(
-                            title: poi.name,
+  Widget build(BuildContext context) => FutureBuilder(
+        future: _init,
+        builder: (context, snapshot) => AdaptiveScaffold(
+          child: Stack(
+            children: [
+              BlocBuilder<WalkRoutesCubit, WalkRoutesState>(
+                buildWhen: (previous, current) =>
+                    previous.routes != current.routes,
+                builder: (context, walkState) =>
+                    BlocBuilder<PoiCubit, PoiState>(
+                  buildWhen: (previous, current) =>
+                      previous.pois != current.pois,
+                  builder: (context, poiState) => PlatformMap(
+                    initialCameraPosition: const CameraPosition(
+                      // Tokyo
+                      // target: LatLng(35.682839, 139.759455),
+                      target: LatLng(48.962316599573725, 9.262961877486779),
+                      zoom: 16,
+                    ),
+                    polylines: walkState.routes
+                        .map(
+                          (route) => Polyline(
+                            polylineId: PolylineId('route_${route.id}'),
+                            color: Colors.red,
+                            width: 2,
+                            points: route.coordinates,
                           ),
-                          onTap: () {
-                            print('Tapped on ${poi.name}');
-                          },
-                        ),
-                      )
-                      .toSet(),
-                  // TODO: Add heatmap kinda view
-                  //  <Circle>{
-                  //   Circle(
-                  //     circleId: CircleId('circle_1'),
-                  //     center:
-                  //         const LatLng(35.663185479303176, 139.70270127423208),
-                  //     radius: 100,
-                  //     fillColor: Colors.red.withOpacity(0.5),
-                  //     strokeColor: Colors.red,
-                  //     strokeWidth: 2,
-                  //   ),
-                  // },
-                  // TODO: Add current location
-                  // myLocationEnabled: true,
-                  // myLocationButtonEnabled: true,
-                  onLongPress: onLongPress,
+                        )
+                        .toSet(),
+                    markers: poiState.pois
+                        .map(
+                          (poi) => Marker(
+                            markerId: MarkerId(poi.id),
+                            position: poi.coordinates,
+                            onTap: () => context
+                                .read<LaunchableMapsCubit>()
+                                .launchMapAtPOI(poi),
+                          ),
+                        )
+                        .toSet(),
+                    // TODO: Add heatmap kinda view
+                    //  <Circle>{
+                    //   Circle(
+                    //     circleId: CircleId('circle_1'),
+                    //     center:
+                    //         const LatLng(35.663185479303176, 139.70270127423208),
+                    //     radius: 100,
+                    //     fillColor: Colors.red.withOpacity(0.5),
+                    //     strokeColor: Colors.red,
+                    //     strokeWidth: 2,
+                    //   ),
+                    // },
+                    // TODO: Add current location
+                    // myLocationEnabled: true,
+                    // myLocationButtonEnabled: true,
+                    onLongPress: onLongPress,
+                  ),
                 ),
               ),
-            ),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: DraggableSheet(
-                children: [
-                  const SizedBox(height: 16),
-                  Row(
-                    children: [
-                      Text(
-                        'Giro',
-                        style: context.textTheme.titleLarge?.copyWith(
-                          color: context.colorScheme.onSurface,
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: DraggableSheet(
+                  children: [
+                    const SizedBox(height: 16),
+                    Row(
+                      children: [
+                        Text(
+                          'Giro',
+                          style: context.textTheme.titleLarge?.copyWith(
+                            color: context.colorScheme.onSurface,
+                          ),
                         ),
+                        const Spacer(),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    CupertinoButton.filled(
+                      child: const Text('Import last route'),
+                      onPressed: () => showModalBottomSheet<void>(
+                        useSafeArea: true,
+                        builder: (_) => const ImporterDialogPage(),
+                        context: context,
                       ),
-                      const Spacer(),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-                  CupertinoButton.filled(
-                    child: const Text('Import last route'),
-                    onPressed: () => showModalBottomSheet<void>(
-                      useSafeArea: true,
-                      builder: (_) => const ImporterDialogPage(),
-                      context: context,
                     ),
-                  ),
-                  const SizedBox(height: 16),
-                  CupertinoButton.filled(
-                    child: const Text('View walked routes'),
-                    onPressed: () => context.navigator.pushNamed(
-                      RouteManagementPage.routeName,
+                    const SizedBox(height: 16),
+                    CupertinoButton.filled(
+                      child: const Text('View walked routes'),
+                      onPressed: () => context.navigator.pushNamed(
+                        RouteManagementPage.routeName,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 16),
-                  CupertinoButton.filled(
-                    child: const Text('View Point of interests'),
-                    onPressed: () => context.navigator.pushNamed(
-                      POIManagementPage.routeName,
+                    const SizedBox(height: 16),
+                    CupertinoButton.filled(
+                      child: const Text('View Point of interests'),
+                      onPressed: () => context.navigator.pushNamed(
+                        POIManagementPage.routeName,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       );
 }

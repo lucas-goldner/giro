@@ -1,5 +1,4 @@
-import 'package:equatable/equatable.dart';
-import 'package:giro/core/model/poi.dart';
+part of 'poi_cubit.dart';
 
 sealed class PoiState extends Equatable {
   const PoiState(this.pois);

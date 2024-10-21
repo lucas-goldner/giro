@@ -22,7 +22,7 @@ class POI extends Equatable {
 
   String get id {
     final dataString = '''
-$name${coordinates.latitude}${coordinates.longitude}${createdAt.millisecondsSinceEpoch}
+$name${coordinates.latitude}${coordinates.longitude}
 ''';
     var hash = 0;
     for (final codeUnit in dataString.codeUnits) {
