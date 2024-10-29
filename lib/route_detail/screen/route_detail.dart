@@ -17,25 +17,29 @@ class RouteDetail extends StatelessWidget {
   final WalkRoute route;
 
   @override
-  Widget build(BuildContext context) => AdaptiveScaffold(
-        title: const Text('Routes Detail'),
-        child: PlatformMap(
-          initialCameraPosition: CameraPosition(
-            target: route.coordinates.first,
-            zoom: 16,
-          ),
-          polylines: {
-            Polyline(
-              polylineId: PolylineId('route_${route.id}'),
-              color: Colors.red,
-              width: 2,
-              points: route.coordinates,
-            ),
-          },
-          // TODO: Add current location
-          // myLocationEnabled: true,
-          // myLocationButtonEnabled: true,
-          onTap: (location) => print('onTap: $location'),
+  Widget build(BuildContext context) {
+    print(route.coordinates.length);
+
+    return AdaptiveScaffold(
+      title: const Text('Routes Detail'),
+      child: PlatformMap(
+        initialCameraPosition: CameraPosition(
+          target: route.coordinates.first,
+          zoom: 16,
         ),
-      );
+        polylines: {
+          Polyline(
+            polylineId: PolylineId('route_${route.id}'),
+            color: Colors.red,
+            width: 2,
+            points: route.coordinates,
+          ),
+        },
+        // TODO: Add current location
+        // myLocationEnabled: true,
+        // myLocationButtonEnabled: true,
+        onTap: (location) => print('onTap: $location'),
+      ),
+    );
+  }
 }

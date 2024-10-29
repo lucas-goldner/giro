@@ -155,6 +155,14 @@ class _GiroMapState extends State<GiroMap> {
                         POIManagementPage.routeName,
                       ),
                     ),
+                    // TODO: Add record walk
+                    // const SizedBox(height: 16),
+                    // CupertinoButton.filled(
+                    //   child: const Text('Record Walk'),
+                    //   onPressed: () => context.navigator.pushNamed(
+                    //     RecordWalkPage.routeName,
+                    //   ),
+                    // ),
                   ],
                 ),
               ),
