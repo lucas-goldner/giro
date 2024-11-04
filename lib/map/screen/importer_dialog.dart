@@ -130,6 +130,7 @@ class _ImporterDialogState extends State<ImporterDialog> {
                         workout: workouts[index],
                         selectedWorkouts: _selectedWorkouts,
                         onSelected: _onSelected,
+                        importedAlready: false,
                       ),
                     );
                   }

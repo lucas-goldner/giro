@@ -1,9 +1,8 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:giro/core/cubit/walk_routes_cubit.dart';
 import 'package:giro/core/extensions.dart';
+import 'package:giro/core/model/flavor_config.dart';
 import 'package:giro/core/widgets/adaptive_scaffold.dart';
 import 'package:giro/route_detail/screen/route_detail.dart';
 import 'package:giro/routes_management/widgets/route_card.dart';
@@ -33,7 +32,7 @@ class _RoutesManagementState extends State<RoutesManagement> {
       child: SafeArea(
         child: Column(
           children: [
-            if (kDebugMode)
+            if (FlavorConfig.isDev())
               CupertinoButton.filled(
                 onPressed: context.read<WalkRoutesCubit>().clearAll,
                 child: const Text('Clear all'),

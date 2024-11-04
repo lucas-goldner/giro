@@ -71,17 +71,17 @@ class _GiroMapState extends State<GiroMap> {
                   buildWhen: (previous, current) =>
                       previous.pois != current.pois,
                   builder: (context, poiState) => PlatformMap(
-                    initialCameraPosition: const CameraPosition(
-                      // Tokyo
-                      // target: LatLng(35.682839, 139.759455),
-                      target: LatLng(48.962316599573725, 9.262961877486779),
+                    initialCameraPosition: CameraPosition(
+                      target: walksState.routes.isNotEmpty
+                          ? walksState.routes.first.coordinates.last
+                          : const LatLng(35.682839, 139.759455),
                       zoom: 16,
                     ),
                     polylines: walksState.routes
                         .map(
                           (route) => Polyline(
                             polylineId: PolylineId('route_${route.id}'),
-                            color: Colors.red,
+                            color: route.color,
                             width: 2,
                             points: route.coordinates,
                           ),
@@ -110,7 +110,6 @@ class _GiroMapState extends State<GiroMap> {
                     //     strokeWidth: 2,
                     //   ),
                     // },
-                    // TODO: Add current location
                     myLocationEnabled: true,
                     myLocationButtonEnabled: true,
                     onLongPress: onLongPress,

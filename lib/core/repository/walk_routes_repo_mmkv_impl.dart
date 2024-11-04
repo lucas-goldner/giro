@@ -14,8 +14,18 @@ class WalkRoutesRepoMmkvImpl extends WalkRoutesRepo {
   }
 
   @override
-  void addRoute(WalkRoute route) =>
-      mmkv.encodeString(route.id, jsonEncode(route));
+  void addRoute(WalkRoute route) {
+    mmkv.encodeString(
+      route.id,
+      jsonEncode(
+        WalkRoute(
+          coordinates: route.shortenedCoordinates,
+          startDate: route.startDate,
+          endDate: route.endDate,
+        ),
+      ),
+    );
+  }
 
   @override
   List<WalkRoute> getRoutes() => mmkv.allKeys

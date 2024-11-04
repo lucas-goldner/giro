@@ -75,8 +75,7 @@ class _GiroAppState extends State<GiroApp> {
                 ),
               ],
               child: MaterialApp(
-                debugShowCheckedModeBanner:
-                    FlavorConfig.instance.flavor == Flavor.dev,
+                debugShowCheckedModeBanner: FlavorConfig.isDev(),
                 onGenerateRoute: generateRoutes,
               ),
             );

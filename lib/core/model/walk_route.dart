@@ -1,5 +1,10 @@
+import 'dart:math';
+import 'dart:ui';
+
 import 'package:equatable/equatable.dart';
 import 'package:platform_maps_flutter/platform_maps_flutter.dart';
+
+const _coordinatesForEvery5Seconds = 5;
 
 class WalkRoute extends Equatable {
   const WalkRoute({
@@ -46,6 +51,42 @@ ${startDate.millisecondsSinceEpoch}${endDate.millisecondsSinceEpoch}${coordinate
   final DateTime startDate;
   final DateTime endDate;
   Duration get duration => endDate.difference(startDate);
+  int get durationInMinutes => endDate.difference(startDate).inMinutes;
+
+  List<LatLng> get shortenedCoordinates {
+    final totalDurationInSeconds = duration.inSeconds;
+
+    final expectedPoints =
+        totalDurationInSeconds ~/ _coordinatesForEvery5Seconds;
+
+    if (coordinates.length <= expectedPoints || expectedPoints < 2) {
+      return coordinates;
+    }
+
+    final totalCoordinates = coordinates.length;
+    final result = <LatLng>[];
+
+    // For each expected point, compute the corresponding index in coordinates
+    for (var i = 0; i < expectedPoints; i++) {
+      final index = (i * totalCoordinates) ~/ expectedPoints;
+      result.add(coordinates[index]);
+    }
+
+    return result;
+  }
+
+  Color get color =>
+      Color((int.parse(id) + _coordinatesHash) & 0xFFFFFFFF).withOpacity(0.8);
+  int get _coordinatesHash {
+    var hash = 0;
+    for (var i = 0; i < min(5, coordinates.length); i++) {
+      hash = hash * 31 +
+          coordinates[i].latitude.hashCode +
+          coordinates[i].longitude.hashCode;
+    }
+
+    return hash;
+  }
 
   Map<String, dynamic> toJson() {
     return {
