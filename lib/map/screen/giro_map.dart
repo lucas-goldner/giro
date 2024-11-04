@@ -5,6 +5,7 @@ import 'package:giro/core/cubit/launchable_maps_cubit.dart';
 import 'package:giro/core/cubit/poi_cubit.dart';
 import 'package:giro/core/cubit/walk_routes_cubit.dart';
 import 'package:giro/core/extensions.dart';
+import 'package:giro/core/model/flavor_config.dart';
 import 'package:giro/core/widgets/adaptive_scaffold.dart';
 import 'package:giro/map/cubit/healthkit_cubit.dart';
 import 'package:giro/map/repository/healthkit_repo_method_channel_impl.dart';
@@ -65,7 +66,7 @@ class _GiroMapState extends State<GiroMap> {
               BlocBuilder<WalkRoutesCubit, WalkRoutesState>(
                 buildWhen: (previous, current) =>
                     previous.routes != current.routes,
-                builder: (context, walkState) =>
+                builder: (context, walksState) =>
                     BlocBuilder<PoiCubit, PoiState>(
                   buildWhen: (previous, current) =>
                       previous.pois != current.pois,
@@ -76,7 +77,7 @@ class _GiroMapState extends State<GiroMap> {
                       target: LatLng(48.962316599573725, 9.262961877486779),
                       zoom: 16,
                     ),
-                    polylines: walkState.routes
+                    polylines: walksState.routes
                         .map(
                           (route) => Polyline(
                             polylineId: PolylineId('route_${route.id}'),
@@ -110,8 +111,8 @@ class _GiroMapState extends State<GiroMap> {
                     //   ),
                     // },
                     // TODO: Add current location
-                    // myLocationEnabled: true,
-                    // myLocationButtonEnabled: true,
+                    myLocationEnabled: true,
+                    myLocationButtonEnabled: true,
                     onLongPress: onLongPress,
                   ),
                 ),
@@ -124,7 +125,7 @@ class _GiroMapState extends State<GiroMap> {
                     Row(
                       children: [
                         Text(
-                          'Giro',
+                          FlavorConfig.instance.name,
                           style: context.textTheme.titleLarge?.copyWith(
                             color: context.colorScheme.onSurface,
                           ),

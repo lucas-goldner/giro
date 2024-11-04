@@ -28,8 +28,12 @@ class HealthkitCubit extends Cubit<HealthKitState> {
     emit(const HealthKitStateLoadingWorkout());
     final workouts =
         await _healthkitRepo.retrieveWorkoutsWithRoutes(limit: limit);
+    final workoutsOrdered = workouts
+      ..sort((a, b) => b.startDate.compareTo(a.startDate));
     emit(
-      HealthKitStateAuthorized(workouts: [...state.workouts, ...workouts]),
+      HealthKitStateAuthorized(
+        workouts: [...state.workouts, ...workoutsOrdered],
+      ),
     );
   }
 }

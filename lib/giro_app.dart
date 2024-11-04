@@ -4,16 +4,12 @@ import 'package:giro/core/cubit/launchable_maps_cubit.dart';
 import 'package:giro/core/cubit/poi_cubit.dart';
 import 'package:giro/core/cubit/walk_routes_cubit.dart';
 import 'package:giro/core/model/app_init_deps.dart';
+import 'package:giro/core/model/flavor_config.dart';
 import 'package:giro/core/repository/launchable_maps_repo_impl.dart';
 import 'package:giro/core/repository/poi_repo_mmkv_impl.dart';
 import 'package:giro/core/repository/walk_routes_repo_mmkv_impl.dart';
 import 'package:giro/router.dart';
 import 'package:intl/date_symbol_data_local.dart';
-
-void main() {
-  WidgetsFlutterBinding.ensureInitialized().deferFirstFrame();
-  runApp(const GiroApp());
-}
 
 class GiroApp extends StatefulWidget {
   const GiroApp({super.key});
@@ -78,7 +74,9 @@ class _GiroAppState extends State<GiroApp> {
                   ),
                 ),
               ],
-              child: const MaterialApp(
+              child: MaterialApp(
+                debugShowCheckedModeBanner:
+                    FlavorConfig.instance.flavor == Flavor.dev,
                 onGenerateRoute: generateRoutes,
               ),
             );
