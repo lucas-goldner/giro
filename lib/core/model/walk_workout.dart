@@ -77,8 +77,8 @@ $activityType${startDate.millisecondsSinceEpoch}${endDate.millisecondsSinceEpoch
 
   WalkRoute toRoute() => WalkRoute(
         coordinates: routes,
-        startDate: startDate,
-        endDate: endDate,
+        startDate: startDate.withoutMilliOrMicroSeconds,
+        endDate: endDate.withoutMilliOrMicroSeconds,
       );
 
   @override

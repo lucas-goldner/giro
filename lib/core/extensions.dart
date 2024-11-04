@@ -17,6 +17,14 @@ extension DateTimeExtension on DateTime {
   String toLocalizedString(BuildContext context) => DateFormat.yMMMMEEEEd(
         context.languageCode,
       ).format(this);
+  DateTime get withoutMilliOrMicroSeconds => DateTime(
+        year,
+        month,
+        day,
+        hour,
+        minute,
+        second,
+      );
 }
 
 extension DoubleExtension on double {

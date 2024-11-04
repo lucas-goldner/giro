@@ -7,7 +7,6 @@ void main() {
     flavor: Flavor.prod,
     name: 'Giro',
   );
-  print('Running in production mode');
   WidgetsFlutterBinding.ensureInitialized().deferFirstFrame();
   runApp(const GiroApp());
 }

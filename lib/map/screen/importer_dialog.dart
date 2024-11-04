@@ -133,13 +133,21 @@ class _ImporterDialogState extends State<ImporterDialog> {
                         workout: workouts[index],
                         selectedWorkouts: _selectedWorkouts,
                         onSelected: _onSelected,
-                        importedAlready:
-                            context.read<WalkRoutesCubit>().state.routes.any(
-                                  (route) =>
-                                      route.startDate ==
-                                          workouts[index].startDate &&
-                                      route.endDate == workouts[index].endDate,
-                                ),
+                        importedAlready: context
+                            .read<WalkRoutesCubit>()
+                            .state
+                            .routes
+                            .any(
+                              (route) =>
+                                  route.startDate.withoutMilliOrMicroSeconds ==
+                                      workouts[index]
+                                          .startDate
+                                          .withoutMilliOrMicroSeconds &&
+                                  route.endDate.withoutMilliOrMicroSeconds ==
+                                      workouts[index]
+                                          .endDate
+                                          .withoutMilliOrMicroSeconds,
+                            ),
                       ),
                     );
                   }

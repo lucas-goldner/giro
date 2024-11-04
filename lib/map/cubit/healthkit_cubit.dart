@@ -21,7 +21,7 @@ class HealthkitCubit extends Cubit<HealthKitState> {
     );
   }
 
-  Future<void> retrieveWorkoutsWithRoutes({int limit = 10}) async {
+  Future<void> retrieveWorkoutsWithRoutes({int limit = 25}) async {
     if (state is! HealthKitStateAuthorized) {
       return;
     }
