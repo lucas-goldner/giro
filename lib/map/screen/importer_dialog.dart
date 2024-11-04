@@ -107,7 +107,10 @@ class _ImporterDialogState extends State<ImporterDialog> {
                 ],
               ),
             ),
-            const Divider(),
+            const SizedBox(height: 8),
+            const Divider(
+              height: 1,
+            ),
             Expanded(
               child: BlocBuilder<HealthkitCubit, HealthKitState>(
                 builder: (context, state) {
@@ -130,7 +133,13 @@ class _ImporterDialogState extends State<ImporterDialog> {
                         workout: workouts[index],
                         selectedWorkouts: _selectedWorkouts,
                         onSelected: _onSelected,
-                        importedAlready: false,
+                        importedAlready:
+                            context.read<WalkRoutesCubit>().state.routes.any(
+                                  (route) =>
+                                      route.startDate ==
+                                          workouts[index].startDate &&
+                                      route.endDate == workouts[index].endDate,
+                                ),
                       ),
                     );
                   }

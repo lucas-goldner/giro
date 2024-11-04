@@ -27,21 +27,24 @@ class WalkWorkoutCard extends StatelessWidget {
               Text(
                 workout.displayDuration(context),
               ),
+              if (importedAlready) const Text(' - Imported already'),
             ],
           ),
           leading: CircleAvatar(
             backgroundColor: importedAlready ? Colors.blue : Colors.green,
-            child: const Icon(
-              Icons.directions_walk,
+            child: Icon(
+              importedAlready ? Icons.check_rounded : Icons.directions_walk,
               color: Colors.white,
             ),
           ),
-          trailing: Checkbox.adaptive(
-            value: selectedWorkouts.contains(workout),
-            onChanged: (_) => onSelected(
-              workout,
-            ),
-          ),
+          trailing: importedAlready
+              ? null
+              : Checkbox.adaptive(
+                  value: selectedWorkouts.contains(workout),
+                  onChanged: (_) => onSelected(
+                    workout,
+                  ),
+                ),
         ),
       );
 }
