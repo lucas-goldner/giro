@@ -75,6 +75,7 @@ class _ImporterDialogState extends State<ImporterDialog> {
   Widget build(BuildContext context) => FutureBuilder(
         future: _healthKitAuthorized,
         builder: (context, snapshot) => Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             const SizedBox(height: 16),
             Padding(
@@ -93,8 +94,13 @@ class _ImporterDialogState extends State<ImporterDialog> {
                     child: BlocBuilder<HealthkitCubit, HealthKitState>(
                       builder: (context, state) {
                         if (state is HealthKitStateLoadingWorkout) {
-                          return const Text(
-                            'Loading...',
+                          return const Row(
+                            children: [
+                              Text(
+                                'Loading...',
+                              ),
+                              CupertinoActivityIndicator(),
+                            ],
                           );
                         }
 

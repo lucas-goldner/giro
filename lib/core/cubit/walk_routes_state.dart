@@ -9,6 +9,9 @@ sealed class WalkRoutesState extends Equatable {
       .expand((element) => element)
       .toList();
 
+  List<WalkRoute> get sortedRoutes =>
+      routes..sort((a, b) => b.endDate.compareTo(a.endDate));
+
   @override
   List<Object?> get props => [routes];
 }

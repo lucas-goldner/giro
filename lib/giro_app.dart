@@ -4,11 +4,10 @@ import 'package:giro/core/cubit/launchable_maps_cubit.dart';
 import 'package:giro/core/cubit/poi_cubit.dart';
 import 'package:giro/core/cubit/walk_routes_cubit.dart';
 import 'package:giro/core/model/app_init_deps.dart';
-import 'package:giro/core/model/flavor_config.dart';
 import 'package:giro/core/repository/launchable_maps_repo_impl.dart';
 import 'package:giro/core/repository/poi_repo_mmkv_impl.dart';
 import 'package:giro/core/repository/walk_routes_repo_mmkv_impl.dart';
-import 'package:giro/router.dart';
+import 'package:giro/core/widgets/adaptive_app.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
 class GiroApp extends StatefulWidget {
@@ -74,10 +73,7 @@ class _GiroAppState extends State<GiroApp> {
                   ),
                 ),
               ],
-              child: MaterialApp(
-                debugShowCheckedModeBanner: FlavorConfig.isDev(),
-                onGenerateRoute: generateRoutes,
-              ),
+              child: const AdaptiveApp(),
             );
           }
 

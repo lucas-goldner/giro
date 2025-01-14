@@ -25,10 +25,10 @@ class RoutesManagement extends StatefulWidget {
 class _RoutesManagementState extends State<RoutesManagement> {
   @override
   Widget build(BuildContext context) {
-    final routes = context.watch<WalkRoutesCubit>().state.routes;
+    final routes = context.watch<WalkRoutesCubit>().state.sortedRoutes;
 
     return AdaptiveScaffold(
-      title: const Text('Routes Management'),
+      title: Text('Routes Management (${routes.length})'),
       child: SafeArea(
         child: Column(
           children: [
