@@ -20,10 +20,16 @@ class HealthkitRepoMethodChannelImpl implements HealthkitRepo {
   Future<List<WalkWorkout>> retrieveWorkoutsWithRoutes({
     int limit = 10,
   }) async {
-    final pastWorkoutsAsJSONStrings = await _channel.invokeMethod(
-      MethodChannelHealthkitMethods.retrieveWorkoutsWithRoutes.name,
-      limit,
-    ) as List<dynamic>;
+    final List<dynamic> pastWorkoutsAsJSONStrings;
+    try {
+      pastWorkoutsAsJSONStrings = await _channel.invokeMethod(
+        MethodChannelHealthkitMethods.retrieveWorkoutsWithRoutes.name,
+        limit,
+      ) as List<dynamic>;
+    } on PlatformException catch (_) {
+      // print('Error retrieving workouts: ${e.message}');
+      return [];
+    }
 
     final pastWorkouts = pastWorkoutsAsJSONStrings
         .map((workout) => Map<String, dynamic>.from(workout as Map))

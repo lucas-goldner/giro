@@ -82,13 +82,26 @@ class _ImporterDialogState extends State<ImporterDialog> {
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Row(
                 children: [
-                  Text(
-                    'Past workouts',
-                    style: context.textTheme.titleLarge?.copyWith(
-                      color: context.colorScheme.onSurface,
+                  Flexible(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Past workouts',
+                          style: context.textTheme.titleLarge?.copyWith(
+                            color: context.colorScheme.onSurface,
+                          ),
+                        ),
+                        Text(
+                          'Only routes recorded with Apple Watch\ncan be imported',
+                          style: context.textTheme.bodySmall?.copyWith(
+                            color: context.colorScheme.onSurface,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                  const Spacer(),
+                  const SizedBox(width: 16),
                   CupertinoButton.filled(
                     onPressed: _hasLoaded ? _saveWalks : _loadWalks,
                     child: BlocBuilder<HealthkitCubit, HealthKitState>(
@@ -129,10 +142,18 @@ class _ImporterDialogState extends State<ImporterDialog> {
                   }
 
                   if (!state.authorized) {
-                    return const Text('Not authorized to use HealthKit');
+                    return const Center(
+                      child: Text('Not authorized to use HealthKit'),
+                    );
                   }
 
                   if (_hasLoaded) {
+                    if (workouts.isEmpty) {
+                      return const Center(
+                        child: Text('No workouts found'),
+                      );
+                    }
+
                     return ListView.builder(
                       itemCount: workouts.length,
                       itemBuilder: (context, index) => WalkWorkoutCard(
