@@ -93,7 +93,7 @@ class _ImporterDialogState extends State<ImporterDialog> {
                           ),
                         ),
                         Text(
-                          'Only routes recorded with Apple Watch\ncan be imported',
+                          'Only routes recorded with supported smartwatches can be imported.',
                           style: context.textTheme.bodySmall?.copyWith(
                             color: context.colorScheme.onSurface,
                           ),

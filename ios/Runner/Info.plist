@@ -47,11 +47,11 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSHealthShareUsageDescription</key>
-	<string>To allow importing your data of the last walked route</string>
+	<string>We access your Health data to import walking route information from your recent activities, so you can view and analyze your walking performance in the app.</string>
 	<key>NSHealthUpdateUsageDescription</key>
-	<string>To allow importing your data of the last walked route</string>
+	<string>We update your Health data to save the walking routes you track in the app, allowing you to maintain a comprehensive activity history.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>To show current position on map</string>
+	<string>We use your location to display your position on the map and help you track and navigate your walking routes.</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>
