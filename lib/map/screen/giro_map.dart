@@ -13,6 +13,7 @@ import 'package:giro/map/screen/importer_dialog.dart';
 import 'package:giro/map/widgets/draggable_sheet.dart';
 import 'package:giro/map/widgets/poi_add_dialog.dart';
 import 'package:giro/poi_management/screen/poi_management.dart';
+import 'package:giro/record_walk/screen/record_walk.dart';
 import 'package:giro/routes_management/screen/routes_management.dart';
 import 'package:platform_maps_flutter/platform_maps_flutter.dart';
 
@@ -22,7 +23,9 @@ class GiroMapPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => BlocProvider(
-        create: (context) => HealthkitCubit(HealthkitRepoMethodChannelImpl()),
+        create: (context) => HealthkitCubit(
+          HealthkitRepoMethodChannelImpl(),
+        ),
         child: const GiroMap(),
       );
 }
@@ -64,56 +67,54 @@ class _GiroMapState extends State<GiroMap> {
           child: Stack(
             children: [
               BlocBuilder<WalkRoutesCubit, WalkRoutesState>(
-                buildWhen: (previous, current) =>
-                    previous.routes != current.routes,
                 builder: (context, walksState) =>
                     BlocBuilder<PoiCubit, PoiState>(
-                  buildWhen: (previous, current) =>
-                      previous.pois != current.pois,
-                  builder: (context, poiState) => PlatformMap(
-                    initialCameraPosition: CameraPosition(
-                      target: walksState.routes.isNotEmpty
-                          ? walksState.routes.first.coordinates.last
-                          : const LatLng(35.682839, 139.759455),
-                      zoom: 16,
-                    ),
-                    polylines: walksState.routes
-                        .map(
-                          (route) => Polyline(
-                            polylineId: PolylineId('route_${route.id}'),
-                            color: route.color,
-                            width: 2,
-                            points: route.coordinates,
-                          ),
-                        )
-                        .toSet(),
-                    markers: poiState.pois
-                        .map(
-                          (poi) => Marker(
-                            markerId: MarkerId(poi.id),
-                            position: poi.coordinates,
-                            onTap: () => context
-                                .read<LaunchableMapsCubit>()
-                                .launchMapAtPOI(poi),
-                          ),
-                        )
-                        .toSet(),
-                    // TODO: Add heatmap kinda view
-                    //  <Circle>{
-                    //   Circle(
-                    //     circleId: CircleId('circle_1'),
-                    //     center:
-                    //         const LatLng(35.663185479303176, 139.70270127423208),
-                    //     radius: 100,
-                    //     fillColor: Colors.red.withOpacity(0.5),
-                    //     strokeColor: Colors.red,
-                    //     strokeWidth: 2,
-                    //   ),
-                    // },
-                    myLocationEnabled: true,
-                    myLocationButtonEnabled: true,
-                    onLongPress: onLongPress,
-                  ),
+                  builder: (context, poiState) {
+                    return PlatformMap(
+                      initialCameraPosition: CameraPosition(
+                        target: walksState.routes.isNotEmpty
+                            ? walksState.routes.first.coordinates.last
+                            : const LatLng(35.682839, 139.759455),
+                        zoom: 16,
+                      ),
+                      polylines: walksState.routes
+                          .map(
+                            (route) => Polyline(
+                              polylineId: PolylineId('route_${route.id}'),
+                              color: route.color,
+                              width: 2,
+                              points: route.coordinates,
+                            ),
+                          )
+                          .toSet(),
+                      markers: poiState.pois
+                          .map(
+                            (poi) => Marker(
+                              markerId: MarkerId(poi.id),
+                              position: poi.coordinates,
+                              onTap: () => context
+                                  .read<LaunchableMapsCubit>()
+                                  .launchMapAtPOI(poi),
+                            ),
+                          )
+                          .toSet(),
+                      // TODO: Add heatmap kinda view
+                      //  <Circle>{
+                      //   Circle(
+                      //     circleId: CircleId('circle_1'),
+                      //     center:
+                      //         const LatLng(35.663185479303176, 139.70270127423208),
+                      //     radius: 100,
+                      //     fillColor: Colors.red.withOpacity(0.5),
+                      //     strokeColor: Colors.red,
+                      //     strokeWidth: 2,
+                      //   ),
+                      // },
+                      myLocationEnabled: true,
+                      myLocationButtonEnabled: true,
+                      onLongPress: onLongPress,
+                    );
+                  },
                 ),
               ),
               Align(
@@ -155,14 +156,13 @@ class _GiroMapState extends State<GiroMap> {
                         POIManagementPage.routeName,
                       ),
                     ),
-                    // TODO: Add record walk
-                    // const SizedBox(height: 16),
-                    // CupertinoButton.filled(
-                    //   child: const Text('Record Walk'),
-                    //   onPressed: () => context.navigator.pushNamed(
-                    //     RecordWalkPage.routeName,
-                    //   ),
-                    // ),
+                    const SizedBox(height: 16),
+                    CupertinoButton.filled(
+                      child: const Text('Record Walk'),
+                      onPressed: () => context.navigator.pushNamed(
+                        RecordWalkPage.routeName,
+                      ),
+                    ),
                   ],
                 ),
               ),

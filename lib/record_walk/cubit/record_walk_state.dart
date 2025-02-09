@@ -28,9 +28,11 @@ class RecordWalkRecording extends RecordWalkState {
   RecordWalkRecording({
     required super.coordinates,
     required super.startDate,
+    required this.previousCoordinates,
     required this.onTimerTick,
   }) : _elapsedTime = 0;
 
+  List<LatLng> previousCoordinates;
   final TimerCallback onTimerTick;
   Timer? _timer;
   int _elapsedTime;

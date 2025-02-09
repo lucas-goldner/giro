@@ -55,25 +55,34 @@ class _GiroAppState extends State<GiroApp> {
               WidgetsBinding.instance.allowFirstFrame();
             }
 
-            return MultiBlocProvider(
+            final walkRoutesRepo = snapshot.requireData.walkRoutesRepo;
+
+            return MultiRepositoryProvider(
               providers: [
-                BlocProvider<WalkRoutesCubit>(
-                  create: (context) => WalkRoutesCubit(
-                    snapshot.requireData.walkRoutesRepo,
-                  ),
-                ),
-                BlocProvider<PoiCubit>(
-                  create: (context) => PoiCubit(
-                    snapshot.requireData.poiRepo,
-                  ),
-                ),
-                BlocProvider<LaunchableMapsCubit>(
-                  create: (context) => LaunchableMapsCubit(
-                    snapshot.requireData.launchableMapsRepo,
-                  ),
+                RepositoryProvider.value(
+                  value: walkRoutesRepo,
                 ),
               ],
-              child: const AdaptiveApp(),
+              child: MultiBlocProvider(
+                providers: [
+                  BlocProvider<WalkRoutesCubit>(
+                    create: (context) => WalkRoutesCubit(
+                      walkRoutesRepo,
+                    ),
+                  ),
+                  BlocProvider<PoiCubit>(
+                    create: (context) => PoiCubit(
+                      snapshot.requireData.poiRepo,
+                    ),
+                  ),
+                  BlocProvider<LaunchableMapsCubit>(
+                    create: (context) => LaunchableMapsCubit(
+                      snapshot.requireData.launchableMapsRepo,
+                    ),
+                  ),
+                ],
+                child: const AdaptiveApp(),
+              ),
             );
           }
 
