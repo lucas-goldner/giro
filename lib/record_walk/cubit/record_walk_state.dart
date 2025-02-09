@@ -14,6 +14,7 @@ sealed class RecordWalkState {
   WalkRoute? route;
 
   bool get isRecording => this is RecordWalkRecording;
+  bool get isFinished => this is RecordWalkFinishedRecording;
 }
 
 class RecordWalkInitial extends RecordWalkState {

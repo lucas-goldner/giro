@@ -1,9 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:giro/core/cubit/walk_routes_cubit.dart';
 import 'package:giro/core/extensions.dart';
 import 'package:giro/core/repository/walk_routes_repo_mmkv_impl.dart';
 import 'package:giro/core/widgets/adaptive_scaffold.dart';
 import 'package:giro/record_walk/cubit/record_walk_cubit.dart';
+import 'package:giro/route_detail/screen/route_detail.dart';
 import 'package:platform_maps_flutter/platform_maps_flutter.dart';
 
 class RecordWalkPage extends StatelessWidget {
@@ -115,69 +117,87 @@ class RecordWalkPageState extends State<RecordWalk>
   }
 
   @override
-  Widget build(BuildContext context) {
-    return BlocListener<RecordWalkCubit, RecordWalkState>(
-      listenWhen: (previous, current) =>
-          previous.coordinates != current.coordinates,
-      listener: (context, state) {
-        _latestState = state;
-        if (state is RecordWalkRecording &&
-            state.coordinates.length > state.previousCoordinates.length) {
-          _startSegmentAnimation(state);
-        } else {
-          _updatePolylines();
-        }
-      },
-      child: AdaptiveScaffold(
-        title: const Text('Record Walk'),
-        child: Stack(
-          children: [
-            // The PlatformMap is wrapped in a ValueListenableBuilder
-            // so that only its polyline overlay updates
-            // when _polylineNotifier changes.
-            ValueListenableBuilder<Set<Polyline>>(
-              valueListenable: _polylineNotifier,
-              builder: (context, polylines, child) {
-                return PlatformMap(
-                  // Use a constant key to keep
-                  // the underlying platform view alive
-                  key: const ValueKey('platform_map'),
-                  initialCameraPosition: CameraPosition(
-                    target: (polylines.isNotEmpty)
-                        ? polylines.first.points.last
-                        : (_latestState?.coordinates.isNotEmpty ?? false)
-                            ? (_latestState?.coordinates ?? []).last
-                            : const LatLng(0, 0),
-                    zoom: 16,
-                  ),
-                  myLocationEnabled: true,
-                  myLocationButtonEnabled: true,
-                  compassEnabled: false,
-                  polylines: polylines,
-                );
-              },
-            ),
-            SafeArea(
-              child: Align(
-                alignment: AlignmentDirectional.bottomCenter,
-                child: BlocBuilder<RecordWalkCubit, RecordWalkState>(
-                  builder: (context, state) => CupertinoButton.filled(
-                    onPressed: () => state.isRecording
-                        ? context.read<RecordWalkCubit>().finishRecording()
-                        : context.read<RecordWalkCubit>().startRecording(),
-                    child: switch (state) {
-                      RecordWalkInitial() => const Text('Start recording'),
-                      RecordWalkRecording() => const Text('Stop recording'),
-                      RecordWalkFinishedRecording() =>
-                        const Text('Finished recording'),
+  Widget build(BuildContext context) =>
+      BlocListener<RecordWalkCubit, RecordWalkState>(
+        listenWhen: (previous, current) =>
+            previous.coordinates != current.coordinates,
+        listener: (context, state) {
+          _latestState = state;
+          if (state is RecordWalkRecording &&
+              state.coordinates.length > state.previousCoordinates.length) {
+            _startSegmentAnimation(state);
+          } else {
+            _updatePolylines();
+          }
+        },
+        child: AdaptiveScaffold(
+          title: const Text('Record Walk'),
+          child: Stack(
+            children: [
+              // The PlatformMap is wrapped in a ValueListenableBuilder
+              // so that only its polyline overlay updates
+              // when _polylineNotifier changes.
+              ValueListenableBuilder<Set<Polyline>>(
+                valueListenable: _polylineNotifier,
+                builder: (context, polylines, child) {
+                  return PlatformMap(
+                    // Use a constant key to keep
+                    // the underlying platform view alive
+                    key: const ValueKey('platform_map'),
+                    initialCameraPosition: CameraPosition(
+                      target: (polylines.isNotEmpty)
+                          ? polylines.first.points.isNotEmpty
+                              ? polylines.first.points.last
+                              : const LatLng(0, 0)
+                          : (_latestState?.coordinates.isNotEmpty ?? false)
+                              ? (_latestState?.coordinates ?? []).last
+                              : const LatLng(0, 0),
+                      zoom: 16,
+                    ),
+                    myLocationEnabled: true,
+                    myLocationButtonEnabled: true,
+                    compassEnabled: false,
+                    polylines: polylines,
+                  );
+                },
+              ),
+              SafeArea(
+                child: Align(
+                  alignment: AlignmentDirectional.bottomCenter,
+                  child: BlocConsumer<RecordWalkCubit, RecordWalkState>(
+                    listener: (context, state) {
+                      final currentState = state;
+                      final currentRoute = currentState.route;
+
+                      if (currentState is RecordWalkFinishedRecording &&
+                          currentRoute != null) {
+                        context.read<WalkRoutesCubit>().addRoute(currentRoute);
+                      }
                     },
+                    builder: (context, state) => CupertinoButton.filled(
+                      onPressed: () => switch (state) {
+                        RecordWalkInitial() =>
+                          context.read<RecordWalkCubit>().startRecording(),
+                        RecordWalkRecording() =>
+                          context.read<RecordWalkCubit>().finishRecording(),
+                        RecordWalkFinishedRecording() =>
+                          context.navigator.pushNamed(
+                            RouteDetailPage.routeName,
+                            arguments: state.route,
+                          ),
+                      },
+                      child: switch (state) {
+                        RecordWalkInitial() => const Text('Start recording'),
+                        RecordWalkRecording() => const Text('Stop recording'),
+                        RecordWalkFinishedRecording() =>
+                          const Text('View finished recording'),
+                      },
+                    ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
-      ),
-    );
-  }
+      );
 }
