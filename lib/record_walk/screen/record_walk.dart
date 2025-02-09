@@ -23,12 +23,11 @@ class RecordWalk extends StatefulWidget {
   const RecordWalk({super.key});
 
   @override
-  _RecordWalkState createState() => _RecordWalkState();
+  RecordWalkPageState createState() => RecordWalkPageState();
 }
 
-class _RecordWalkState extends State<RecordWalk>
+class RecordWalkPageState extends State<RecordWalk>
     with SingleTickerProviderStateMixin {
-  /// Controls the animation for the new segment.
   late AnimationController _controller;
   late Animation<double> _animation;
 
@@ -36,8 +35,6 @@ class _RecordWalkState extends State<RecordWalk>
   /// The PlatformMap will rebuild only its overlay when this changes.
   final ValueNotifier<Set<Polyline>> _polylineNotifier =
       ValueNotifier(const {});
-
-  /// We keep track of the latest state so we can update the animation.
   RecordWalkState? _latestState;
 
   @override
@@ -56,7 +53,6 @@ class _RecordWalkState extends State<RecordWalk>
     super.dispose();
   }
 
-  /// Interpolates between [start] and [end] using a fixed number of steps.
   List<LatLng> interpolateCoordinates(
     LatLng start,
     LatLng end, {
@@ -72,7 +68,6 @@ class _RecordWalkState extends State<RecordWalk>
     return interpolatedPoints;
   }
 
-  /// Update the polyline based on the current animation value and the latest state.
   void _updatePolylines() {
     if (_latestState is RecordWalkRecording &&
         (_latestState! as RecordWalkRecording).coordinates.length > 1) {
@@ -82,20 +77,16 @@ class _RecordWalkState extends State<RecordWalk>
       final newPoint = state.coordinates.last;
       const steps = 10;
 
-      // Get all interpolated points between lastConfirmed and newPoint.
       final allInterpolated = interpolateCoordinates(lastConfirmed, newPoint);
 
-      // Determine how many steps to reveal based on _animation.value.
       final currentStep = (_animation.value * steps).ceil().clamp(0, steps);
       final animatedSegment = allInterpolated.take(currentStep).toList();
 
-      // Combine confirmed points with the animated segment.
       final polylinePoints = [
         ...confirmed,
         ...animatedSegment,
       ];
 
-      // Update the notifier.
       _polylineNotifier.value = {
         Polyline(
           polylineId: PolylineId('recording_walk'),
@@ -105,7 +96,6 @@ class _RecordWalkState extends State<RecordWalk>
         ),
       };
     } else if (_latestState != null) {
-      // Not recording or not enough points: use the full coordinate list.
       _polylineNotifier.value = {
         Polyline(
           polylineId: PolylineId('recording_walk'),
@@ -117,11 +107,11 @@ class _RecordWalkState extends State<RecordWalk>
     }
   }
 
-  /// Starts (or restarts) the segment animation.
   void _startSegmentAnimation(RecordWalkRecording state) {
-    _controller.reset();
-    _controller.forward();
-    _updatePolylines(); // Ensure an immediate update.
+    _controller
+      ..reset()
+      ..forward();
+    _updatePolylines();
   }
 
   @override
@@ -133,10 +123,8 @@ class _RecordWalkState extends State<RecordWalk>
         _latestState = state;
         if (state is RecordWalkRecording &&
             state.coordinates.length > state.previousCoordinates.length) {
-          // A new coordinate has been added—animate the new segment.
           _startSegmentAnimation(state);
         } else {
-          // Otherwise, update immediately.
           _updatePolylines();
         }
       },
@@ -144,20 +132,22 @@ class _RecordWalkState extends State<RecordWalk>
         title: const Text('Record Walk'),
         child: Stack(
           children: [
-            // The PlatformMap is wrapped in a ValueListenableBuilder so that only its
-            // polyline overlay updates when _polylineNotifier changes.
+            // The PlatformMap is wrapped in a ValueListenableBuilder
+            // so that only its polyline overlay updates
+            // when _polylineNotifier changes.
             ValueListenableBuilder<Set<Polyline>>(
               valueListenable: _polylineNotifier,
               builder: (context, polylines, child) {
                 return PlatformMap(
-                  // Use a constant key to keep the underlying platform view alive.
+                  // Use a constant key to keep
+                  // the underlying platform view alive
                   key: const ValueKey('platform_map'),
                   initialCameraPosition: CameraPosition(
                     target: (polylines.isNotEmpty)
                         ? polylines.first.points.last
-                        : (_latestState?.coordinates.isNotEmpty == true
-                            ? _latestState!.coordinates.last
-                            : const LatLng(0, 0)),
+                        : (_latestState?.coordinates.isNotEmpty ?? false)
+                            ? (_latestState?.coordinates ?? []).last
+                            : const LatLng(0, 0),
                     zoom: 16,
                   ),
                   myLocationEnabled: true,
@@ -171,19 +161,17 @@ class _RecordWalkState extends State<RecordWalk>
               child: Align(
                 alignment: AlignmentDirectional.bottomCenter,
                 child: BlocBuilder<RecordWalkCubit, RecordWalkState>(
-                  builder: (context, state) {
-                    return CupertinoButton.filled(
-                      onPressed: () => state.isRecording
-                          ? context.read<RecordWalkCubit>().finishRecording()
-                          : context.read<RecordWalkCubit>().startRecording(),
-                      child: switch (state) {
-                        RecordWalkInitial() => const Text('Start recording'),
-                        RecordWalkRecording() => const Text('Stop recording'),
-                        RecordWalkFinishedRecording() =>
-                          const Text('Finished recording'),
-                      },
-                    );
-                  },
+                  builder: (context, state) => CupertinoButton.filled(
+                    onPressed: () => state.isRecording
+                        ? context.read<RecordWalkCubit>().finishRecording()
+                        : context.read<RecordWalkCubit>().startRecording(),
+                    child: switch (state) {
+                      RecordWalkInitial() => const Text('Start recording'),
+                      RecordWalkRecording() => const Text('Stop recording'),
+                      RecordWalkFinishedRecording() =>
+                        const Text('Finished recording'),
+                    },
+                  ),
                 ),
               ),
             ),
