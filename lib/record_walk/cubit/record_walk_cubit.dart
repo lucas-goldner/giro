@@ -13,6 +13,11 @@ class RecordWalkCubit extends Cubit<RecordWalkState> {
 
   final WalkRoutesRepo _walkRoutesRepo;
 
+  /// Samples the location while recording. Owned by the cubit (not the
+  /// state) so it survives the state copies made by [addCoordinate] and is
+  /// reliably cancelled by [finishRecording] and [close].
+  Timer? _timer;
+
   Future<LatLng> _getCurrentLocation() async {
     final serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
@@ -43,16 +48,18 @@ class RecordWalkCubit extends Cubit<RecordWalkState> {
   }
 
   void startRecording() {
-    final recordingState = RecordWalkRecording(
-      coordinates: [],
-      previousCoordinates: [],
-      startDate: DateTime.now(),
-      onTimerTick: (elapsedTime) async {
-        final coordinates = await _getCurrentLocation();
-        addCoordinate(coordinates);
-      },
-    )..startTimer();
-    emit(recordingState);
+    emit(
+      RecordWalkRecording(
+        coordinates: [],
+        previousCoordinates: [],
+        startDate: DateTime.now(),
+      ),
+    );
+    _timer?.cancel();
+    _timer = Timer.periodic(const Duration(seconds: 5), (_) async {
+      final coordinates = await _getCurrentLocation();
+      addCoordinate(coordinates);
+    });
   }
 
   void addCoordinate(LatLng newCoordinate) {
@@ -63,7 +70,6 @@ class RecordWalkCubit extends Cubit<RecordWalkState> {
           coordinates: [...currentCoordinates, newCoordinate],
           previousCoordinates: [...currentCoordinates],
           startDate: state.startDate ?? DateTime.now(),
-          onTimerTick: (state as RecordWalkRecording).onTimerTick,
         ),
       );
     }
@@ -71,7 +77,8 @@ class RecordWalkCubit extends Cubit<RecordWalkState> {
 
   void finishRecording() {
     if (state is RecordWalkRecording) {
-      final recordingState = state as RecordWalkRecording..stopTimer();
+      _timer?.cancel();
+      _timer = null;
 
       final route = WalkRoute(
         coordinates: state.coordinates,
@@ -83,10 +90,16 @@ class RecordWalkCubit extends Cubit<RecordWalkState> {
 
       emit(
         RecordWalkFinishedRecording(
-          coordinates: recordingState.coordinates,
+          coordinates: state.coordinates,
           route: route,
         ),
       );
     }
+  }
+
+  @override
+  Future<void> close() {
+    _timer?.cancel();
+    return super.close();
   }
 }
