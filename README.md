@@ -22,7 +22,7 @@ native-only packages swapped for mocks from `lib/web_mocks/`:
 | `mmkv` storage | `InMemoryWalkRoutesRepo` / `InMemoryPoiRepo` seeded with sample Tokyo walks |
 | HealthKit method channel | `MockHealthkitRepo` returning canned workouts |
 | `geolocator` | `MockGeolocatorPlatform` walking along a fixed loop |
-| `platform_maps_flutter` map view | `MockPlatformMap`, a canvas-drawn map with markers, polylines, pan/zoom and long press |
+| `platform_maps_flutter` map view | the real Google Maps JavaScript map via `google_maps_flutter_web` (`WebGoogleMap`); `?map=mock` switches to `MockPlatformMap`, a canvas-drawn map with markers, polylines, pan/zoom and long press |
 | `map_launcher` installed apps | `MockLaunchableMapsRepo` (Apple + Google Maps "installed") |
 
 ```bash
@@ -33,7 +33,12 @@ $ flutter run -d web-server -t lib/main_web.dart --web-port 8080
 ```
 
 Append `?style=material` to the URL to see the Material variant instead of the
-Cupertino one.
+Cupertino one, and `?map=mock` to swap the Google map for the canvas mock.
+
+The Maps JavaScript API is loaded in `web/index.html` without an API key, so
+Google renders it dimmed with a "for development purposes only" watermark and
+a dismissable warning. That is enough for checking the UI; add
+`?key=YOUR_API_KEY` to the script URL for a production-quality map.
 
 ### Screenshots
 

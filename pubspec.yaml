@@ -15,6 +15,9 @@ dependencies:
   flutter_bloc: ^9.1.1
   flutter_slidable: ^4.0.0
   geolocator: ^14.1.2
+  # Direct dependency so the web build can embed GoogleMap (platform_maps_flutter
+  # only switches between Apple Maps and Google Maps on iOS/Android).
+  google_maps_flutter: ^2.19.0
   # Replaces the endorsed google_maps_flutter_ios implementation (pulled in by
   # platform_maps_flutter), which is CocoaPods-only. A direct dependency on an
   # alternative implementation wins over the endorsed default.

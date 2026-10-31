@@ -11,8 +11,10 @@ import 'package:giro/web_mocks/web_mock_deps.dart';
 ///
 /// Native-only packages are replaced by the mocks in `lib/web_mocks/`:
 /// MMKV -> in-memory repositories, HealthKit -> canned workouts,
-/// geolocator -> a simulated walk, platform maps -> a canvas-drawn map.
-/// Append `?style=material` to the URL to preview the Material variant.
+/// geolocator -> a simulated walk. The map is the real Google Maps
+/// JavaScript map (see `web/index.html`); append `?map=mock` to use the
+/// canvas-drawn mock instead, and `?style=material` to preview the Material
+/// variant.
 void main() {
   FlavorConfig(
     flavor: Flavor.dev,
@@ -20,6 +22,7 @@ void main() {
   );
   PlatformStyle.forceCupertino =
       Uri.base.queryParameters['style'] != 'material';
+  PlatformStyle.forceMockMap = Uri.base.queryParameters['map'] == 'mock';
   GeolocatorPlatform.instance =
       MockGeolocatorPlatform(path: SampleData.recordingPath);
 

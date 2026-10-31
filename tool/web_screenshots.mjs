@@ -54,6 +54,11 @@ function serve(dir) {
 
 let shot = 0;
 async function snap(page, name) {
+  // Let Google Maps tiles settle, and dismiss the keyless "This page can't
+  // load Google Maps correctly" dialog if it popped up.
+  await page.waitForTimeout(2500);
+  const ok = page.getByRole('button', { name: 'OK' });
+  if (await ok.count()) await ok.first().click().catch(() => {});
   shot += 1;
   const file = join(outDir, `${String(shot).padStart(2, '0')}_${name}.png`);
   await page.screenshot({ path: file });
@@ -92,7 +97,12 @@ async function main() {
   }
   if (material) url += (url.includes('?') ? '&' : '?') + 'style=material';
 
-  const browser = await chromium.launch();
+  // Chromium must go through the container's HTTPS proxy to reach Google
+  // Maps; the proxy CA is already in the browser's NSS trust store.
+  const proxy = process.env.HTTPS_PROXY || process.env.https_proxy;
+  const browser = await chromium.launch(
+    proxy ? { proxy: { server: proxy, bypass: 'localhost,127.0.0.1' } } : {},
+  );
   const page = await browser.newPage({
     viewport: { width: 390, height: 844 },
     deviceScaleFactor: 2,
@@ -131,14 +141,23 @@ async function main() {
     await back(page);
     await back(page);
 
-    // Long-press on the map opens the "Add point of interest" dialog.
-    await page.mouse.move(195, 250);
-    await page.mouse.down();
-    await page.waitForTimeout(900);
-    await page.mouse.up();
-    await page.waitForTimeout(900);
-    await snap(page, 'add_poi_dialog');
-    await tap(page, 'Cancel');
+    // Long-press on the map opens the "Add point of interest" dialog. The
+    // Google map (an HTML platform view) reports a right click as the long
+    // press, the canvas mock needs a real press-and-hold.
+    try {
+      await page.mouse.click(195, 250, { button: 'right' });
+      await page.waitForTimeout(600);
+      if (!(await page.getByRole('button', { name: 'Cancel' }).count())) {
+        await page.mouse.move(195, 250);
+        await page.mouse.down();
+        await page.waitForTimeout(900);
+        await page.mouse.up();
+      }
+      await snap(page, 'add_poi_dialog');
+      await tap(page, 'Cancel');
+    } catch (error) {
+      console.warn('skipping add-POI dialog:', error.message);
+    }
 
     await tap(page, 'Import last route');
     await page.waitForTimeout(1200);
