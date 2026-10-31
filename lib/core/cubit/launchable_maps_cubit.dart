@@ -1,6 +1,5 @@
-import 'dart:io';
-
 import 'package:equatable/equatable.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:giro/core/extensions.dart';
 import 'package:giro/core/model/poi.dart';
@@ -32,7 +31,7 @@ class LaunchableMapsCubit extends Cubit<LaunchableMapsState> {
     final hasAppleMaps = currentState.hasMapApp(MapApp.apple);
     final hasGoogleMaps = currentState.hasMapApp(MapApp.google);
 
-    if (Platform.isIOS) {
+    if (!kIsWeb && defaultTargetPlatform == TargetPlatform.iOS) {
       if (hasAppleMaps) {
         await _launchMapAtPOI(MapApp.apple, poi);
         return;
@@ -44,7 +43,9 @@ class LaunchableMapsCubit extends Cubit<LaunchableMapsState> {
       }
     }
 
-    if (Platform.isAndroid && hasGoogleMaps) {
+    if (!kIsWeb &&
+        defaultTargetPlatform == TargetPlatform.android &&
+        hasGoogleMaps) {
       await _launchMapAtPOI(MapApp.google, poi);
       return;
     }

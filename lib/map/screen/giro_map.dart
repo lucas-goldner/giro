@@ -7,8 +7,9 @@ import 'package:giro/core/cubit/walk_routes_cubit.dart';
 import 'package:giro/core/extensions.dart';
 import 'package:giro/core/model/flavor_config.dart';
 import 'package:giro/core/widgets/adaptive_scaffold.dart';
+import 'package:giro/core/widgets/platform_map_view.dart';
 import 'package:giro/map/cubit/healthkit_cubit.dart';
-import 'package:giro/map/repository/healthkit_repo_method_channel_impl.dart';
+import 'package:giro/map/repository/healthkit_repo.dart';
 import 'package:giro/map/screen/importer_dialog.dart';
 import 'package:giro/map/widgets/draggable_sheet.dart';
 import 'package:giro/map/widgets/poi_add_dialog.dart';
@@ -23,9 +24,7 @@ class GiroMapPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => BlocProvider(
-        create: (context) => HealthkitCubit(
-          HealthkitRepoMethodChannelImpl(),
-        ),
+        create: (context) => HealthkitCubit(context.read<HealthkitRepo>()),
         child: const GiroMap(),
       );
 }
@@ -70,7 +69,7 @@ class _GiroMapState extends State<GiroMap> {
                 builder: (context, walksState) =>
                     BlocBuilder<PoiCubit, PoiState>(
                   builder: (context, poiState) {
-                    return PlatformMap(
+                    return PlatformMapView(
                       initialCameraPosition: CameraPosition(
                         target: walksState.routes.isNotEmpty
                             ? walksState.routes.first.coordinates.last

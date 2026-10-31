@@ -5,7 +5,7 @@ import 'package:giro/core/cubit/walk_routes_cubit.dart';
 import 'package:giro/core/extensions.dart';
 import 'package:giro/core/model/walk_workout.dart';
 import 'package:giro/map/cubit/healthkit_cubit.dart';
-import 'package:giro/map/repository/healthkit_repo_method_channel_impl.dart';
+import 'package:giro/map/repository/healthkit_repo.dart';
 import 'package:giro/map/widgets/walk_workout_card.dart';
 
 class ImporterDialogPage extends StatelessWidget {
@@ -20,9 +20,8 @@ class ImporterDialogPage extends StatelessWidget {
   Widget build(BuildContext context) => MultiBlocProvider(
         providers: [
           BlocProvider<HealthkitCubit>(
-            create: (context) => HealthkitCubit(
-              HealthkitRepoMethodChannelImpl(),
-            ),
+            create: (context) =>
+                HealthkitCubit(context.read<HealthkitRepo>()),
           ),
         ],
         child: const ImporterDialog(),

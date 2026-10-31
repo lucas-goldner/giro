@@ -1,0 +1,158 @@
+#!/usr/bin/env node
+// Drives the web preview (lib/main_web.dart) through its main screens with
+// the Playwright Chromium that ships in the Claude Code container and saves
+// screenshots to build/web_screenshots/.
+//
+//   flutter build web -t lib/main_web.dart
+//   node tool/web_screenshots.mjs            # serves build/web itself
+//   node tool/web_screenshots.mjs --url http://localhost:8080/
+//
+// Options: --url <url>  use an already running server (e.g. `flutter run -d
+//                       web-server -t lib/main_web.dart --web-port 8080`)
+//          --out <dir>  screenshot directory (default build/web_screenshots)
+//          --material   open with ?style=material
+import { createServer } from 'node:http';
+import { createReadStream, existsSync, mkdirSync, statSync } from 'node:fs';
+import { createRequire } from 'node:module';
+import { extname, join, resolve, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+// `require` honours NODE_PATH, so a globally installed Playwright (as in the
+// Claude Code container) is found without a local `npm install playwright`.
+const { chromium } = createRequire(import.meta.url)('playwright');
+
+const args = process.argv.slice(2);
+const flag = (name) => {
+  const i = args.indexOf(name);
+  return i === -1 ? undefined : args[i + 1];
+};
+const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..');
+const outDir = resolve(flag('--out') ?? join(projectRoot, 'build/web_screenshots'));
+const material = args.includes('--material');
+mkdirSync(outDir, { recursive: true });
+
+const mime = {
+  '.html': 'text/html', '.js': 'text/javascript', '.mjs': 'text/javascript',
+  '.css': 'text/css', '.json': 'application/json', '.png': 'image/png',
+  '.wasm': 'application/wasm', '.otf': 'font/otf', '.ttf': 'font/ttf',
+  '.svg': 'image/svg+xml', '.ico': 'image/x-icon',
+};
+
+function serve(dir) {
+  return new Promise((done) => {
+    const server = createServer((req, res) => {
+      const path = decodeURIComponent(new URL(req.url, 'http://x').pathname);
+      let file = join(dir, path === '/' ? 'index.html' : path);
+      if (!existsSync(file) || statSync(file).isDirectory()) file = join(dir, 'index.html');
+      res.setHeader('Content-Type', mime[extname(file)] ?? 'application/octet-stream');
+      res.setHeader('Cache-Control', 'no-store');
+      createReadStream(file).pipe(res);
+    });
+    server.listen(0, '127.0.0.1', () => done(server));
+  });
+}
+
+let shot = 0;
+async function snap(page, name) {
+  shot += 1;
+  const file = join(outDir, `${String(shot).padStart(2, '0')}_${name}.png`);
+  await page.screenshot({ path: file });
+  console.log(`saved ${file}`);
+}
+
+// Flutter renders buttons into the semantics tree as <flt-semantics
+// role="button"> nodes once semantics is enabled (main_web.dart does that).
+async function tap(page, label) {
+  const button = page.getByRole('button', { name: label }).first();
+  await button.waitFor({ state: 'visible', timeout: 15000 });
+  await button.click();
+  await page.waitForTimeout(900);
+}
+
+async function back(page) {
+  const backButton = page.getByRole('button', { name: /back/i }).first();
+  if (await backButton.count()) {
+    await backButton.click();
+  } else {
+    await page.goBack();
+  }
+  await page.waitForTimeout(900);
+}
+
+async function main() {
+  let server;
+  let url = flag('--url');
+  if (!url) {
+    const dir = join(projectRoot, 'build/web');
+    if (!existsSync(join(dir, 'index.html'))) {
+      throw new Error(`${dir} is missing. Run: flutter build web -t lib/main_web.dart`);
+    }
+    server = await serve(dir);
+    url = `http://127.0.0.1:${server.address().port}/`;
+  }
+  if (material) url += (url.includes('?') ? '&' : '?') + 'style=material';
+
+  const browser = await chromium.launch();
+  const page = await browser.newPage({
+    viewport: { width: 390, height: 844 },
+    deviceScaleFactor: 2,
+    hasTouch: true,
+  });
+  page.on('pageerror', (e) => console.error('page error:', e.message));
+  page.on('console', (m) => { if (m.type() === 'error') console.error('console:', m.text()); });
+
+  try {
+    await page.goto(url, { waitUntil: 'load' });
+    await page.getByRole('button', { name: 'View walked routes' }).first()
+      .waitFor({ state: 'attached', timeout: 60000 });
+    await page.waitForTimeout(1500);
+    await snap(page, 'home_map');
+
+    await tap(page, 'View walked routes');
+    await snap(page, 'routes');
+    await tap(page, /^Route: /); // list tiles are exposed as labelled buttons
+    await snap(page, 'route_detail_seeded');
+    await back(page);
+    await back(page);
+
+    await tap(page, 'View Point of interests');
+    await snap(page, 'points_of_interest');
+    await back(page);
+
+    await tap(page, 'Record Walk');
+    await snap(page, 'record_walk_idle');
+    await tap(page, 'Start recording');
+    await page.waitForTimeout(11500); // the cubit samples the mock GPS every 5 s
+    await snap(page, 'record_walk_recording');
+    await tap(page, 'Stop recording');
+    await snap(page, 'record_walk_finished');
+    await tap(page, 'View finished recording');
+    await snap(page, 'route_detail_recorded');
+    await back(page);
+    await back(page);
+
+    // Long-press on the map opens the "Add point of interest" dialog.
+    await page.mouse.move(195, 250);
+    await page.mouse.down();
+    await page.waitForTimeout(900);
+    await page.mouse.up();
+    await page.waitForTimeout(900);
+    await snap(page, 'add_poi_dialog');
+    await tap(page, 'Cancel');
+
+    await tap(page, 'Import last route');
+    await page.waitForTimeout(1200);
+    await snap(page, 'importer_authorized');
+    await tap(page, 'Import walks');
+    await page.waitForTimeout(1200);
+    await snap(page, 'importer_workouts');
+  } finally {
+    await browser.close();
+    server?.close();
+  }
+}
+
+main().catch((error) => {
+  console.error(error);
+  process.exit(1);
+});

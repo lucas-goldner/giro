@@ -4,14 +4,19 @@ import 'package:giro/core/cubit/launchable_maps_cubit.dart';
 import 'package:giro/core/cubit/poi_cubit.dart';
 import 'package:giro/core/cubit/walk_routes_cubit.dart';
 import 'package:giro/core/model/app_init_deps.dart';
-import 'package:giro/core/repository/launchable_maps_repo_impl.dart';
-import 'package:giro/core/repository/poi_repo_mmkv_impl.dart';
-import 'package:giro/core/repository/walk_routes_repo_mmkv_impl.dart';
+import 'package:giro/core/repository/launchable_maps_repo.dart';
+import 'package:giro/core/repository/poi_repo.dart';
+import 'package:giro/core/repository/walk_routes_repo.dart';
 import 'package:giro/core/widgets/adaptive_app.dart';
+import 'package:giro/map/repository/healthkit_repo.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
 class GiroApp extends StatefulWidget {
-  const GiroApp({super.key});
+  const GiroApp({required this.loadDeps, super.key});
+
+  /// Builds the platform-specific repositories (see `loadNativeDeps` and
+  /// `loadWebMockDeps`).
+  final AppDepsLoader loadDeps;
 
   @override
   State<GiroApp> createState() => _GiroAppState();
@@ -29,21 +34,7 @@ class _GiroAppState extends State<GiroApp> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _appLoader ??= _loadApp();
-  }
-
-  Future<AppInitDeps> _loadApp() async {
-    final walkRoutesRepo = WalkRoutesRepoMmkvImpl();
-    await walkRoutesRepo.init();
-    final poiRepo = PoiRepoMmkvImpl();
-    await poiRepo.init();
-    final launchableMapsRepo = LaunchableMapsRepoImpl();
-
-    return AppInitDeps(
-      walkRoutesRepo: walkRoutesRepo,
-      poiRepo: poiRepo,
-      launchableMapsRepo: launchableMapsRepo,
-    );
+    _appLoader ??= widget.loadDeps();
   }
 
   @override
@@ -55,30 +46,32 @@ class _GiroAppState extends State<GiroApp> {
               WidgetsBinding.instance.allowFirstFrame();
             }
 
-            final walkRoutesRepo = snapshot.requireData.walkRoutesRepo;
+            final deps = snapshot.requireData;
 
             return MultiRepositoryProvider(
               providers: [
-                RepositoryProvider.value(
-                  value: walkRoutesRepo,
+                RepositoryProvider<WalkRoutesRepo>.value(
+                  value: deps.walkRoutesRepo,
+                ),
+                RepositoryProvider<PoiRepo>.value(value: deps.poiRepo),
+                RepositoryProvider<LaunchableMapsRepo>.value(
+                  value: deps.launchableMapsRepo,
+                ),
+                RepositoryProvider<HealthkitRepo>.value(
+                  value: deps.healthkitRepo,
                 ),
               ],
               child: MultiBlocProvider(
                 providers: [
                   BlocProvider<WalkRoutesCubit>(
-                    create: (context) => WalkRoutesCubit(
-                      walkRoutesRepo,
-                    ),
+                    create: (context) => WalkRoutesCubit(deps.walkRoutesRepo),
                   ),
                   BlocProvider<PoiCubit>(
-                    create: (context) => PoiCubit(
-                      snapshot.requireData.poiRepo,
-                    ),
+                    create: (context) => PoiCubit(deps.poiRepo),
                   ),
                   BlocProvider<LaunchableMapsCubit>(
-                    create: (context) => LaunchableMapsCubit(
-                      snapshot.requireData.launchableMapsRepo,
-                    ),
+                    create: (context) =>
+                        LaunchableMapsCubit(deps.launchableMapsRepo),
                   ),
                 ],
                 child: const AdaptiveApp(),

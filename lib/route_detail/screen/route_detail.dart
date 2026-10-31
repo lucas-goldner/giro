@@ -6,6 +6,7 @@ import 'package:giro/core/cubit/poi_cubit.dart';
 import 'package:giro/core/extensions.dart';
 import 'package:giro/core/model/walk_route.dart';
 import 'package:giro/core/widgets/adaptive_scaffold.dart';
+import 'package:giro/core/widgets/platform_map_view.dart';
 import 'package:giro/map/widgets/poi_add_dialog.dart';
 import 'package:platform_maps_flutter/platform_maps_flutter.dart';
 
@@ -40,7 +41,7 @@ class RouteDetail extends StatelessWidget {
         title: const Text('Routes Detail'),
         child: BlocBuilder<PoiCubit, PoiState>(
           buildWhen: (previous, current) => previous.pois != current.pois,
-          builder: (context, poiState) => PlatformMap(
+          builder: (context, poiState) => PlatformMapView(
             initialCameraPosition: CameraPosition(
               target: route.coordinates.first,
               zoom: 16,
