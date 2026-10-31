@@ -1,8 +1,7 @@
-import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:giro/core/model/flavor_config.dart';
+import 'package:giro/core/platform_style.dart';
 import 'package:giro/core/router.dart';
 import 'package:giro/core/theme.dart';
 
@@ -12,7 +11,7 @@ class AdaptiveApp extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) => Platform.isIOS
+  Widget build(BuildContext context) => PlatformStyle.isCupertino
       ? CupertinoApp(
           debugShowCheckedModeBanner: FlavorConfig.isDev(),
           onGenerateRoute: generateRoutes,

@@ -1,0 +1,71 @@
+workflows:
+  ios-testflight:
+    name: iOS TestFlight
+    max_build_duration: 60
+    instance_type: mac_mini_m2
+    environment:
+      flutter: stable
+      xcode: latest
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: com.lucas-goldner.giro
+      groups:
+        - discord   # DISCORD_WEBHOOK_URL (secure)
+    scripts:
+      - name: Install dependencies
+        script: |
+          flutter pub get
+
+      - name: Analyze and test
+        script: |
+          flutter analyze --no-fatal-infos
+          flutter test
+
+      - name: Set up code signing
+        script: |
+          xcode-project use-profiles
+
+      - name: Build iOS app
+        script: |
+          # App Store Connect rejects a build number it has seen before, so
+          # build one past the latest TestFlight build (never below the
+          # number in pubspec.yaml, which may have none).
+          BUNDLE_ID="com.lucas-goldner.giro"
+          PUBSPEC_BUILD=$(grep -E '^version:' pubspec.yaml | grep -oE '\+[0-9]+' | tr -d '+' || true)
+          PUBSPEC_BUILD=${PUBSPEC_BUILD:-0}
+          APP_ID=$(app-store-connect apps list \
+            --bundle-id-identifier "$BUNDLE_ID" --strict-match-identifier --json \
+            | python3 -c 'import json, sys; print(json.load(sys.stdin)[0]["id"])')
+          LATEST_BUILD=$(app-store-connect get-latest-testflight-build-number "$APP_ID" || echo 0)
+          NEXT_BUILD=$((LATEST_BUILD + 1))
+          if [ "$PUBSPEC_BUILD" -gt "$NEXT_BUILD" ]; then NEXT_BUILD=$PUBSPEC_BUILD; fi
+          echo "Latest TestFlight build: $LATEST_BUILD, building $NEXT_BUILD"
+          # The iOS project is CocoaPods-free (Swift Package Manager); the
+          # "prod" flavor maps to the Release-prod configuration and the
+          # shared prod scheme in ios/Runner.xcodeproj/xcshareddata.
+          flutter build ipa --release \
+            --flavor prod \
+            -t lib/main_prod.dart \
+            --build-number="$NEXT_BUILD" \
+            --export-options-plist=/Users/builder/export_options.plist
+
+    artifacts:
+      - build/ios/ipa/*.ipa
+
+    integrations:
+      app_store_connect: Lucas Goldner AppStore
+
+    publishing:
+      app_store_connect:
+        auth: integration
+        submit_to_testflight: true
+        expire_build_submitted_for_review: true
+      scripts:
+        - name: Discord notification
+          script: |
+            if [ -n "${DISCORD_WEBHOOK_URL:-}" ]; then
+              curl -H "Content-Type: application/json" \
+                -X POST \
+                -d "{\"content\": \"**Giro iOS Build #$BUILD_NUMBER** finished with status: **$FCI_BUILD_STEP_STATUS**\nBranch: $FCI_BRANCH\nCommit: $FCI_COMMIT\"}" \
+                "$DISCORD_WEBHOOK_URL"
+            fi

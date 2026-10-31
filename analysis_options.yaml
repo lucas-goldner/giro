@@ -4,8 +4,6 @@ analyzer:
   language:
     strict-inference: true
     strict-raw-types: true
-  plugins:
-    - dart_code_metrics
   strong-mode:
     implicit-casts: false
     implicit-dynamic: false
@@ -13,10 +11,16 @@ analyzer:
     invalid_annotation_target: ignore
     public_member_api_docs: ignore
     one_member_abstracts: ignore
+    # Keeps the classic `ClassName(...)` constructor declarations instead of
+    # the Dart 3.13 `this(...)` form very_good_analysis 11 suggests.
+    unnecessary_type_name_in_constructor: ignore
   exclude:
     - "lib/generated/**"
-    - "lib/healthkit/bindings/**"
     - "**/**.g.dart"
+    - build/**
+    - android/**
+    - ios/**
+    - web/**
 
 linter:
   rules:
@@ -38,9 +42,6 @@ linter:
     - avoid_multiple_declarations_per_line
     - avoid_positional_boolean_parameters
     - avoid_print
-    - avoid_private_typedef_functions
-    - avoid_returning_null
-    - avoid_returning_null_for_future
     - avoid_returning_this
     - avoid_setters_without_getters
     - avoid_slow_async_io
@@ -60,7 +61,6 @@ linter:
     - directives_ordering
     - do_not_use_environment
     - eol_at_end_of_file
-    - invariant_booleans
     - join_return_with_assignment
     - leading_newlines_in_multiline_strings
     - library_private_types_in_public_api
@@ -75,7 +75,6 @@ linter:
     - null_check_on_nullable_type_parameter
     - omit_local_variable_types
     - only_throw_errors
-    - package_api_docs
     - parameter_assignments
     - prefer_asserts_in_initializer_lists
     - prefer_asserts_with_message
@@ -104,7 +103,6 @@ linter:
     - tighten_type_of_initializing_formals
     - type_annotate_public_apis
     - unawaited_futures
-    - unnecessary_await_in_return
     - unnecessary_constructor_name
     - unnecessary_lambdas
     - unnecessary_late
@@ -114,8 +112,6 @@ linter:
     - unnecessary_parenthesis
     - unnecessary_raw_strings
     - unnecessary_statements
-    - unsafe_html
-    - use_if_null_to_convert_nulls_to_bools
     - use_is_even_rather_than_modulo
     - use_key_in_widget_constructors
     - use_late_for_private_fields_and_variables

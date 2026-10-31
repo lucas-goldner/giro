@@ -1,7 +1,5 @@
 part of 'record_walk_cubit.dart';
 
-typedef TimerCallback = void Function(int elapsedTime);
-
 sealed class RecordWalkState {
   RecordWalkState({
     required this.coordinates,
@@ -30,25 +28,9 @@ class RecordWalkRecording extends RecordWalkState {
     required super.coordinates,
     required super.startDate,
     required this.previousCoordinates,
-    required this.onTimerTick,
-  }) : _elapsedTime = 0;
+  });
 
   List<LatLng> previousCoordinates;
-  final TimerCallback onTimerTick;
-  Timer? _timer;
-  int _elapsedTime;
-
-  void startTimer() {
-    _timer = Timer.periodic(const Duration(seconds: 5), (timer) {
-      _elapsedTime += 5;
-      onTimerTick(_elapsedTime);
-    });
-  }
-
-  void stopTimer() {
-    _timer?.cancel();
-    _elapsedTime = 0;
-  }
 }
 
 class RecordWalkFinishedRecording extends RecordWalkState {

@@ -4,7 +4,7 @@ import CoreLocation
 import UIKit
 
 @main
-@objc class AppDelegate: FlutterAppDelegate {
+@objc class AppDelegate: FlutterAppDelegate, FlutterImplicitEngineDelegate {
     let healthStore: HKHealthStore
     let workoutType = HKObjectType.workoutType()
     
@@ -16,9 +16,21 @@ import UIKit
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
     ) -> Bool {
-        let controller: FlutterViewController = window?.rootViewController as! FlutterViewController
-        let healthkitChannel = FlutterMethodChannel(name: "com.lucas-goldner.giro/healthkit",
-                                                    binaryMessenger: controller.binaryMessenger)
+        return super.application(application, didFinishLaunchingWithOptions: launchOptions)
+    }
+    
+    /// With the UIScene lifecycle the window (and therefore the
+    /// FlutterViewController) does not exist yet in
+    /// `application(_:didFinishLaunchingWithOptions:)`. Flutter calls this once
+    /// the implicit engine has been created, which is the right place to
+    /// register plugins and application-level method channels.
+    func didInitializeImplicitFlutterEngine(_ engineBridge: FlutterImplicitEngineBridge) {
+        GeneratedPluginRegistrant.register(with: engineBridge.pluginRegistry)
+        
+        let healthkitChannel = FlutterMethodChannel(
+            name: "com.lucas-goldner.giro/healthkit",
+            binaryMessenger: engineBridge.applicationRegistrar.messenger()
+        )
         
         healthkitChannel.setMethodCallHandler {
             (call: FlutterMethodCall, result: @escaping FlutterResult) in
@@ -31,9 +43,6 @@ import UIKit
             default: result(FlutterMethodNotImplemented)
             }
         }
-        
-        GeneratedPluginRegistrant.register(with: self)
-        return super.application(application, didFinishLaunchingWithOptions: launchOptions)
     }
     
     func requestAuthorization(result: @escaping FlutterResult) {
@@ -72,8 +81,6 @@ import UIKit
                     if let error = error {
                         print("Failed to retrieve routes: \(error.localizedDescription)")
                     }
-                    
-                    
                     
                     var workoutDict: [String: Any] = [
                         "activityType": workout.workoutActivityType.rawValue,
@@ -155,4 +162,3 @@ import UIKit
         self.healthStore.execute(routeQuery)
     }
 }
-

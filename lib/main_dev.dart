@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:giro/core/model/flavor_config.dart';
+import 'package:giro/core/native_deps.dart';
 import 'package:giro/giro_app.dart';
 
 void main() {
@@ -8,5 +9,5 @@ void main() {
     name: 'Giro Dev',
   );
   WidgetsFlutterBinding.ensureInitialized().deferFirstFrame();
-  runApp(const GiroApp());
+  runApp(const GiroApp(loadDeps: loadNativeDeps));
 }

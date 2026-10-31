@@ -1,8 +1,7 @@
-import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:giro/core/model/walk_route.dart';
+import 'package:giro/core/platform_style.dart';
 import 'package:giro/map/screen/giro_map.dart';
 import 'package:giro/poi_management/screen/poi_management.dart';
 import 'package:giro/record_walk/screen/record_walk.dart';
@@ -35,7 +34,7 @@ Route<void>? generateRoutes(
     };
 
 Route<void> _adaptiveRoute(RouteSettings settings, Widget child) {
-  return Platform.isIOS
+  return PlatformStyle.isCupertino
       ? CupertinoPageRoute<void>(
           builder: (context) => child,
         )

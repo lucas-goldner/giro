@@ -1,7 +1,6 @@
-import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:giro/core/platform_style.dart';
 
 class AdaptiveScaffold extends StatelessWidget {
   const AdaptiveScaffold({
@@ -14,7 +13,7 @@ class AdaptiveScaffold extends StatelessWidget {
   final Widget? title;
 
   @override
-  Widget build(BuildContext context) => Platform.isIOS
+  Widget build(BuildContext context) => PlatformStyle.isCupertino
       ? CupertinoPageScaffold(
           navigationBar: title != null
               ? CupertinoNavigationBar(

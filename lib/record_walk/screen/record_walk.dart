@@ -2,8 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:giro/core/cubit/walk_routes_cubit.dart';
 import 'package:giro/core/extensions.dart';
-import 'package:giro/core/repository/walk_routes_repo_mmkv_impl.dart';
+import 'package:giro/core/repository/walk_routes_repo.dart';
 import 'package:giro/core/widgets/adaptive_scaffold.dart';
+import 'package:giro/core/widgets/platform_map_view.dart';
 import 'package:giro/record_walk/cubit/record_walk_cubit.dart';
 import 'package:giro/route_detail/screen/route_detail.dart';
 import 'package:platform_maps_flutter/platform_maps_flutter.dart';
@@ -15,7 +16,7 @@ class RecordWalkPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) => BlocProvider(
         create: (context) => RecordWalkCubit(
-          context.read<WalkRoutesRepoMmkvImpl>(),
+          context.read<WalkRoutesRepo>(),
         ),
         child: const RecordWalk(),
       );
@@ -140,7 +141,7 @@ class RecordWalkPageState extends State<RecordWalk>
               ValueListenableBuilder<Set<Polyline>>(
                 valueListenable: _polylineNotifier,
                 builder: (context, polylines, child) {
-                  return PlatformMap(
+                  return PlatformMapView(
                     // Use a constant key to keep
                     // the underlying platform view alive
                     key: const ValueKey('platform_map'),

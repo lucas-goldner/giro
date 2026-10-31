@@ -1,6 +1,5 @@
-import 'dart:io';
-
 import 'package:equatable/equatable.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:giro/core/extensions.dart';
 import 'package:giro/core/model/poi.dart';
@@ -21,54 +20,46 @@ class LaunchableMapsCubit extends Cubit<LaunchableMapsState> {
     emit(LaunchableMapsLoaded([...launchableMaps]));
   }
 
-  void launchMapAtPOI(POI poi) {
+  Future<void> launchMapAtPOI(POI poi) async {
     final currentState = state;
 
-    if (currentState is! LaunchableMapsLoaded) {
+    if (currentState is! LaunchableMapsLoaded ||
+        currentState.launchableMaps.isEmpty) {
       return;
     }
 
-    final hasAppleMaps = currentState.mapTypes.contains(MapType.apple);
-    final hasGoogleMaps = currentState.mapTypes.contains(MapType.apple);
+    final hasAppleMaps = currentState.hasMapApp(MapApp.apple);
+    final hasGoogleMaps = currentState.hasMapApp(MapApp.google);
 
-    if (Platform.isIOS) {
+    if (!kIsWeb && defaultTargetPlatform == TargetPlatform.iOS) {
       if (hasAppleMaps) {
-        _launchPOIWithAppleMaps(poi);
+        await _launchMapAtPOI(MapApp.apple, poi);
         return;
       }
 
       if (hasGoogleMaps) {
-        _launchPOIWithGoogleMaps(poi);
+        await _launchMapAtPOI(MapApp.google, poi);
         return;
       }
     }
 
-    if (Platform.isAndroid) {
-      if (hasGoogleMaps) {
-        _launchPOIWithGoogleMaps(poi);
-        return;
-      }
+    if (!kIsWeb &&
+        defaultTargetPlatform == TargetPlatform.android &&
+        hasGoogleMaps) {
+      await _launchMapAtPOI(MapApp.google, poi);
+      return;
     }
 
-    _launchMapAtPOI(currentState.launchableMaps.first, poi);
+    await _launchMapAtPOI(currentState.launchableMaps.first.map, poi);
   }
 
-  void _launchPOIWithAppleMaps(POI poi) {
-    final appleMap =
-        state.launchableMaps.firstWhere((map) => map.mapType == MapType.apple);
-    _launchMapAtPOI(appleMap, poi);
-  }
-
-  void _launchPOIWithGoogleMaps(POI poi) {
-    final googleMap =
-        state.launchableMaps.firstWhere((map) => map.mapType == MapType.google);
-    _launchMapAtPOI(googleMap, poi);
-  }
-
-  void _launchMapAtPOI(AvailableMap map, POI poi) {
-    map.showMarker(
-      title: poi.name,
-      coords: poi.coordinates.toCoords(),
-    );
+  Future<void> _launchMapAtPOI(MapApp map, POI poi) async {
+    try {
+      await MapLauncher.marker(
+        poi.coordinates.toLocation(title: poi.name),
+      ).show(map: map);
+    } on MapLaunchException catch (_) {
+      // The selected map app could not open the marker; nothing to recover.
+    }
   }
 }
