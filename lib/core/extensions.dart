@@ -43,6 +43,7 @@ extension DurationExtension on Duration {
 }
 
 extension LatLngExtension on LatLng {
-  Coords toCoords() => Coords(latitude, longitude);
+  LocationCoords toLocation({String? title}) =>
+      LocationCoords(latitude, longitude, title: title);
   LatLng get defaultCoordinates => const LatLng(35.682839, 139.759455); // Tokyo
 }

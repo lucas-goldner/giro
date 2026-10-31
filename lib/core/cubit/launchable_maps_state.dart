@@ -4,8 +4,9 @@ sealed class LaunchableMapsState extends Equatable {
   const LaunchableMapsState(this.launchableMaps);
   final List<AvailableMap> launchableMaps;
 
-  List<MapType> get mapTypes =>
-      launchableMaps.map((map) => map.mapType).toList();
+  List<MapApp> get mapApps => launchableMaps.map((map) => map.map).toList();
+
+  bool hasMapApp(MapApp mapApp) => mapApps.any((app) => app.id == mapApp.id);
 
   @override
   List<Object?> get props => [launchableMaps];

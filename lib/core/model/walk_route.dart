@@ -76,7 +76,7 @@ ${startDate.millisecondsSinceEpoch}${endDate.millisecondsSinceEpoch}${coordinate
   }
 
   Color get color =>
-      Color((int.parse(id) + _coordinatesHash) & 0xFFFFFFFF).withOpacity(0.8);
+      Color((int.parse(id) + _coordinatesHash) & 0xFFFFFFFF).withValues(alpha: 0.8);
   int get _coordinatesHash {
     var hash = 0;
     for (var i = 0; i < min(5, coordinates.length); i++) {
