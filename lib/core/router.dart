@@ -16,8 +16,10 @@ import 'package:giro/redesign/redesign_bootstrap.dart';
 import 'package:giro/redesign/redesign_routes_page.dart';
 import 'package:giro/redesign/styles/mono_home.dart';
 import 'package:giro/redesign/styles/outdoor_home.dart';
+import 'package:giro/redesign/styles/sport_home.dart';
 import 'package:giro/redesign/styles/swiss_home.dart';
 import 'package:giro/redesign/styles/tonal_home.dart';
+import 'package:giro/redesign/styles/zenly_home.dart';
 import 'package:giro/route_detail/screen/route_detail.dart';
 import 'package:giro/routes_management/screen/routes_management.dart';
 
@@ -58,6 +60,8 @@ Widget _home() => switch (DesignVariant.current) {
       DesignVariant.tonal => const RedesignBootstrap(child: TonalHome()),
       DesignVariant.outdoor => const RedesignBootstrap(child: OutdoorHome()),
       DesignVariant.mono => const RedesignBootstrap(child: MonoHome()),
+      DesignVariant.zenly => const RedesignBootstrap(child: ZenlyHome()),
+      DesignVariant.sport => const RedesignBootstrap(child: SportHome()),
     };
 
 Widget _routesList() => switch (DesignVariant.current) {

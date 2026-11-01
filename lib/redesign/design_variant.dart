@@ -29,7 +29,15 @@ enum DesignVariant {
   outdoor,
 
   /// Mono: pure black, thin type, hairlines, cyan only on the route.
-  mono;
+  mono,
+
+  /// Zenly: gradient-tinted map, giant lowercase title, black cards and
+  /// square buttons with gradient icons.
+  zenly,
+
+  /// Sport: Nike Run Club. White, bold title with text tabs, faded map and
+  /// one huge volt-yellow START circle.
+  sport;
 
   static DesignVariant? current;
 
@@ -108,6 +116,26 @@ enum DesignVariant {
       radius: 0,
       brightness: Brightness.dark,
       listStyle: RedesignListStyle.rows,
+    ),
+    DesignVariant.zenly => const RedesignPalette(
+      background: Color(0xFF0E0E0E),
+      surface: Color(0xFF1C1C1E),
+      primary: Color(0xFF7CF7C4),
+      accent: Color(0xFFFF8FB1),
+      ink: Color(0xFFFFFFFF),
+      muted: Color(0xFF9A9AA3),
+      radius: 20,
+      brightness: Brightness.dark,
+    ),
+    DesignVariant.sport => const RedesignPalette(
+      background: Color(0xFFFFFFFF),
+      surface: Color(0xFFF5F5F5),
+      primary: Color(0xFF111111),
+      accent: Color(0xFFF5E400),
+      ink: Color(0xFF111111),
+      muted: Color(0xFF757575),
+      radius: 12,
+      brightness: Brightness.light,
     ),
     DesignVariant.blocks => const RedesignPalette(
       background: Color(0xFFFFF8E7),
