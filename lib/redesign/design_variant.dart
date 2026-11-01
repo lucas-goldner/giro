@@ -17,7 +17,19 @@ enum DesignVariant {
   /// iOS-native and quiet: white sheet over the map, round icon actions,
   /// hairline lists, one calm green. Modelled on Apple Maps, komoot and
   /// Gentler Streak.
-  clean;
+  clean,
+
+  /// Swiss typographic: monochrome, big numerals, hairline rules, one red.
+  swiss,
+
+  /// Material You: seed-tinted pastel surfaces, large radii, tonal chips.
+  tonal,
+
+  /// Outdoor: sand paper with faint contour lines, forest green, pills.
+  outdoor,
+
+  /// Mono: pure black, thin type, hairlines, cyan only on the route.
+  mono;
 
   static DesignVariant? current;
 
@@ -55,6 +67,48 @@ enum DesignVariant {
       radius: 14,
       brightness: Brightness.light,
     ),
+    DesignVariant.swiss => const RedesignPalette(
+      background: Color(0xFFFFFFFF),
+      surface: Color(0xFFFFFFFF),
+      primary: Color(0xFF111111),
+      accent: Color(0xFFE10600),
+      ink: Color(0xFF111111),
+      muted: Color(0xFF6E6E6E),
+      radius: 0,
+      brightness: Brightness.light,
+      listStyle: RedesignListStyle.rows,
+    ),
+    DesignVariant.tonal => const RedesignPalette(
+      background: Color(0xFFF6F2FA),
+      surface: Color(0xFFECE6F2),
+      primary: Color(0xFF5B4B9E),
+      accent: Color(0xFF5B4B9E),
+      ink: Color(0xFF1C1B22),
+      muted: Color(0xFF6F6B79),
+      radius: 28,
+      brightness: Brightness.light,
+    ),
+    DesignVariant.outdoor => const RedesignPalette(
+      background: Color(0xFFF3EEE3),
+      surface: Color(0xFFFFFDF8),
+      primary: Color(0xFF1F4D3A),
+      accent: Color(0xFF1F4D3A),
+      ink: Color(0xFF1E2A24),
+      muted: Color(0xFF7B8178),
+      radius: 20,
+      brightness: Brightness.light,
+    ),
+    DesignVariant.mono => const RedesignPalette(
+      background: Color(0xFF000000),
+      surface: Color(0xFF000000),
+      primary: Color(0xFF4DE1D2),
+      accent: Color(0xFF4DE1D2),
+      ink: Color(0xFFF2F2F2),
+      muted: Color(0xFF8C8C8C),
+      radius: 0,
+      brightness: Brightness.dark,
+      listStyle: RedesignListStyle.rows,
+    ),
     DesignVariant.blocks => const RedesignPalette(
       background: Color(0xFFFFF8E7),
       surface: Color(0xFFFFFFFF),
@@ -68,6 +122,15 @@ enum DesignVariant {
   };
 }
 
+/// How the walks list separates entries.
+enum RedesignListStyle {
+  /// Rounded surface-coloured cards.
+  cards,
+
+  /// Plain rows on the background with hairline dividers.
+  rows,
+}
+
 class RedesignPalette {
   const RedesignPalette({
     required this.background,
@@ -78,7 +141,10 @@ class RedesignPalette {
     required this.muted,
     required this.radius,
     required this.brightness,
+    this.listStyle = RedesignListStyle.cards,
   });
+
+  final RedesignListStyle listStyle;
 
   final Color background;
   final Color surface;

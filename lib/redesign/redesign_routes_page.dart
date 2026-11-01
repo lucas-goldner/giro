@@ -21,6 +21,7 @@ class RedesignRoutesPage extends StatelessWidget {
     final palette = variant.palette;
     final routes = context.watch<WalkRoutesCubit>().state.sortedRoutes;
     final heavy = variant == DesignVariant.blocks;
+    final rows = palette.listStyle == RedesignListStyle.rows;
 
     return Scaffold(
       backgroundColor: palette.background,
@@ -50,9 +51,15 @@ class RedesignRoutesPage extends StatelessWidget {
             style: TextStyle(color: palette.muted, fontSize: 14),
           ),
           const SizedBox(height: 14),
-          for (final route in routes) ...[
+          for (final (index, route) in routes.indexed) ...[
+            if (rows && index > 0)
+              Divider(
+                height: 1,
+                thickness: 1,
+                color: palette.muted.withValues(alpha: 0.25),
+              ),
             _RouteTile(palette: palette, route: route, heavy: heavy),
-            const SizedBox(height: 12),
+            if (!rows) const SizedBox(height: 12),
           ],
         ],
       ),
@@ -73,7 +80,9 @@ class _RouteTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Material(
-    color: palette.surface,
+    color: palette.listStyle == RedesignListStyle.rows
+        ? Colors.transparent
+        : palette.surface,
     borderRadius: BorderRadius.circular(palette.radius),
     child: InkWell(
       borderRadius: BorderRadius.circular(palette.radius),
@@ -82,7 +91,9 @@ class _RouteTile extends StatelessWidget {
         arguments: route,
       ),
       child: Container(
-        padding: const EdgeInsets.all(12),
+        padding: palette.listStyle == RedesignListStyle.rows
+            ? const EdgeInsets.symmetric(vertical: 14)
+            : const EdgeInsets.all(12),
         decoration: heavy
             ? BoxDecoration(
                 borderRadius: BorderRadius.circular(palette.radius),

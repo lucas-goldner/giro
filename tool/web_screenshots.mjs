@@ -119,16 +119,18 @@ async function main() {
   try {
     await page.goto(url, { waitUntil: 'load' });
     if (design) {
-      const walksLabel = { journal: 'All walks', glass: 'See all', blocks: 'All walks', clean: 'See all' }[design];
+      const walksLabel = { glass: 'See all', clean: 'See all' }[design] ?? 'All walks';
       await page.getByRole('button', { name: walksLabel }).first()
         .waitFor({ state: 'attached', timeout: 60000 });
       await page.waitForTimeout(1500);
       await snap(page, 'home');
       await tap(page, walksLabel);
       await snap(page, 'walks');
-      // Walk rows are list tiles (buttons labelled with their stats).
-      await tap(page, /km/);
-      await snap(page, 'walk_detail');
+      if (design === 'clean') {
+        // Walk rows are list tiles (buttons labelled with their stats).
+        await tap(page, /km/);
+        await snap(page, 'walk_detail');
+      }
       return;
     }
     await page.getByRole('button', { name: 'View walked routes' }).first()

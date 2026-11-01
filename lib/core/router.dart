@@ -14,6 +14,10 @@ import 'package:giro/redesign/glass_home.dart';
 import 'package:giro/redesign/journal_home.dart';
 import 'package:giro/redesign/redesign_bootstrap.dart';
 import 'package:giro/redesign/redesign_routes_page.dart';
+import 'package:giro/redesign/styles/mono_home.dart';
+import 'package:giro/redesign/styles/outdoor_home.dart';
+import 'package:giro/redesign/styles/swiss_home.dart';
+import 'package:giro/redesign/styles/tonal_home.dart';
 import 'package:giro/route_detail/screen/route_detail.dart';
 import 'package:giro/routes_management/screen/routes_management.dart';
 
@@ -50,6 +54,10 @@ Widget _home() => switch (DesignVariant.current) {
       DesignVariant.glass => const RedesignBootstrap(child: GlassHome()),
       DesignVariant.blocks => const RedesignBootstrap(child: BlocksHome()),
       DesignVariant.clean => const RedesignBootstrap(child: CleanHome()),
+      DesignVariant.swiss => const RedesignBootstrap(child: SwissHome()),
+      DesignVariant.tonal => const RedesignBootstrap(child: TonalHome()),
+      DesignVariant.outdoor => const RedesignBootstrap(child: OutdoorHome()),
+      DesignVariant.mono => const RedesignBootstrap(child: MonoHome()),
     };
 
 Widget _routesList() => switch (DesignVariant.current) {
