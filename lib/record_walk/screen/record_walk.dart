@@ -117,6 +117,27 @@ class RecordWalkPageState extends State<RecordWalk>
     _updatePolylines();
   }
 
+  /// Previously walked routes, drawn faintly so the fog of war shows the
+  /// parts of the city that are already uncovered while a new walk grows.
+  Set<Polyline> _exploredPolylines(BuildContext context) => {
+        for (final route in context.watch<WalkRoutesCubit>().state.routes)
+          Polyline(
+            polylineId: PolylineId('explored_${route.id}'),
+            points: route.coordinates,
+            color: context.colorScheme.primary.withValues(alpha: 0.35),
+            width: 3,
+          ),
+      };
+
+  /// Where to look before the first location sample arrives: the end of the
+  /// latest walk, or central Tokyo.
+  LatLng _fallbackTarget(BuildContext context) {
+    final routes = context.read<WalkRoutesCubit>().state.sortedRoutes;
+    return routes.isNotEmpty && routes.first.coordinates.isNotEmpty
+        ? routes.first.coordinates.last
+        : const LatLng(35.682839, 139.759455);
+  }
+
   @override
   Widget build(BuildContext context) =>
       BlocListener<RecordWalkCubit, RecordWalkState>(
@@ -141,6 +162,7 @@ class RecordWalkPageState extends State<RecordWalk>
               ValueListenableBuilder<Set<Polyline>>(
                 valueListenable: _polylineNotifier,
                 builder: (context, polylines, child) {
+                  final explored = _exploredPolylines(context);
                   return PlatformMapView(
                     // Use a constant key to keep
                     // the underlying platform view alive
@@ -149,16 +171,16 @@ class RecordWalkPageState extends State<RecordWalk>
                       target: (polylines.isNotEmpty)
                           ? polylines.first.points.isNotEmpty
                               ? polylines.first.points.last
-                              : const LatLng(0, 0)
+                              : _fallbackTarget(context)
                           : (_latestState?.coordinates.isNotEmpty ?? false)
                               ? (_latestState?.coordinates ?? []).last
-                              : const LatLng(0, 0),
+                              : _fallbackTarget(context),
                       zoom: 16,
                     ),
                     myLocationEnabled: true,
                     myLocationButtonEnabled: true,
                     compassEnabled: false,
-                    polylines: polylines,
+                    polylines: {...explored, ...polylines},
                   );
                 },
               ),

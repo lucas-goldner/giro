@@ -67,9 +67,9 @@ class ZenlyHome extends StatelessWidget {
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                   colors: [
-                    const Color(0xFFFFE45C).withValues(alpha: 0.55),
-                    const Color(0xFFFFE45C).withValues(alpha: 0.35),
-                    const Color(0xFFFF8FB1).withValues(alpha: 0.55),
+                    const Color(0xFFFFE45C).withValues(alpha: 0.28),
+                    const Color(0xFFFFE45C).withValues(alpha: 0.12),
+                    const Color(0xFFFF8FB1).withValues(alpha: 0.28),
                   ],
                 ),
               ),

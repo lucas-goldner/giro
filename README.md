@@ -12,6 +12,16 @@ Run prod
 $ flutter run --flavor prod -t lib/main_prod.dart
 ```
 
+## Fog of war
+
+The map starts out white. Every walk (and every saved place) uncovers the
+colourful map underneath along its path, with a soft edge, so the city fills
+in as you explore it. This is `FogOfWar` in `lib/core/widgets/fog_of_war.dart`,
+layered over the map by `PlatformMapView` (pass `fogOfWar: false` to opt out
+on a screen). The reveal radius is in metres, so it stays consistent across
+zoom levels, and the overlay follows pans and zooms through the map's camera
+callbacks.
+
 ## Web preview
 
 The app is iOS-first, but `lib/main_web.dart` runs it in a browser with the

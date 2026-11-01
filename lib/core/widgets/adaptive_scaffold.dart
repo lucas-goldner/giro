@@ -3,11 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:giro/core/platform_style.dart';
 
 class AdaptiveScaffold extends StatelessWidget {
-  const AdaptiveScaffold({
-    required this.child,
-    this.title,
-    super.key,
-  });
+  const AdaptiveScaffold({required this.child, this.title, super.key});
 
   final Widget child;
   final Widget? title;
@@ -16,20 +12,12 @@ class AdaptiveScaffold extends StatelessWidget {
   Widget build(BuildContext context) => PlatformStyle.isCupertino
       ? CupertinoPageScaffold(
           navigationBar: title != null
-              ? CupertinoNavigationBar(
-                  middle: title,
-                )
+              ? CupertinoNavigationBar(middle: title)
               : null,
-          child: Material(
-            child: child,
-          ),
+          child: Material(child: child),
         )
       : Scaffold(
-          appBar: title != null
-              ? AppBar(
-                  title: title,
-                )
-              : null,
+          appBar: title != null ? AppBar(title: title) : null,
           body: child,
         );
 }

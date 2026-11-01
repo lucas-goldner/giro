@@ -6,9 +6,7 @@ import 'package:giro/core/router.dart';
 import 'package:giro/core/theme.dart';
 
 class AdaptiveApp extends StatelessWidget {
-  const AdaptiveApp({
-    super.key,
-  });
+  const AdaptiveApp({super.key});
 
   @override
   Widget build(BuildContext context) => PlatformStyle.isCupertino
