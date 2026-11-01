@@ -36,7 +36,13 @@ workflows:
           APP_ID=$(app-store-connect apps list \
             --bundle-id-identifier "$BUNDLE_ID" --strict-match-identifier --json \
             | python3 -c 'import json, sys; print(json.load(sys.stdin)[0]["id"])')
-          LATEST_BUILD=$(app-store-connect get-latest-testflight-build-number "$APP_ID" || echo 0)
+          # Use the highest build number across every version: a build with a
+          # dotted number (1.2.0) was uploaded by hand earlier, so keep only the
+          # leading integer or the arithmetic below breaks and the IPA ends up
+          # with no build number at all.
+          LATEST_BUILD=$(app-store-connect get-latest-testflight-build-number "$APP_ID" --all-versions || echo 0)
+          LATEST_BUILD=$(printf '%s' "$LATEST_BUILD" | grep -oE '^[0-9]+' || echo 0)
+          LATEST_BUILD=${LATEST_BUILD:-0}
           NEXT_BUILD=$((LATEST_BUILD + 1))
           if [ "$PUBSPEC_BUILD" -gt "$NEXT_BUILD" ]; then NEXT_BUILD=$PUBSPEC_BUILD; fi
           echo "Latest TestFlight build: $LATEST_BUILD, building $NEXT_BUILD"
