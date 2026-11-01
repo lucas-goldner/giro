@@ -77,6 +77,8 @@ class WebGoogleMap extends StatelessWidget {
         myLocationEnabled: myLocationEnabled,
         myLocationButtonEnabled: myLocationButtonEnabled,
         compassEnabled: compassEnabled,
+        // The browser map's own +/- and pan widgets have no iOS equivalent.
+        zoomControlsEnabled: false,
         onLongPress: onLongPress == null
             ? null
             : (position) => onLongPress!(

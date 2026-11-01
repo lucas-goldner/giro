@@ -3,6 +3,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:giro/core/model/flavor_config.dart';
 import 'package:giro/core/platform_style.dart';
 import 'package:giro/giro_app.dart';
+import 'package:giro/redesign/design_variant.dart';
 import 'package:giro/web_mocks/mock_geolocator_platform.dart';
 import 'package:giro/web_mocks/sample_data.dart';
 import 'package:giro/web_mocks/web_mock_deps.dart';
@@ -23,6 +24,9 @@ void main() {
   PlatformStyle.forceCupertino =
       Uri.base.queryParameters['style'] != 'material';
   PlatformStyle.forceMockMap = Uri.base.queryParameters['map'] == 'mock';
+  // Redesign proposals: `?design=journal|glass|blocks` (lib/redesign/).
+  DesignVariant.current =
+      DesignVariant.fromName(Uri.base.queryParameters['design']);
   GeolocatorPlatform.instance =
       MockGeolocatorPlatform(path: SampleData.recordingPath);
 

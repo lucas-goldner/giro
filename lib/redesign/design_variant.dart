@@ -1,0 +1,78 @@
+import 'package:flutter/material.dart';
+
+/// Redesign proposals for the app shell (home + walks list).
+///
+/// Selected at start-up (the web preview reads `?design=journal|glass|blocks`);
+/// `null` keeps the current screens.
+enum DesignVariant {
+  /// Warm, editorial: cream surfaces, forest green, terracotta accent.
+  journal,
+
+  /// Dark iOS glass: frosted panels over the map, one electric accent.
+  glass,
+
+  /// Playful dashboard: colour-block stat tiles and a 2x2 action grid.
+  blocks;
+
+  static DesignVariant? current;
+
+  static DesignVariant? fromName(String? name) =>
+      values.where((variant) => variant.name == name).firstOrNull;
+
+  RedesignPalette get palette => switch (this) {
+    DesignVariant.journal => const RedesignPalette(
+      background: Color(0xFFF6F1E7),
+      surface: Color(0xFFFFFFFF),
+      primary: Color(0xFF2F5D50),
+      accent: Color(0xFFD9703E),
+      ink: Color(0xFF1E1E1E),
+      muted: Color(0xFF7A776F),
+      radius: 22,
+      brightness: Brightness.light,
+    ),
+    DesignVariant.glass => const RedesignPalette(
+      background: Color(0xFF0F1115),
+      surface: Color(0xFF1A1D24),
+      primary: Color(0xFF3D8BFF),
+      accent: Color(0xFF3D8BFF),
+      ink: Color(0xFFF5F7FA),
+      muted: Color(0xFF8B93A1),
+      radius: 18,
+      brightness: Brightness.dark,
+    ),
+    DesignVariant.blocks => const RedesignPalette(
+      background: Color(0xFFFFF8E7),
+      surface: Color(0xFFFFFFFF),
+      primary: Color(0xFF2EC4B6),
+      accent: Color(0xFFFF6B6B),
+      ink: Color(0xFF1B1B2F),
+      muted: Color(0xFF6F6F80),
+      radius: 26,
+      brightness: Brightness.light,
+    ),
+  };
+}
+
+class RedesignPalette {
+  const RedesignPalette({
+    required this.background,
+    required this.surface,
+    required this.primary,
+    required this.accent,
+    required this.ink,
+    required this.muted,
+    required this.radius,
+    required this.brightness,
+  });
+
+  final Color background;
+  final Color surface;
+  final Color primary;
+  final Color accent;
+  final Color ink;
+  final Color muted;
+  final double radius;
+  final Brightness brightness;
+
+  bool get isDark => brightness == Brightness.dark;
+}

@@ -11,6 +11,8 @@
 //                       web-server -t lib/main_web.dart --web-port 8080`)
 //          --out <dir>  screenshot directory (default build/web_screenshots)
 //          --material   open with ?style=material
+//          --design <journal|glass|blocks>  capture a redesign proposal
+//                       (home + walks list only, into <out>/<design>/)
 import { createServer } from 'node:http';
 import { createReadStream, existsSync, mkdirSync, statSync } from 'node:fs';
 import { createRequire } from 'node:module';
@@ -29,7 +31,9 @@ const flag = (name) => {
 const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const outDir = resolve(flag('--out') ?? join(projectRoot, 'build/web_screenshots'));
 const material = args.includes('--material');
-mkdirSync(outDir, { recursive: true });
+const design = flag('--design');
+const shotDir = design ? join(outDir, design) : outDir;
+mkdirSync(shotDir, { recursive: true });
 
 const mime = {
   '.html': 'text/html', '.js': 'text/javascript', '.mjs': 'text/javascript',
@@ -60,7 +64,7 @@ async function snap(page, name) {
   const ok = page.getByRole('button', { name: 'OK' });
   if (await ok.count()) await ok.first().click().catch(() => {});
   shot += 1;
-  const file = join(outDir, `${String(shot).padStart(2, '0')}_${name}.png`);
+  const file = join(shotDir, `${String(shot).padStart(2, '0')}_${name}.png`);
   await page.screenshot({ path: file });
   console.log(`saved ${file}`);
 }
@@ -96,6 +100,7 @@ async function main() {
     url = `http://127.0.0.1:${server.address().port}/`;
   }
   if (material) url += (url.includes('?') ? '&' : '?') + 'style=material';
+  if (design) url += (url.includes('?') ? '&' : '?') + `design=${design}`;
 
   // Chromium must go through the container's HTTPS proxy to reach Google
   // Maps; the proxy CA is already in the browser's NSS trust store.
@@ -113,6 +118,16 @@ async function main() {
 
   try {
     await page.goto(url, { waitUntil: 'load' });
+    if (design) {
+      const walksLabel = { journal: 'All walks', glass: 'See all', blocks: 'All walks' }[design];
+      await page.getByRole('button', { name: walksLabel }).first()
+        .waitFor({ state: 'attached', timeout: 60000 });
+      await page.waitForTimeout(1500);
+      await snap(page, 'home');
+      await tap(page, walksLabel);
+      await snap(page, 'walks');
+      return;
+    }
     await page.getByRole('button', { name: 'View walked routes' }).first()
       .waitFor({ state: 'attached', timeout: 60000 });
     await page.waitForTimeout(1500);
