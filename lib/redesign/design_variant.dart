@@ -12,7 +12,12 @@ enum DesignVariant {
   glass,
 
   /// Playful dashboard: colour-block stat tiles and a 2x2 action grid.
-  blocks;
+  blocks,
+
+  /// iOS-native and quiet: white sheet over the map, round icon actions,
+  /// hairline lists, one calm green. Modelled on Apple Maps, komoot and
+  /// Gentler Streak.
+  clean;
 
   static DesignVariant? current;
 
@@ -39,6 +44,16 @@ enum DesignVariant {
       muted: Color(0xFF8B93A1),
       radius: 18,
       brightness: Brightness.dark,
+    ),
+    DesignVariant.clean => const RedesignPalette(
+      background: Color(0xFFFFFFFF),
+      surface: Color(0xFFF2F2F7),
+      primary: Color(0xFF1F8A5B),
+      accent: Color(0xFF1F8A5B),
+      ink: Color(0xFF111111),
+      muted: Color(0xFF8A8A8E),
+      radius: 14,
+      brightness: Brightness.light,
     ),
     DesignVariant.blocks => const RedesignPalette(
       background: Color(0xFFFFF8E7),

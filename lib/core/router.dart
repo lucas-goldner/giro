@@ -6,6 +6,9 @@ import 'package:giro/map/screen/giro_map.dart';
 import 'package:giro/poi_management/screen/poi_management.dart';
 import 'package:giro/record_walk/screen/record_walk.dart';
 import 'package:giro/redesign/blocks_home.dart';
+import 'package:giro/redesign/clean/clean_home.dart';
+import 'package:giro/redesign/clean/clean_route_detail.dart';
+import 'package:giro/redesign/clean/clean_walks_page.dart';
 import 'package:giro/redesign/design_variant.dart';
 import 'package:giro/redesign/glass_home.dart';
 import 'package:giro/redesign/journal_home.dart';
@@ -23,7 +26,7 @@ Route<void>? generateRoutes(
         _adaptiveRoute(settings, _routesList()),
       RouteDetailPage.routeName => _adaptiveRoute(
           settings,
-          RouteDetailPage(settings.arguments! as WalkRoute),
+          _routeDetail(settings.arguments! as WalkRoute),
         ),
       POIManagementPage.routeName => _adaptiveRoute(
           settings,
@@ -46,11 +49,18 @@ Widget _home() => switch (DesignVariant.current) {
       DesignVariant.journal => const RedesignBootstrap(child: JournalHome()),
       DesignVariant.glass => const RedesignBootstrap(child: GlassHome()),
       DesignVariant.blocks => const RedesignBootstrap(child: BlocksHome()),
+      DesignVariant.clean => const RedesignBootstrap(child: CleanHome()),
     };
 
 Widget _routesList() => switch (DesignVariant.current) {
       null => const RouteManagementPage(),
+      DesignVariant.clean => const CleanWalksPage(),
       final variant => RedesignRoutesPage(variant: variant),
+    };
+
+Widget _routeDetail(WalkRoute route) => switch (DesignVariant.current) {
+      DesignVariant.clean => CleanRouteDetail(route: route),
+      _ => RouteDetailPage(route),
     };
 
 Route<void> _adaptiveRoute(RouteSettings settings, Widget child) {

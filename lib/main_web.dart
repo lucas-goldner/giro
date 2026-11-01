@@ -24,7 +24,7 @@ void main() {
   PlatformStyle.forceCupertino =
       Uri.base.queryParameters['style'] != 'material';
   PlatformStyle.forceMockMap = Uri.base.queryParameters['map'] == 'mock';
-  // Redesign proposals: `?design=journal|glass|blocks` (lib/redesign/).
+  // Redesign proposals: `?design=journal|glass|blocks|clean` (lib/redesign/).
   DesignVariant.current =
       DesignVariant.fromName(Uri.base.queryParameters['design']);
   GeolocatorPlatform.instance =

@@ -16,6 +16,11 @@ extension WalkRouteStats on WalkRoute {
   String get distanceLabel => formatDistance(distanceMeters);
 
   String get durationLabel => formatDuration(duration);
+
+  /// Metres from [point] to the nearest sampled coordinate of the walk.
+  double distanceTo(LatLng point) => coordinates
+      .map((coordinate) => _haversine(coordinate, point))
+      .fold(double.infinity, math.min);
 }
 
 extension WalkRoutesStats on Iterable<WalkRoute> {
