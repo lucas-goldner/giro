@@ -13,18 +13,16 @@ import 'package:giro/web_mocks/web_mock_deps.dart';
 /// MMKV -> in-memory repositories, HealthKit -> canned workouts,
 /// geolocator -> a simulated walk. The map is the real Google Maps
 /// JavaScript map (see `web/index.html`); append `?map=mock` to use the
-/// canvas-drawn mock instead, and `?style=material` to preview the Material
-/// variant.
+/// canvas-drawn mock instead, and `?style=material` for Material page
+/// transitions.
 void main() {
-  FlavorConfig(
-    flavor: Flavor.dev,
-    name: 'Giro Web',
-  );
+  FlavorConfig(flavor: Flavor.dev, name: 'Giro Web');
   PlatformStyle.forceCupertino =
       Uri.base.queryParameters['style'] != 'material';
   PlatformStyle.forceMockMap = Uri.base.queryParameters['map'] == 'mock';
-  GeolocatorPlatform.instance =
-      MockGeolocatorPlatform(path: SampleData.recordingPath);
+  GeolocatorPlatform.instance = MockGeolocatorPlatform(
+    path: SampleData.recordingPath,
+  );
 
   WidgetsFlutterBinding.ensureInitialized()
     ..deferFirstFrame()

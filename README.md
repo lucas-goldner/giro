@@ -12,6 +12,36 @@ Run prod
 $ flutter run --flavor prod -t lib/main_prod.dart
 ```
 
+## Design
+
+The UI is a Sonic Generations-style game HUD (`lib/design/sonic/`, Barlow
+Condensed bundled under `assets/fonts/`, SIL OFL). Walks are stages, saved
+places are spots, the week's distance is the score, and every walk gets a
+rank (S/A/B/C) from how much *new ground* it covered: the share of its
+points farther than 60 m from any earlier walk (`SonicStats`). Two more
+explorations (Zenly × Apple and the Sonic concept itself) live in
+`docs/design/giro-concepts.html`.
+
+| Home | Stage select | Stage clear |
+|---|---|---|
+| ![Home](docs/design/screenshots/01_home.png) | ![Stage select](docs/design/screenshots/02_stage_select.png) | ![Stage clear](docs/design/screenshots/03_stage_clear.png) |
+
+| Spots | Mark a spot | Recording |
+|---|---|---|
+| ![Spots](docs/design/screenshots/04_spots.png) | ![Mark a spot](docs/design/screenshots/06_mark_spot.png) | ![Recording](docs/design/screenshots/08_record_live.png) |
+
+The PNGs are half-size copies of `tool/web_screenshots.mjs` output.
+
+## Fog of war
+
+The map starts out white. Every walk (and every saved place) uncovers the
+colourful map underneath along its path, with a soft edge, so the city fills
+in as you explore it. This is `FogOfWar` in `lib/core/widgets/fog_of_war.dart`,
+layered over the map by `PlatformMapView` (pass `fogOfWar: false` to opt out
+on a screen). The reveal radius is in metres, so it stays consistent across
+zoom levels, and the overlay follows pans and zooms through the map's camera
+callbacks.
+
 ## Web preview
 
 The app is iOS-first, but `lib/main_web.dart` runs it in a browser with the
@@ -32,8 +62,8 @@ $ flutter run -d chrome -t lib/main_web.dart
 $ flutter run -d web-server -t lib/main_web.dart --web-port 8080
 ```
 
-Append `?style=material` to the URL to see the Material variant instead of the
-Cupertino one, and `?map=mock` to swap the Google map for the canvas mock.
+Append `?style=material` to the URL for Material page transitions instead of
+Cupertino ones, and `?map=mock` to swap the Google map for the canvas mock.
 
 The Maps JavaScript API is loaded in `web/index.html` without an API key, so
 Google renders it dimmed with a "for development purposes only" watermark and

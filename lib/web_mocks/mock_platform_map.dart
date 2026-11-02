@@ -18,6 +18,7 @@ class MockPlatformMap extends StatefulWidget {
     this.polylines = const <Polyline>{},
     this.myLocationEnabled = false,
     this.onLongPress,
+    this.onCameraMove,
     super.key,
   });
 
@@ -26,6 +27,7 @@ class MockPlatformMap extends StatefulWidget {
   final Set<Polyline> polylines;
   final bool myLocationEnabled;
   final void Function(LatLng)? onLongPress;
+  final void Function(CameraPosition)? onCameraMove;
 
   @override
   State<MockPlatformMap> createState() => _MockPlatformMapState();
@@ -49,16 +51,24 @@ class _MockPlatformMapState extends State<MockPlatformMap> {
         target != const LatLng(0, 0)) {
       _center = target;
       _zoom = widget.initialCameraPosition.zoom;
+      _reportCamera();
     }
   }
+
+  void _reportCamera() => WidgetsBinding.instance.addPostFrameCallback(
+    (_) =>
+        widget.onCameraMove?.call(CameraPosition(target: _center, zoom: _zoom)),
+  );
 
   double get _worldSize => _tileSize * math.pow(2, _zoom);
 
   Offset _project(LatLng latLng) {
-    final sinLat =
-        math.sin(latLng.latitude * math.pi / 180).clamp(-0.9999, 0.9999);
+    final sinLat = math
+        .sin(latLng.latitude * math.pi / 180)
+        .clamp(-0.9999, 0.9999);
     final x = (latLng.longitude + 180) / 360 * _worldSize;
-    final y = (0.5 - math.log((1 + sinLat) / (1 - sinLat)) / (4 * math.pi)) *
+    final y =
+        (0.5 - math.log((1 + sinLat) / (1 - sinLat)) / (4 * math.pi)) *
         _worldSize;
     return Offset(x, y);
   }
@@ -84,11 +94,14 @@ class _MockPlatformMapState extends State<MockPlatformMap> {
   void _onScaleUpdate(ScaleUpdateDetails details) {
     setState(() {
       _userMovedCamera = true;
-      _zoom = (_zoomAtScaleStart + math.log(details.scale) / math.ln2)
-          .clamp(2.0, 20.0);
+      _zoom = (_zoomAtScaleStart + math.log(details.scale) / math.ln2).clamp(
+        2.0,
+        20.0,
+      );
       final centerWorld = _project(_center) - details.focalPointDelta;
       _center = _unproject(centerWorld);
     });
+    _reportCamera();
   }
 
   void _onPointerSignal(PointerSignalEvent event) {
@@ -97,6 +110,7 @@ class _MockPlatformMapState extends State<MockPlatformMap> {
         _userMovedCamera = true;
         _zoom = (_zoom - event.scrollDelta.dy / 300).clamp(2.0, 20.0);
       });
+      _reportCamera();
     }
   }
 
@@ -113,58 +127,56 @@ class _MockPlatformMapState extends State<MockPlatformMap> {
 
   @override
   Widget build(BuildContext context) => LayoutBuilder(
-        builder: (context, constraints) {
-          final size = constraints.biggest;
-          return Listener(
-            onPointerSignal: _onPointerSignal,
-            child: GestureDetector(
-              onScaleStart: _onScaleStart,
-              onScaleUpdate: _onScaleUpdate,
-              onTapUp: (details) => _onTapUp(details, size),
-              onLongPressStart: widget.onLongPress == null
-                  ? null
-                  : (details) => widget.onLongPress!(
-                        _fromScreen(details.localPosition, size),
-                      ),
-              child: Semantics(
-                label: 'Mock map',
-                child: CustomPaint(
-                  size: size,
-                  painter: _MockMapPainter(
-                    center: _center,
-                    zoom: _zoom,
-                    markers: widget.markers,
-                    polylines: widget.polylines,
-                    myLocation: widget.myLocationEnabled
-                        ? widget.initialCameraPosition.target
-                        : null,
-                    project: (latLng) => _toScreen(latLng, size),
-                    worldOffset: _project(_center) - size.center(Offset.zero),
-                    colorScheme: Theme.of(context).colorScheme,
-                  ),
-                  child: Align(
-                    alignment: Alignment.bottomLeft,
+    builder: (context, constraints) {
+      final size = constraints.biggest;
+      return Listener(
+        onPointerSignal: _onPointerSignal,
+        child: GestureDetector(
+          onScaleStart: _onScaleStart,
+          onScaleUpdate: _onScaleUpdate,
+          onTapUp: (details) => _onTapUp(details, size),
+          onLongPressStart: widget.onLongPress == null
+              ? null
+              : (details) => widget.onLongPress!(
+                  _fromScreen(details.localPosition, size),
+                ),
+          child: Semantics(
+            label: 'Mock map',
+            child: CustomPaint(
+              size: size,
+              painter: _MockMapPainter(
+                center: _center,
+                zoom: _zoom,
+                markers: widget.markers,
+                polylines: widget.polylines,
+                myLocation: widget.myLocationEnabled
+                    ? widget.initialCameraPosition.target
+                    : null,
+                project: (latLng) => _toScreen(latLng, size),
+                worldOffset: _project(_center) - size.center(Offset.zero),
+                colorScheme: Theme.of(context).colorScheme,
+              ),
+              child: Align(
+                alignment: Alignment.bottomLeft,
+                child: Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: 0.85),
+                      borderRadius: BorderRadius.circular(6),
+                    ),
                     child: Padding(
-                      padding: const EdgeInsets.all(8),
-                      child: DecoratedBox(
-                        decoration: BoxDecoration(
-                          color: Colors.white.withValues(alpha: 0.85),
-                          borderRadius: BorderRadius.circular(6),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 8,
-                            vertical: 4,
-                          ),
-                          child: Text(
-                            'Mock map · zoom ${_zoom.toStringAsFixed(1)} · '
-                            '${_center.latitude.toStringAsFixed(4)}, '
-                            '${_center.longitude.toStringAsFixed(4)}',
-                            style: const TextStyle(
-                              fontSize: 11,
-                              color: Colors.black87,
-                            ),
-                          ),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 4,
+                      ),
+                      child: Text(
+                        'Mock map · zoom ${_zoom.toStringAsFixed(1)} · '
+                        '${_center.latitude.toStringAsFixed(4)}, '
+                        '${_center.longitude.toStringAsFixed(4)}',
+                        style: const TextStyle(
+                          fontSize: 11,
+                          color: Colors.black87,
                         ),
                       ),
                     ),
@@ -172,9 +184,11 @@ class _MockPlatformMapState extends State<MockPlatformMap> {
                 ),
               ),
             ),
-          );
-        },
+          ),
+        ),
       );
+    },
+  );
 }
 
 class _MockMapPainter extends CustomPainter {

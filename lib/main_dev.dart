@@ -4,10 +4,7 @@ import 'package:giro/core/native_deps.dart';
 import 'package:giro/giro_app.dart';
 
 void main() {
-  FlavorConfig(
-    flavor: Flavor.dev,
-    name: 'Giro Dev',
-  );
+  FlavorConfig(flavor: Flavor.dev, name: 'Giro Dev');
   WidgetsFlutterBinding.ensureInitialized().deferFirstFrame();
   runApp(const GiroApp(loadDeps: loadNativeDeps));
 }

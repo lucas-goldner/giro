@@ -29,7 +29,8 @@ const flag = (name) => {
 const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const outDir = resolve(flag('--out') ?? join(projectRoot, 'build/web_screenshots'));
 const material = args.includes('--material');
-mkdirSync(outDir, { recursive: true });
+const shotDir = outDir;
+mkdirSync(shotDir, { recursive: true });
 
 const mime = {
   '.html': 'text/html', '.js': 'text/javascript', '.mjs': 'text/javascript',
@@ -60,7 +61,7 @@ async function snap(page, name) {
   const ok = page.getByRole('button', { name: 'OK' });
   if (await ok.count()) await ok.first().click().catch(() => {});
   shot += 1;
-  const file = join(outDir, `${String(shot).padStart(2, '0')}_${name}.png`);
+  const file = join(shotDir, `${String(shot).padStart(2, '0')}_${name}.png`);
   await page.screenshot({ path: file });
   console.log(`saved ${file}`);
 }
@@ -69,8 +70,15 @@ async function snap(page, name) {
 // role="button"> nodes once semantics is enabled (main_web.dart does that).
 async function tap(page, label) {
   const button = page.getByRole('button', { name: label }).first();
-  await button.waitFor({ state: 'visible', timeout: 15000 });
-  await button.click();
+  await button.waitFor({ state: 'attached', timeout: 15000 });
+  try {
+    await button.click({ timeout: 4000 });
+  } catch {
+    // Skewed/transformed buttons fail Playwright's stability check even
+    // when the tap went through. If the button is gone, the screen already
+    // changed; otherwise dispatch the click on the semantics node directly.
+    if (await button.count()) await button.dispatchEvent('click', {}, { timeout: 3000 }).catch(() => {});
+  }
   await page.waitForTimeout(900);
 }
 
@@ -113,37 +121,30 @@ async function main() {
 
   try {
     await page.goto(url, { waitUntil: 'load' });
-    await page.getByRole('button', { name: 'View walked routes' }).first()
+    await page.getByRole('button', { name: 'All walks' }).first()
       .waitFor({ state: 'attached', timeout: 60000 });
     await page.waitForTimeout(1500);
-    await snap(page, 'home_map');
+    await snap(page, 'home');
 
-    await tap(page, 'View walked routes');
-    await snap(page, 'routes');
-    await tap(page, /^Route: /); // list tiles are exposed as labelled buttons
-    await snap(page, 'route_detail_seeded');
-    await back(page);
-    await back(page);
-
-    await tap(page, 'View Point of interests');
-    await snap(page, 'points_of_interest');
+    await tap(page, 'All walks');
+    await snap(page, 'stage_select');
+    await tap(page, /km/); // stage cards are buttons labelled with their stats
+    await snap(page, 'stage_clear');
+    await tap(page, 'All walks');
     await back(page);
 
-    await tap(page, 'Record Walk');
-    await snap(page, 'record_walk_idle');
-    await tap(page, 'Start recording');
-    await page.waitForTimeout(11500); // the cubit samples the mock GPS every 5 s
-    await snap(page, 'record_walk_recording');
-    await tap(page, 'Stop recording');
-    await snap(page, 'record_walk_finished');
-    await tap(page, 'View finished recording');
-    await snap(page, 'route_detail_recorded');
-    await back(page);
+    await tap(page, 'Places');
+    await snap(page, 'spots');
     await back(page);
 
-    // Long-press on the map opens the "Add point of interest" dialog. The
-    // Google map (an HTML platform view) reports a right click as the long
-    // press, the canvas mock needs a real press-and-hold.
+    await tap(page, 'Import');
+    await tap(page, 'Load workouts');
+    await snap(page, 'import');
+    await back(page);
+
+    // Long-press on the map marks a spot. The Google map (an HTML platform
+    // view) reports a right click as the long press, the canvas mock needs a
+    // real press-and-hold.
     try {
       await page.mouse.click(195, 250, { button: 'right' });
       await page.waitForTimeout(600);
@@ -153,18 +154,19 @@ async function main() {
         await page.waitForTimeout(900);
         await page.mouse.up();
       }
-      await snap(page, 'add_poi_dialog');
+      await snap(page, 'mark_spot');
       await tap(page, 'Cancel');
     } catch (error) {
-      console.warn('skipping add-POI dialog:', error.message);
+      console.warn('skipping mark-spot dialog:', error.message);
     }
 
-    await tap(page, 'Import last route');
-    await page.waitForTimeout(1200);
-    await snap(page, 'importer_authorized');
-    await tap(page, 'Import walks');
-    await page.waitForTimeout(1200);
-    await snap(page, 'importer_workouts');
+    await tap(page, 'Record');
+    await snap(page, 'record_ready');
+    await tap(page, 'Start recording');
+    await page.waitForTimeout(11500); // the cubit samples the mock GPS every 5 s
+    await snap(page, 'record_live');
+    await tap(page, 'Stop recording');
+    await snap(page, 'record_clear');
   } finally {
     await browser.close();
     server?.close();

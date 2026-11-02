@@ -19,6 +19,7 @@ class WebGoogleMap extends StatelessWidget {
     this.myLocationButtonEnabled = false,
     this.compassEnabled = true,
     this.onLongPress,
+    this.onCameraMove,
     super.key,
   });
 
@@ -29,24 +30,25 @@ class WebGoogleMap extends StatelessWidget {
   final bool myLocationButtonEnabled;
   final bool compassEnabled;
   final void Function(LatLng)? onLongPress;
+  final void Function(CameraPosition)? onCameraMove;
 
   // platform_maps_flutter's own `googleMapsMarker` / `toGoogleMapsPolylines`
   // conversions touch `dart:io` Platform (for the marker icon), which throws
   // on the web, so the few fields the app uses are converted here instead.
   static google.Marker _toGoogleMarker(Marker marker) => google.Marker(
-        markerId: google.MarkerId(marker.markerId.value),
-        position: google.LatLng(
-          marker.position.latitude,
-          marker.position.longitude,
-        ),
-        alpha: marker.alpha,
-        visible: marker.visible,
-        infoWindow: google.InfoWindow(
-          title: marker.infoWindow.title,
-          snippet: marker.infoWindow.snippet,
-        ),
-        onTap: marker.onTap,
-      );
+    markerId: google.MarkerId(marker.markerId.value),
+    position: google.LatLng(
+      marker.position.latitude,
+      marker.position.longitude,
+    ),
+    alpha: marker.alpha,
+    visible: marker.visible,
+    infoWindow: google.InfoWindow(
+      title: marker.infoWindow.title,
+      snippet: marker.infoWindow.snippet,
+    ),
+    onTap: marker.onTap,
+  );
 
   static google.Polyline _toGooglePolyline(Polyline polyline) =>
       google.Polyline(
@@ -63,24 +65,38 @@ class WebGoogleMap extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => google.GoogleMap(
-        initialCameraPosition: google.CameraPosition(
-          target: google.LatLng(
-            initialCameraPosition.target.latitude,
-            initialCameraPosition.target.longitude,
+    initialCameraPosition: google.CameraPosition(
+      target: google.LatLng(
+        initialCameraPosition.target.latitude,
+        initialCameraPosition.target.longitude,
+      ),
+      zoom: initialCameraPosition.zoom,
+      bearing: initialCameraPosition.bearing,
+      tilt: initialCameraPosition.tilt,
+    ),
+    markers: markers.map(_toGoogleMarker).toSet(),
+    polylines: polylines.map(_toGooglePolyline).toSet(),
+    myLocationEnabled: myLocationEnabled,
+    myLocationButtonEnabled: myLocationButtonEnabled,
+    compassEnabled: compassEnabled,
+    // The browser map's own +/- and pan widgets have no iOS equivalent.
+    zoomControlsEnabled: false,
+    onLongPress: onLongPress == null
+        ? null
+        : (position) =>
+              onLongPress!(LatLng(position.latitude, position.longitude)),
+    onCameraMove: onCameraMove == null
+        ? null
+        : (position) => onCameraMove!(
+            CameraPosition(
+              target: LatLng(
+                position.target.latitude,
+                position.target.longitude,
+              ),
+              zoom: position.zoom,
+              bearing: position.bearing,
+              tilt: position.tilt,
+            ),
           ),
-          zoom: initialCameraPosition.zoom,
-          bearing: initialCameraPosition.bearing,
-          tilt: initialCameraPosition.tilt,
-        ),
-        markers: markers.map(_toGoogleMarker).toSet(),
-        polylines: polylines.map(_toGooglePolyline).toSet(),
-        myLocationEnabled: myLocationEnabled,
-        myLocationButtonEnabled: myLocationButtonEnabled,
-        compassEnabled: compassEnabled,
-        onLongPress: onLongPress == null
-            ? null
-            : (position) => onLongPress!(
-                  LatLng(position.latitude, position.longitude),
-                ),
-      );
+  );
 }

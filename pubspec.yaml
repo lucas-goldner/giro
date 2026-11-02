@@ -13,7 +13,6 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_bloc: ^9.1.1
-  flutter_slidable: ^4.0.0
   geolocator: ^14.1.2
   # Direct dependency so the web build can embed GoogleMap (platform_maps_flutter
   # only switches between Apple Maps and Google Maps on iOS/Android).
@@ -44,3 +43,16 @@ dependency_overrides:
 
 flutter:
   uses-material-design: true
+  fonts:
+    # Sonic Generations-style HUD type (SIL Open Font License, see
+    # assets/fonts/OFL-BarlowCondensed.txt).
+    - family: BarlowCondensed
+      fonts:
+        - asset: assets/fonts/BarlowCondensed-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/BarlowCondensed-ExtraBoldItalic.ttf
+          weight: 800
+          style: italic
+        - asset: assets/fonts/BarlowCondensed-BlackItalic.ttf
+          weight: 900
+          style: italic
