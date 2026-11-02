@@ -22,6 +22,16 @@ points farther than 60 m from any earlier walk (`SonicStats`). Two more
 explorations (Zenly × Apple and the Sonic concept itself) live in
 `docs/design/giro-concepts.html`.
 
+| Home | Stage select | Stage clear |
+|---|---|---|
+| ![Home](docs/design/screenshots/01_home.png) | ![Stage select](docs/design/screenshots/02_stage_select.png) | ![Stage clear](docs/design/screenshots/03_stage_clear.png) |
+
+| Spots | Mark a spot | Recording |
+|---|---|---|
+| ![Spots](docs/design/screenshots/04_spots.png) | ![Mark a spot](docs/design/screenshots/06_mark_spot.png) | ![Recording](docs/design/screenshots/08_record_live.png) |
+
+The PNGs are half-size copies of `tool/web_screenshots.mjs` output.
+
 ## Fog of war
 
 The map starts out white. Every walk (and every saved place) uncovers the
