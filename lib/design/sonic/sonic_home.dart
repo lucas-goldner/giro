@@ -7,7 +7,7 @@ import 'package:giro/core/widgets/platform_map_view.dart';
 import 'package:giro/design/shared/walk_stats.dart';
 import 'package:giro/design/sonic/sonic_actions.dart';
 import 'package:giro/design/sonic/sonic_map.dart';
-import 'package:giro/design/sonic/sonic_ring_dialog.dart';
+import 'package:giro/design/sonic/sonic_spot_dialog.dart';
 import 'package:giro/design/sonic/sonic_stats.dart';
 import 'package:giro/design/sonic/sonic_theme.dart';
 import 'package:platform_maps_flutter/platform_maps_flutter.dart';
@@ -18,7 +18,7 @@ class SonicHome extends StatelessWidget {
   const SonicHome({super.key});
 
   Future<void> _addPlace(BuildContext context, LatLng location) async {
-    final poi = await showSonicRingDialog(context, location);
+    final poi = await showSonicSpotDialog(context, location);
     if (poi != null && context.mounted) {
       context.read<PoiCubit>().addPOI(poi);
     }
@@ -71,12 +71,12 @@ class SonicHome extends StatelessWidget {
                         children: [
                           const SonicHudText('GIRO', size: 32),
                           const Spacer(),
-                          SonicRingChip(
+                          SonicHudChip(
                             onTap: () => SonicActions.places(context),
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                const SonicRingIcon(),
+                                const SonicSpotIcon(),
                                 const SizedBox(width: 6),
                                 Text('${pois.length}'),
                               ],
@@ -127,7 +127,7 @@ class SonicHome extends StatelessWidget {
                 Text(
                   '${routes.length} walks · '
                   '${formatDuration(routes.totalDuration)} · '
-                  '${pois.length} rings',
+                  '${pois.length} spots',
                   style: SonicTheme.body,
                 ),
                 const SizedBox(height: 14),
@@ -158,7 +158,7 @@ class SonicHome extends StatelessWidget {
                     Expanded(
                       flex: 10,
                       child: SonicButton(
-                        label: 'Rings',
+                        label: 'Spots',
                         caption: '${pois.length} places',
                         semanticsLabel: 'Places',
                         onTap: () => SonicActions.places(context),

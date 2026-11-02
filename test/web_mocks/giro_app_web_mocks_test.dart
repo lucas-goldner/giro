@@ -69,17 +69,17 @@ void main() {
     expect(find.text('STAGE CLEAR!'), findsWidgets);
   });
 
-  testWidgets('ring collection lists the seeded places', (tester) async {
+  testWidgets('spot collection lists the seeded places', (tester) async {
     await pumpApp(tester);
 
     await tester.tap(find.bySemanticsLabel('Places'));
     await tester.pumpAndSettle();
     expect(find.byType(SonicPlacesPage), findsOneWidget);
     expect(
-      find.bySemanticsLabel(RegExp('^Ring ')),
+      find.bySemanticsLabel(RegExp('^Spot ')),
       findsNWidgets(SampleData.pois.length),
     );
-    expect(find.bySemanticsLabel('Ring Shibuya Crossing'), findsOneWidget);
+    expect(find.bySemanticsLabel('Spot Shibuya Crossing'), findsOneWidget);
   });
 
   testWidgets('imports a workout from the mocked Health item box', (

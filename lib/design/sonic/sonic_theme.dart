@@ -3,7 +3,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
 /// Sonic Generations HUD language: skewed italic condensed type with a
-/// drop outline, Sonic blue on navy, gold rings, diagonal speed stripes,
+/// drop outline, Sonic blue on navy, gold accents, diagonal speed stripes,
 /// chevron buttons with a hard shadow, and ranks.
 abstract final class SonicTheme {
   static const Color blue = Color(0xFF1B5BFF);
@@ -377,9 +377,9 @@ class SonicRank extends StatelessWidget {
   }
 }
 
-/// Ring counter chip: gold ring icon plus a count, on navy.
-class SonicRingChip extends StatelessWidget {
-  const SonicRingChip({required this.child, this.onTap, super.key});
+/// HUD chip: gold outline on navy, for counters and the back action.
+class SonicHudChip extends StatelessWidget {
+  const SonicHudChip({required this.child, this.onTap, super.key});
 
   final Widget child;
   final VoidCallback? onTap;
@@ -410,8 +410,8 @@ class SonicRingChip extends StatelessWidget {
   );
 }
 
-class SonicRingIcon extends StatelessWidget {
-  const SonicRingIcon({this.size = 14, super.key});
+class SonicSpotIcon extends StatelessWidget {
+  const SonicSpotIcon({this.size = 14, super.key});
 
   final double size;
 

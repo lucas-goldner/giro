@@ -12,11 +12,11 @@ import 'package:giro/design/sonic/sonic_stats.dart';
 import 'package:giro/design/sonic/sonic_theme.dart';
 
 /// Stage select: every walk is a card with its rank, route sketch and the
-/// rings collected on it.
+/// spots visited on it.
 class SonicWalksPage extends StatelessWidget {
   const SonicWalksPage({super.key});
 
-  static const _ringRadiusMeters = 400.0;
+  static const _spotRadiusMeters = 400.0;
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +41,7 @@ class SonicWalksPage extends StatelessWidget {
                   children: [
                     Row(
                       children: [
-                        SonicRingChip(
+                        SonicHudChip(
                           onTap: context.navigator.pop,
                           child: const Text('◀  BACK'),
                         ),
@@ -66,7 +66,7 @@ class SonicWalksPage extends StatelessWidget {
                     Text(
                       '$km km · '
                       '${formatDuration(routes.totalDuration)} · '
-                      '${pois.length} rings',
+                      '${pois.length} spots',
                       style: SonicTheme.body,
                     ),
                   ],
@@ -83,17 +83,17 @@ class SonicWalksPage extends StatelessWidget {
                       route,
                       SonicStats.earlierThan(route, routes),
                     );
-                    final rings = pois
+                    final spots = pois
                         .where(
                           (poi) =>
                               route.distanceTo(poi.coordinates) <=
-                              _ringRadiusMeters,
+                              _spotRadiusMeters,
                         )
                         .length;
                     return _StageCard(
                       route: route,
                       rank: SonicStats.rankFor(share),
-                      rings: rings,
+                      spots: spots,
                     );
                   },
                 ),
@@ -123,19 +123,19 @@ class _StageCard extends StatelessWidget {
   const _StageCard({
     required this.route,
     required this.rank,
-    required this.rings,
+    required this.spots,
   });
 
   final WalkRoute route;
   final String rank;
-  final int rings;
+  final int spots;
 
   @override
   Widget build(BuildContext context) {
     final date = route.startDate.toLocalizedString(context);
     final meta =
         '$date · ${route.distanceLabel} · ${route.durationLabel} · '
-        '$rings ring${rings == 1 ? '' : 's'}';
+        '$spots spot${spots == 1 ? '' : 's'}';
     return Semantics(
       button: true,
       label: 'Stage $date, ${route.distanceLabel}, rank $rank',

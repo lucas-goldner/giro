@@ -3,25 +3,25 @@ import 'package:giro/core/model/poi.dart';
 import 'package:giro/design/sonic/sonic_theme.dart';
 import 'package:platform_maps_flutter/platform_maps_flutter.dart';
 
-/// "Drop a ring": name a place at [location]. Resolves with the new [POI]
+/// "Mark a spot": name a place at [location]. Resolves with the new [POI]
 /// or null when cancelled.
-Future<POI?> showSonicRingDialog(BuildContext context, LatLng location) =>
+Future<POI?> showSonicSpotDialog(BuildContext context, LatLng location) =>
     showDialog<POI>(
       context: context,
       barrierColor: SonicTheme.navy.withValues(alpha: 0.7),
-      builder: (context) => _RingDialog(location: location),
+      builder: (context) => _SpotDialog(location: location),
     );
 
-class _RingDialog extends StatefulWidget {
-  const _RingDialog({required this.location});
+class _SpotDialog extends StatefulWidget {
+  const _SpotDialog({required this.location});
 
   final LatLng location;
 
   @override
-  State<_RingDialog> createState() => _RingDialogState();
+  State<_SpotDialog> createState() => _SpotDialogState();
 }
 
-class _RingDialogState extends State<_RingDialog> {
+class _SpotDialogState extends State<_SpotDialog> {
   final _controller = TextEditingController();
 
   @override
@@ -51,14 +51,14 @@ class _RingDialogState extends State<_RingDialog> {
         children: [
           const Row(
             children: [
-              SonicRingIcon(size: 18),
+              SonicSpotIcon(size: 18),
               SizedBox(width: 10),
-              SonicHudText('DROP A RING', size: 30),
+              SonicHudText('MARK A SPOT', size: 30),
             ],
           ),
           const SizedBox(height: 6),
           const Text(
-            'Name this place. Rings are collected by the walks that pass them.',
+            'Name this place. Spots are visited by the walks that pass them.',
             style: SonicTheme.body,
           ),
           const SizedBox(height: 14),
@@ -74,7 +74,7 @@ class _RingDialogState extends State<_RingDialog> {
               color: SonicTheme.white,
             ),
             decoration: InputDecoration(
-              hintText: 'Ring name',
+              hintText: 'Spot name',
               hintStyle: TextStyle(
                 fontFamily: SonicTheme.font,
                 fontWeight: FontWeight.w700,
@@ -113,7 +113,7 @@ class _RingDialogState extends State<_RingDialog> {
               Expanded(
                 flex: 2,
                 child: SonicButton(
-                  label: 'Drop it!',
+                  label: 'Mark it!',
                   semanticsLabel: 'Add',
                   color: SonicTheme.gold,
                   shadow: SonicTheme.goldDeep,

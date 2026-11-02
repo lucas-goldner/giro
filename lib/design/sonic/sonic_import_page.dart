@@ -84,7 +84,7 @@ class _SonicImportState extends State<_SonicImport> {
                           children: [
                             Row(
                               children: [
-                                SonicRingChip(
+                                SonicHudChip(
                                   onTap: context.navigator.pop,
                                   child: const Text('◀  BACK'),
                                 ),

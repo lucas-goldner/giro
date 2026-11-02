@@ -134,7 +134,7 @@ async function main() {
     await back(page);
 
     await tap(page, 'Places');
-    await snap(page, 'rings');
+    await snap(page, 'spots');
     await back(page);
 
     await tap(page, 'Import');
@@ -142,7 +142,7 @@ async function main() {
     await snap(page, 'import');
     await back(page);
 
-    // Long-press on the map drops a ring. The Google map (an HTML platform
+    // Long-press on the map marks a spot. The Google map (an HTML platform
     // view) reports a right click as the long press, the canvas mock needs a
     // real press-and-hold.
     try {
@@ -154,10 +154,10 @@ async function main() {
         await page.waitForTimeout(900);
         await page.mouse.up();
       }
-      await snap(page, 'drop_ring');
+      await snap(page, 'mark_spot');
       await tap(page, 'Cancel');
     } catch (error) {
-      console.warn('skipping drop-ring dialog:', error.message);
+      console.warn('skipping mark-spot dialog:', error.message);
     }
 
     await tap(page, 'Record');

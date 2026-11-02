@@ -8,22 +8,22 @@ import 'package:giro/core/model/walk_route.dart';
 import 'package:giro/core/widgets/platform_map_view.dart';
 import 'package:giro/design/shared/walk_stats.dart';
 import 'package:giro/design/sonic/sonic_map.dart';
-import 'package:giro/design/sonic/sonic_ring_dialog.dart';
+import 'package:giro/design/sonic/sonic_spot_dialog.dart';
 import 'package:giro/design/sonic/sonic_stats.dart';
 import 'package:giro/design/sonic/sonic_theme.dart';
 import 'package:platform_maps_flutter/platform_maps_flutter.dart';
 
 /// "Stage clear!" result screen for one walk: rank, time, pace, how much
-/// of the city it uncovered, and the rings (places) collected on it.
+/// of the city it uncovered, and the spots (places) visited on it.
 class SonicRouteDetail extends StatelessWidget {
   const SonicRouteDetail({required this.route, super.key});
 
   final WalkRoute route;
 
-  static const _ringRadiusMeters = 400.0;
+  static const _spotRadiusMeters = 400.0;
 
   Future<void> _addPlace(BuildContext context, LatLng location) async {
-    final poi = await showSonicRingDialog(context, location);
+    final poi = await showSonicSpotDialog(context, location);
     if (poi != null && context.mounted) {
       context.read<PoiCubit>().addPOI(poi);
     }
@@ -33,8 +33,8 @@ class SonicRouteDetail extends StatelessWidget {
   Widget build(BuildContext context) {
     final all = context.watch<WalkRoutesCubit>().state.routes;
     final pois = context.watch<PoiCubit>().state.pois;
-    final rings = pois
-        .where((poi) => route.distanceTo(poi.coordinates) <= _ringRadiusMeters)
+    final spots = pois
+        .where((poi) => route.distanceTo(poi.coordinates) <= _spotRadiusMeters)
         .toList();
     final newShare = SonicStats.newGroundShare(
       route,
@@ -59,7 +59,7 @@ class SonicRouteDetail extends StatelessWidget {
                   ),
                   polylines: SonicMap.polylines([route]),
                   markers: {
-                    for (final poi in rings)
+                    for (final poi in spots)
                       Marker(
                         markerId: MarkerId(poi.id),
                         position: poi.coordinates,
@@ -79,18 +79,18 @@ class SonicRouteDetail extends StatelessWidget {
                       padding: const EdgeInsets.fromLTRB(16, 10, 14, 0),
                       child: Row(
                         children: [
-                          SonicRingChip(
+                          SonicHudChip(
                             onTap: context.navigator.pop,
                             child: const Text('◀  BACK'),
                           ),
                           const Spacer(),
-                          SonicRingChip(
+                          SonicHudChip(
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                const SonicRingIcon(),
+                                const SonicSpotIcon(),
                                 const SizedBox(width: 6),
-                                Text('${rings.length}'),
+                                Text('${spots.length}'),
                               ],
                             ),
                           ),
@@ -155,18 +155,18 @@ class SonicRouteDetail extends StatelessWidget {
                   ),
                   const SizedBox(height: 14),
                   Text(
-                    rings.isEmpty ? 'NO RINGS ON THIS STAGE' : 'RINGS',
+                    spots.isEmpty ? 'NO SPOTS ON THIS STAGE' : 'SPOTS',
                     style: SonicTheme.label,
                   ),
-                  if (rings.isEmpty)
+                  if (spots.isEmpty)
                     const Padding(
                       padding: EdgeInsets.only(top: 4),
                       child: Text(
-                        'Press and hold the map to drop one.',
+                        'Press and hold the map to mark one.',
                         style: SonicTheme.body,
                       ),
                     ),
-                  for (final poi in rings)
+                  for (final poi in spots)
                     InkWell(
                       onTap: () => context
                           .read<LaunchableMapsCubit>()
@@ -175,7 +175,7 @@ class SonicRouteDetail extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(vertical: 7),
                         child: Row(
                           children: [
-                            const SonicRingIcon(size: 16),
+                            const SonicSpotIcon(size: 16),
                             const SizedBox(width: 10),
                             Expanded(
                               child: Text(

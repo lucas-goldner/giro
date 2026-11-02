@@ -165,7 +165,7 @@ class _SonicRecordState extends State<_SonicRecord> {
                       child: SafeArea(
                         child: Padding(
                           padding: const EdgeInsets.only(top: 118),
-                          child: SonicRingChip(
+                          child: SonicHudChip(
                             onTap: context.navigator.pop,
                             child: const Text('◀  BACK'),
                           ),

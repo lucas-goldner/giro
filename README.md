@@ -16,7 +16,7 @@ $ flutter run --flavor prod -t lib/main_prod.dart
 
 The UI is a Sonic Generations-style game HUD (`lib/design/sonic/`, Barlow
 Condensed bundled under `assets/fonts/`, SIL OFL). Walks are stages, saved
-places are rings, the week's distance is the score, and every walk gets a
+places are spots, the week's distance is the score, and every walk gets a
 rank (S/A/B/C) from how much *new ground* it covered: the share of its
 points farther than 60 m from any earlier walk (`SonicStats`). Two more
 explorations (Zenly × Apple and the Sonic concept itself) live in

@@ -8,12 +8,12 @@ import 'package:giro/core/model/poi.dart';
 import 'package:giro/design/shared/walk_stats.dart';
 import 'package:giro/design/sonic/sonic_theme.dart';
 
-/// Rings: every saved place, which walks collected it, open it in Maps,
-/// swipe to drop it.
+/// Spots: every saved place, which walks visited it, open it in Maps,
+/// swipe to remove it.
 class SonicPlacesPage extends StatelessWidget {
   const SonicPlacesPage({super.key});
 
-  static const _ringRadiusMeters = 400.0;
+  static const _spotRadiusMeters = 400.0;
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +37,7 @@ class SonicPlacesPage extends StatelessWidget {
                   children: [
                     Row(
                       children: [
-                        SonicRingChip(
+                        SonicHudChip(
                           onTap: context.navigator.pop,
                           child: const Text('◀  BACK'),
                         ),
@@ -47,7 +47,7 @@ class SonicPlacesPage extends StatelessWidget {
                             fit: BoxFit.scaleDown,
                             alignment: Alignment.centerRight,
                             child: Text(
-                              'RING COLLECTION',
+                              'SPOT COLLECTION',
                               style: SonicTheme.label.copyWith(
                                 color: SonicTheme.gold,
                               ),
@@ -57,11 +57,11 @@ class SonicPlacesPage extends StatelessWidget {
                       ],
                     ),
                     const SizedBox(height: 10),
-                    SonicHudText('${pois.length} RINGS', size: 34),
+                    SonicHudText('${pois.length} SPOTS', size: 34),
                     const SizedBox(height: 6),
                     const Text(
-                      'Press and hold the map to drop a ring. Swipe one away '
-                      'to lose it.',
+                      'Press and hold the map to mark a spot. Swipe one away '
+                      'to remove it.',
                       style: SonicTheme.body,
                     ),
                   ],
@@ -78,7 +78,7 @@ class SonicPlacesPage extends StatelessWidget {
                         .where(
                           (route) =>
                               route.distanceTo(poi.coordinates) <=
-                              _ringRadiusMeters,
+                              _spotRadiusMeters,
                         )
                         .length;
                     return Dismissible(
@@ -98,7 +98,7 @@ class SonicPlacesPage extends StatelessWidget {
                       ),
                       onDismissed: (_) =>
                           context.read<PoiCubit>().removePOI(poi),
-                      child: _RingCard(poi: poi, collectedBy: collectedBy),
+                      child: _SpotCard(poi: poi, collectedBy: collectedBy),
                     );
                   },
                 ),
@@ -111,8 +111,8 @@ class SonicPlacesPage extends StatelessWidget {
   }
 }
 
-class _RingCard extends StatelessWidget {
-  const _RingCard({required this.poi, required this.collectedBy});
+class _SpotCard extends StatelessWidget {
+  const _SpotCard({required this.poi, required this.collectedBy});
 
   final POI poi;
   final int collectedBy;
@@ -120,7 +120,7 @@ class _RingCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Semantics(
     button: true,
-    label: 'Ring ${poi.name}',
+    label: 'Spot ${poi.name}',
     child: ExcludeSemantics(
       child: Material(
         color: Colors.transparent,
@@ -151,7 +151,7 @@ class _RingCard extends StatelessWidget {
                     shape: BoxShape.circle,
                   ),
                   alignment: Alignment.center,
-                  child: const SonicRingIcon(size: 24),
+                  child: const SonicSpotIcon(size: 24),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
@@ -173,8 +173,8 @@ class _RingCard extends StatelessWidget {
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        'Dropped ${poi.createdAt.toLocalizedString(context)} · '
-                        'collected by $collectedBy '
+                        'Marked ${poi.createdAt.toLocalizedString(context)} · '
+                        'visited by $collectedBy '
                         'walk${collectedBy == 1 ? '' : 's'}',
                         style: SonicTheme.body,
                       ),
