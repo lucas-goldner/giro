@@ -25,9 +25,13 @@ void main() {
       Uri.base.queryParameters['style'] != 'material';
   PlatformStyle.forceMockMap = Uri.base.queryParameters['map'] == 'mock';
   // Redesign proposals (lib/redesign/):
-  // `?design=journal|glass|blocks|clean|swiss|tonal|outdoor|mono|zenly|sport`.
-  DesignVariant.current =
-      DesignVariant.fromName(Uri.base.queryParameters['design']);
+  // `?design=sonic` (default) or one of the earlier proposals
+  // (journal|glass|blocks|clean|swiss|tonal|outdoor|mono|zenly|sport);
+  // `?design=legacy` shows the pre-redesign screens.
+  final design = Uri.base.queryParameters['design'];
+  DesignVariant.current = DesignVariant.isLegacy(design)
+      ? null
+      : DesignVariant.fromName(design) ?? DesignVariant.sonic;
   GeolocatorPlatform.instance =
       MockGeolocatorPlatform(path: SampleData.recordingPath);
 

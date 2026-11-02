@@ -3,8 +3,13 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:giro/core/model/flavor_config.dart';
 import 'package:giro/core/platform_style.dart';
+import 'package:giro/design/sonic/sonic_home.dart';
+import 'package:giro/design/sonic/sonic_record_page.dart';
+import 'package:giro/design/sonic/sonic_route_detail.dart';
+import 'package:giro/design/sonic/sonic_walks_page.dart';
 import 'package:giro/giro_app.dart';
 import 'package:giro/poi_management/widgets/poi_card.dart';
+import 'package:giro/redesign/design_variant.dart';
 import 'package:giro/routes_management/widgets/route_card.dart';
 import 'package:giro/web_mocks/mock_geolocator_platform.dart';
 import 'package:giro/web_mocks/mock_platform_map.dart';
@@ -16,11 +21,13 @@ void main() {
     FlavorConfig(flavor: Flavor.dev, name: 'Giro Test');
     PlatformStyle.forceCupertino = true;
     PlatformStyle.forceMockMap = true;
-    GeolocatorPlatform.instance =
-        MockGeolocatorPlatform(path: SampleData.recordingPath);
+    GeolocatorPlatform.instance = MockGeolocatorPlatform(
+      path: SampleData.recordingPath,
+    );
   });
 
-  Future<void> pumpApp(WidgetTester tester) async {
+  Future<void> pumpApp(WidgetTester tester, {DesignVariant? design}) async {
+    DesignVariant.current = design;
     // main() defers the first frame until the dependencies are loaded and
     // GiroApp releases it, so the test binding has to defer it as well.
     tester.binding.deferFirstFrame();
@@ -33,8 +40,7 @@ void main() {
     await tester.pumpAndSettle();
   }
 
-  testWidgets('boots on the web mocks and shows the mock map',
-      (tester) async {
+  testWidgets('boots on the web mocks and shows the mock map', (tester) async {
     await pumpApp(tester);
 
     expect(find.byType(MockPlatformMap), findsOneWidget);
@@ -42,8 +48,7 @@ void main() {
     expect(find.text('View walked routes'), findsOneWidget);
   });
 
-  testWidgets('lists the seeded routes and points of interest',
-      (tester) async {
+  testWidgets('lists the seeded routes and points of interest', (tester) async {
     await pumpApp(tester);
 
     await tester.tap(find.text('View walked routes'));
@@ -57,6 +62,42 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.byType(PoiCard), findsNWidgets(SampleData.pois.length));
     expect(find.text('Shibuya Crossing'), findsOneWidget);
+  });
+
+  group('Sonic design', () {
+    Future<void> pumpSonic(WidgetTester tester) =>
+        pumpApp(tester, design: DesignVariant.sonic);
+
+    testWidgets('shows home, stage select and a stage result', (tester) async {
+      await pumpSonic(tester);
+      expect(find.byType(SonicHome), findsOneWidget);
+      expect(find.text('GO!'), findsOneWidget);
+
+      await tester.tap(find.bySemanticsLabel('All walks'));
+      await tester.pumpAndSettle();
+      expect(find.byType(SonicWalksPage), findsOneWidget);
+
+      await tester.tap(find.bySemanticsLabel(RegExp('^Stage .* rank')).first);
+      await tester.pumpAndSettle();
+      expect(find.byType(SonicRouteDetail), findsOneWidget);
+      // The HUD text is drawn as layered copies (drop, outline, fill).
+      expect(find.text('STAGE CLEAR!'), findsWidgets);
+    });
+
+    testWidgets('records a walk from the HUD', (tester) async {
+      await pumpSonic(tester);
+      await tester.tap(find.bySemanticsLabel('Record'));
+      await tester.pumpAndSettle();
+      expect(find.byType(SonicRecordPage), findsOneWidget);
+
+      await tester.tap(find.bySemanticsLabel('Start recording'));
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 11));
+      await tester.pumpAndSettle();
+      await tester.tap(find.bySemanticsLabel('Stop recording'));
+      await tester.pumpAndSettle();
+      expect(find.bySemanticsLabel('View finished recording'), findsOneWidget);
+    });
   });
 
   testWidgets('records a walk with the simulated location', (tester) async {

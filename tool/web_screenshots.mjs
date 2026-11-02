@@ -73,8 +73,15 @@ async function snap(page, name) {
 // role="button"> nodes once semantics is enabled (main_web.dart does that).
 async function tap(page, label) {
   const button = page.getByRole('button', { name: label }).first();
-  await button.waitFor({ state: 'visible', timeout: 15000 });
-  await button.click();
+  await button.waitFor({ state: 'attached', timeout: 15000 });
+  try {
+    await button.click({ timeout: 4000 });
+  } catch {
+    // Skewed/transformed buttons fail Playwright's stability check even
+    // when the tap went through. If the button is gone, the screen already
+    // changed; otherwise dispatch the click on the semantics node directly.
+    if (await button.count()) await button.dispatchEvent('click', {}, { timeout: 3000 }).catch(() => {});
+  }
   await page.waitForTimeout(900);
 }
 
@@ -126,10 +133,21 @@ async function main() {
       await snap(page, 'home');
       await tap(page, walksLabel);
       await snap(page, 'walks');
-      if (design === 'clean') {
-        // Walk rows are list tiles (buttons labelled with their stats).
+      if (design === 'clean' || design === 'sonic') {
+        // Walk rows are buttons labelled with their stats.
         await tap(page, /km/);
         await snap(page, 'walk_detail');
+      }
+      if (design === 'sonic') {
+        await tap(page, 'All walks');
+        await back(page);
+        await tap(page, 'Record');
+        await snap(page, 'record_ready');
+        await tap(page, 'Start recording');
+        await page.waitForTimeout(11500);
+        await snap(page, 'record_live');
+        await tap(page, 'Stop recording');
+        await snap(page, 'record_clear');
       }
       return;
     }

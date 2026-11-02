@@ -44,3 +44,16 @@ dependency_overrides:
 
 flutter:
   uses-material-design: true
+  fonts:
+    # Sonic Generations-style HUD type (SIL Open Font License, see
+    # assets/fonts/OFL-BarlowCondensed.txt).
+    - family: BarlowCondensed
+      fonts:
+        - asset: assets/fonts/BarlowCondensed-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/BarlowCondensed-ExtraBoldItalic.ttf
+          weight: 800
+          style: italic
+        - asset: assets/fonts/BarlowCondensed-BlackItalic.ttf
+          weight: 900
+          style: italic

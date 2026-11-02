@@ -37,12 +37,20 @@ enum DesignVariant {
 
   /// Sport: Nike Run Club. White, bold title with text tabs, faded map and
   /// one huge volt-yellow START circle.
-  sport;
+  sport,
+
+  /// Sonic Generations: the chosen design (lib/design/sonic/). Game HUD
+  /// over the fog of war: stages, rings, ranks.
+  sonic;
 
   static DesignVariant? current;
 
+  /// `legacy` is accepted as "no redesign" so the old screens stay
+  /// reachable on the web preview.
   static DesignVariant? fromName(String? name) =>
       values.where((variant) => variant.name == name).firstOrNull;
+
+  static bool isLegacy(String? name) => name == 'legacy';
 
   RedesignPalette get palette => switch (this) {
     DesignVariant.journal => const RedesignPalette(
@@ -136,6 +144,16 @@ enum DesignVariant {
       muted: Color(0xFF757575),
       radius: 12,
       brightness: Brightness.light,
+    ),
+    DesignVariant.sonic => const RedesignPalette(
+      background: Color(0xFF0A1D58),
+      surface: Color(0xFF0F2A84),
+      primary: Color(0xFF1B5BFF),
+      accent: Color(0xFFFFC400),
+      ink: Color(0xFFFFFFFF),
+      muted: Color(0xFFB9D3FF),
+      radius: 14,
+      brightness: Brightness.dark,
     ),
     DesignVariant.blocks => const RedesignPalette(
       background: Color(0xFFFFF8E7),

@@ -12,6 +12,18 @@ Run prod
 $ flutter run --flavor prod -t lib/main_prod.dart
 ```
 
+## Design
+
+The app's design is the Sonic Generations-style HUD in `lib/design/sonic/`
+(Barlow Condensed, bundled under `assets/fonts/`, SIL OFL). Walks are
+stages, saved places are rings, the week's distance is the score, and every
+walk gets a rank (S/A/B/C) from how much *new ground* it covered: the share
+of its points farther than 60 m from any earlier walk (`SonicStats`).
+
+The earlier proposals (`lib/redesign/`) stay reachable on the web preview
+with `?design=clean|journal|glass|blocks|swiss|tonal|outdoor|mono|zenly|sport`,
+and `?design=legacy` shows the original screens.
+
 ## Fog of war
 
 The map starts out white. Every walk (and every saved place) uncovers the
