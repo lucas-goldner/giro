@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:giro/core/cubit/launchable_maps_cubit.dart';
@@ -7,11 +6,11 @@ import 'package:giro/core/cubit/walk_routes_cubit.dart';
 import 'package:giro/core/extensions.dart';
 import 'package:giro/core/model/walk_route.dart';
 import 'package:giro/core/widgets/platform_map_view.dart';
+import 'package:giro/design/shared/walk_stats.dart';
 import 'package:giro/design/sonic/sonic_map.dart';
+import 'package:giro/design/sonic/sonic_ring_dialog.dart';
 import 'package:giro/design/sonic/sonic_stats.dart';
 import 'package:giro/design/sonic/sonic_theme.dart';
-import 'package:giro/map/widgets/poi_add_dialog.dart';
-import 'package:giro/redesign/walk_stats.dart';
 import 'package:platform_maps_flutter/platform_maps_flutter.dart';
 
 /// "Stage clear!" result screen for one walk: rank, time, pace, how much
@@ -23,18 +22,12 @@ class SonicRouteDetail extends StatelessWidget {
 
   static const _ringRadiusMeters = 400.0;
 
-  void _addPlace(BuildContext context, LatLng location) =>
-      showCupertinoDialog<void>(
-        context: context,
-        builder: (dialogContext) => PoiAddDialog(
-          location: location,
-          onAdd: (poi) {
-            context.read<PoiCubit>().addPOI(poi);
-            dialogContext.navigator.pop();
-          },
-          onCancel: dialogContext.navigator.pop,
-        ),
-      );
+  Future<void> _addPlace(BuildContext context, LatLng location) async {
+    final poi = await showSonicRingDialog(context, location);
+    if (poi != null && context.mounted) {
+      context.read<PoiCubit>().addPOI(poi);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {

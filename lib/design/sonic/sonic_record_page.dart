@@ -6,13 +6,13 @@ import 'package:giro/core/cubit/walk_routes_cubit.dart';
 import 'package:giro/core/extensions.dart';
 import 'package:giro/core/model/walk_route.dart';
 import 'package:giro/core/repository/walk_routes_repo.dart';
+import 'package:giro/core/router.dart';
 import 'package:giro/core/widgets/platform_map_view.dart';
+import 'package:giro/design/shared/walk_stats.dart';
 import 'package:giro/design/sonic/sonic_map.dart';
 import 'package:giro/design/sonic/sonic_stats.dart';
 import 'package:giro/design/sonic/sonic_theme.dart';
 import 'package:giro/record_walk/cubit/record_walk_cubit.dart';
-import 'package:giro/redesign/walk_stats.dart';
-import 'package:giro/route_detail/screen/route_detail.dart';
 import 'package:platform_maps_flutter/platform_maps_flutter.dart';
 
 /// Recording as an act in progress: HUD timer, a gold ring gauge for new
@@ -244,7 +244,7 @@ class _SonicRecordState extends State<_SonicRecord> {
                           fontSize: 22,
                           height: 56,
                           onTap: () => context.navigator.pushReplacementNamed(
-                            RouteDetailPage.routeName,
+                            AppRoutes.walkDetail,
                             arguments: state.route,
                           ),
                         ),

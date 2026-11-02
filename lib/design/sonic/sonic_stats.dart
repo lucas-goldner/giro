@@ -1,7 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:giro/core/model/walk_route.dart';
-import 'package:giro/redesign/walk_stats.dart';
+import 'package:giro/design/shared/walk_stats.dart';
 import 'package:platform_maps_flutter/platform_maps_flutter.dart';
 
 /// "New ground" and ranks: the game layer on top of the fog of war.

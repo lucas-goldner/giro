@@ -14,15 +14,13 @@ $ flutter run --flavor prod -t lib/main_prod.dart
 
 ## Design
 
-The app's design is the Sonic Generations-style HUD in `lib/design/sonic/`
-(Barlow Condensed, bundled under `assets/fonts/`, SIL OFL). Walks are
-stages, saved places are rings, the week's distance is the score, and every
-walk gets a rank (S/A/B/C) from how much *new ground* it covered: the share
-of its points farther than 60 m from any earlier walk (`SonicStats`).
-
-The earlier proposals (`lib/redesign/`) stay reachable on the web preview
-with `?design=clean|journal|glass|blocks|swiss|tonal|outdoor|mono|zenly|sport`,
-and `?design=legacy` shows the original screens.
+The UI is a Sonic Generations-style game HUD (`lib/design/sonic/`, Barlow
+Condensed bundled under `assets/fonts/`, SIL OFL). Walks are stages, saved
+places are rings, the week's distance is the score, and every walk gets a
+rank (S/A/B/C) from how much *new ground* it covered: the share of its
+points farther than 60 m from any earlier walk (`SonicStats`). Two more
+explorations (Zenly × Apple and the Sonic concept itself) live in
+`docs/design/giro-concepts.html`.
 
 ## Fog of war
 
@@ -54,8 +52,8 @@ $ flutter run -d chrome -t lib/main_web.dart
 $ flutter run -d web-server -t lib/main_web.dart --web-port 8080
 ```
 
-Append `?style=material` to the URL to see the Material variant instead of the
-Cupertino one, and `?map=mock` to swap the Google map for the canvas mock.
+Append `?style=material` to the URL for Material page transitions instead of
+Cupertino ones, and `?map=mock` to swap the Google map for the canvas mock.
 
 The Maps JavaScript API is loaded in `web/index.html` without an API key, so
 Google renders it dimmed with a "for development purposes only" watermark and

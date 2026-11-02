@@ -2,83 +2,37 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:giro/core/model/walk_route.dart';
 import 'package:giro/core/platform_style.dart';
+import 'package:giro/design/sonic/sonic_bootstrap.dart';
 import 'package:giro/design/sonic/sonic_home.dart';
+import 'package:giro/design/sonic/sonic_import_page.dart';
+import 'package:giro/design/sonic/sonic_places_page.dart';
 import 'package:giro/design/sonic/sonic_record_page.dart';
 import 'package:giro/design/sonic/sonic_route_detail.dart';
 import 'package:giro/design/sonic/sonic_walks_page.dart';
-import 'package:giro/map/screen/giro_map.dart';
-import 'package:giro/poi_management/screen/poi_management.dart';
-import 'package:giro/record_walk/screen/record_walk.dart';
-import 'package:giro/redesign/blocks_home.dart';
-import 'package:giro/redesign/clean/clean_home.dart';
-import 'package:giro/redesign/clean/clean_route_detail.dart';
-import 'package:giro/redesign/clean/clean_walks_page.dart';
-import 'package:giro/redesign/design_variant.dart';
-import 'package:giro/redesign/glass_home.dart';
-import 'package:giro/redesign/journal_home.dart';
-import 'package:giro/redesign/redesign_bootstrap.dart';
-import 'package:giro/redesign/redesign_routes_page.dart';
-import 'package:giro/redesign/styles/mono_home.dart';
-import 'package:giro/redesign/styles/outdoor_home.dart';
-import 'package:giro/redesign/styles/sport_home.dart';
-import 'package:giro/redesign/styles/swiss_home.dart';
-import 'package:giro/redesign/styles/tonal_home.dart';
-import 'package:giro/redesign/styles/zenly_home.dart';
-import 'package:giro/route_detail/screen/route_detail.dart';
-import 'package:giro/routes_management/screen/routes_management.dart';
+
+/// Named routes of the app.
+abstract final class AppRoutes {
+  static const String home = '/';
+  static const String walks = '/walks';
+  static const String walkDetail = '/walk';
+  static const String places = '/places';
+  static const String record = '/record';
+  static const String import = '/import';
+}
 
 Route<void>? generateRoutes(RouteSettings settings) => switch (settings.name) {
-  GiroMapPage.routeName => _adaptiveRoute(settings, _home()),
-  RouteManagementPage.routeName => _adaptiveRoute(settings, _routesList()),
-  RouteDetailPage.routeName => _adaptiveRoute(
+  AppRoutes.walks => _adaptiveRoute(settings, const SonicWalksPage()),
+  AppRoutes.walkDetail => _adaptiveRoute(
     settings,
-    _routeDetail(settings.arguments! as WalkRoute),
+    SonicRouteDetail(route: settings.arguments! as WalkRoute),
   ),
-  POIManagementPage.routeName => _adaptiveRoute(
-    settings,
-    const POIManagementPage(),
-  ),
-  RecordWalkPage.routeName => _adaptiveRoute(settings, _recordPage()),
-  _ => _adaptiveRoute(settings, _home()),
+  AppRoutes.places => _adaptiveRoute(settings, const SonicPlacesPage()),
+  AppRoutes.record => _adaptiveRoute(settings, const SonicRecordPage()),
+  AppRoutes.import => _adaptiveRoute(settings, const SonicImportPage()),
+  _ => _adaptiveRoute(settings, const SonicBootstrap(child: SonicHome())),
 };
 
-/// The redesign proposals (see `lib/redesign/`) swap the home screen and the
-/// walks list; everything else is shared.
-Widget _home() => switch (DesignVariant.current) {
-  null => const GiroMapPage(),
-  DesignVariant.journal => const RedesignBootstrap(child: JournalHome()),
-  DesignVariant.glass => const RedesignBootstrap(child: GlassHome()),
-  DesignVariant.blocks => const RedesignBootstrap(child: BlocksHome()),
-  DesignVariant.clean => const RedesignBootstrap(child: CleanHome()),
-  DesignVariant.swiss => const RedesignBootstrap(child: SwissHome()),
-  DesignVariant.tonal => const RedesignBootstrap(child: TonalHome()),
-  DesignVariant.outdoor => const RedesignBootstrap(child: OutdoorHome()),
-  DesignVariant.mono => const RedesignBootstrap(child: MonoHome()),
-  DesignVariant.zenly => const RedesignBootstrap(child: ZenlyHome()),
-  DesignVariant.sport => const RedesignBootstrap(child: SportHome()),
-  DesignVariant.sonic => const RedesignBootstrap(child: SonicHome()),
-};
-
-Widget _routesList() => switch (DesignVariant.current) {
-  null => const RouteManagementPage(),
-  DesignVariant.clean => const CleanWalksPage(),
-  DesignVariant.sonic => const SonicWalksPage(),
-  final variant => RedesignRoutesPage(variant: variant),
-};
-
-Widget _routeDetail(WalkRoute route) => switch (DesignVariant.current) {
-  DesignVariant.clean => CleanRouteDetail(route: route),
-  DesignVariant.sonic => SonicRouteDetail(route: route),
-  _ => RouteDetailPage(route),
-};
-
-Widget _recordPage() => switch (DesignVariant.current) {
-  DesignVariant.sonic => const SonicRecordPage(),
-  _ => const RecordWalkPage(),
-};
-
-Route<void> _adaptiveRoute(RouteSettings settings, Widget child) {
-  return PlatformStyle.isCupertino
-      ? CupertinoPageRoute<void>(builder: (context) => child)
-      : MaterialPageRoute<void>(builder: (context) => child);
-}
+Route<void> _adaptiveRoute(RouteSettings settings, Widget child) =>
+    PlatformStyle.isCupertino
+    ? CupertinoPageRoute<void>(settings: settings, builder: (_) => child)
+    : MaterialPageRoute<void>(settings: settings, builder: (_) => child);

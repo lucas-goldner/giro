@@ -11,8 +11,6 @@
 //                       web-server -t lib/main_web.dart --web-port 8080`)
 //          --out <dir>  screenshot directory (default build/web_screenshots)
 //          --material   open with ?style=material
-//          --design <journal|glass|blocks|clean>  capture a redesign proposal
-//                       (home, walks list and a walk's detail, into <out>/<design>/)
 import { createServer } from 'node:http';
 import { createReadStream, existsSync, mkdirSync, statSync } from 'node:fs';
 import { createRequire } from 'node:module';
@@ -31,8 +29,7 @@ const flag = (name) => {
 const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const outDir = resolve(flag('--out') ?? join(projectRoot, 'build/web_screenshots'));
 const material = args.includes('--material');
-const design = flag('--design');
-const shotDir = design ? join(outDir, design) : outDir;
+const shotDir = outDir;
 mkdirSync(shotDir, { recursive: true });
 
 const mime = {
@@ -107,7 +104,6 @@ async function main() {
     url = `http://127.0.0.1:${server.address().port}/`;
   }
   if (material) url += (url.includes('?') ? '&' : '?') + 'style=material';
-  if (design) url += (url.includes('?') ? '&' : '?') + `design=${design}`;
 
   // Chromium must go through the container's HTTPS proxy to reach Google
   // Maps; the proxy CA is already in the browser's NSS trust store.
@@ -125,63 +121,30 @@ async function main() {
 
   try {
     await page.goto(url, { waitUntil: 'load' });
-    if (design) {
-      const walksLabel = { glass: 'See all', clean: 'See all' }[design] ?? 'All walks';
-      await page.getByRole('button', { name: walksLabel }).first()
-        .waitFor({ state: 'attached', timeout: 60000 });
-      await page.waitForTimeout(1500);
-      await snap(page, 'home');
-      await tap(page, walksLabel);
-      await snap(page, 'walks');
-      if (design === 'clean' || design === 'sonic') {
-        // Walk rows are buttons labelled with their stats.
-        await tap(page, /km/);
-        await snap(page, 'walk_detail');
-      }
-      if (design === 'sonic') {
-        await tap(page, 'All walks');
-        await back(page);
-        await tap(page, 'Record');
-        await snap(page, 'record_ready');
-        await tap(page, 'Start recording');
-        await page.waitForTimeout(11500);
-        await snap(page, 'record_live');
-        await tap(page, 'Stop recording');
-        await snap(page, 'record_clear');
-      }
-      return;
-    }
-    await page.getByRole('button', { name: 'View walked routes' }).first()
+    await page.getByRole('button', { name: 'All walks' }).first()
       .waitFor({ state: 'attached', timeout: 60000 });
     await page.waitForTimeout(1500);
-    await snap(page, 'home_map');
+    await snap(page, 'home');
 
-    await tap(page, 'View walked routes');
-    await snap(page, 'routes');
-    await tap(page, /^Route: /); // list tiles are exposed as labelled buttons
-    await snap(page, 'route_detail_seeded');
-    await back(page);
-    await back(page);
-
-    await tap(page, 'View Point of interests');
-    await snap(page, 'points_of_interest');
+    await tap(page, 'All walks');
+    await snap(page, 'stage_select');
+    await tap(page, /km/); // stage cards are buttons labelled with their stats
+    await snap(page, 'stage_clear');
+    await tap(page, 'All walks');
     await back(page);
 
-    await tap(page, 'Record Walk');
-    await snap(page, 'record_walk_idle');
-    await tap(page, 'Start recording');
-    await page.waitForTimeout(11500); // the cubit samples the mock GPS every 5 s
-    await snap(page, 'record_walk_recording');
-    await tap(page, 'Stop recording');
-    await snap(page, 'record_walk_finished');
-    await tap(page, 'View finished recording');
-    await snap(page, 'route_detail_recorded');
-    await back(page);
+    await tap(page, 'Places');
+    await snap(page, 'rings');
     await back(page);
 
-    // Long-press on the map opens the "Add point of interest" dialog. The
-    // Google map (an HTML platform view) reports a right click as the long
-    // press, the canvas mock needs a real press-and-hold.
+    await tap(page, 'Import');
+    await tap(page, 'Load workouts');
+    await snap(page, 'import');
+    await back(page);
+
+    // Long-press on the map drops a ring. The Google map (an HTML platform
+    // view) reports a right click as the long press, the canvas mock needs a
+    // real press-and-hold.
     try {
       await page.mouse.click(195, 250, { button: 'right' });
       await page.waitForTimeout(600);
@@ -191,18 +154,19 @@ async function main() {
         await page.waitForTimeout(900);
         await page.mouse.up();
       }
-      await snap(page, 'add_poi_dialog');
+      await snap(page, 'drop_ring');
       await tap(page, 'Cancel');
     } catch (error) {
-      console.warn('skipping add-POI dialog:', error.message);
+      console.warn('skipping drop-ring dialog:', error.message);
     }
 
-    await tap(page, 'Import last route');
-    await page.waitForTimeout(1200);
-    await snap(page, 'importer_authorized');
-    await tap(page, 'Import walks');
-    await page.waitForTimeout(1200);
-    await snap(page, 'importer_workouts');
+    await tap(page, 'Record');
+    await snap(page, 'record_ready');
+    await tap(page, 'Start recording');
+    await page.waitForTimeout(11500); // the cubit samples the mock GPS every 5 s
+    await snap(page, 'record_live');
+    await tap(page, 'Stop recording');
+    await snap(page, 'record_clear');
   } finally {
     await browser.close();
     server?.close();

@@ -44,6 +44,18 @@ abstract final class SonicTheme {
   );
 
   static String kilometres(double meters) => (meters / 1000).toStringAsFixed(1);
+
+  static ThemeData get themeData => ThemeData(
+    brightness: Brightness.dark,
+    scaffoldBackgroundColor: navy,
+    colorScheme: const ColorScheme.dark(
+      primary: blue,
+      secondary: gold,
+      surface: navy,
+      error: red,
+    ),
+    useMaterial3: true,
+  );
 }
 
 /// White italic text with a navy outline and a hard blue drop, like a game

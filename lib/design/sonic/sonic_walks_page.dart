@@ -4,12 +4,12 @@ import 'package:giro/core/cubit/poi_cubit.dart';
 import 'package:giro/core/cubit/walk_routes_cubit.dart';
 import 'package:giro/core/extensions.dart';
 import 'package:giro/core/model/walk_route.dart';
+import 'package:giro/core/router.dart';
+import 'package:giro/design/shared/route_preview.dart';
+import 'package:giro/design/shared/walk_stats.dart';
+import 'package:giro/design/sonic/sonic_actions.dart';
 import 'package:giro/design/sonic/sonic_stats.dart';
 import 'package:giro/design/sonic/sonic_theme.dart';
-import 'package:giro/redesign/redesign_actions.dart';
-import 'package:giro/redesign/route_preview.dart';
-import 'package:giro/redesign/walk_stats.dart';
-import 'package:giro/route_detail/screen/route_detail.dart';
 
 /// Stage select: every walk is a card with its rank, route sketch and the
 /// rings collected on it.
@@ -45,11 +45,17 @@ class SonicWalksPage extends StatelessWidget {
                           onTap: context.navigator.pop,
                           child: const Text('◀  BACK'),
                         ),
-                        const Spacer(),
-                        Text(
-                          'STAGE SELECT',
-                          style: SonicTheme.label.copyWith(
-                            color: SonicTheme.gold,
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: FittedBox(
+                            fit: BoxFit.scaleDown,
+                            alignment: Alignment.centerRight,
+                            child: Text(
+                              'STAGE SELECT',
+                              style: SonicTheme.label.copyWith(
+                                color: SonicTheme.gold,
+                              ),
+                            ),
                           ),
                         ),
                       ],
@@ -106,7 +112,7 @@ class SonicWalksPage extends StatelessWidget {
           shadow: SonicTheme.redDeep,
           fontSize: 26,
           height: 56,
-          onTap: () => RedesignActions.record(context),
+          onTap: () => SonicActions.record(context),
         ),
       ),
     );
@@ -139,7 +145,7 @@ class _StageCard extends StatelessWidget {
           child: InkWell(
             borderRadius: BorderRadius.circular(14),
             onTap: () => context.navigator.pushNamed(
-              RouteDetailPage.routeName,
+              AppRoutes.walkDetail,
               arguments: route,
             ),
             child: Container(

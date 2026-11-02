@@ -1,17 +1,15 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:giro/core/cubit/launchable_maps_cubit.dart';
 import 'package:giro/core/cubit/poi_cubit.dart';
 import 'package:giro/core/cubit/walk_routes_cubit.dart';
-import 'package:giro/core/extensions.dart';
 import 'package:giro/core/widgets/platform_map_view.dart';
+import 'package:giro/design/shared/walk_stats.dart';
+import 'package:giro/design/sonic/sonic_actions.dart';
 import 'package:giro/design/sonic/sonic_map.dart';
+import 'package:giro/design/sonic/sonic_ring_dialog.dart';
 import 'package:giro/design/sonic/sonic_stats.dart';
 import 'package:giro/design/sonic/sonic_theme.dart';
-import 'package:giro/map/widgets/poi_add_dialog.dart';
-import 'package:giro/redesign/redesign_actions.dart';
-import 'package:giro/redesign/walk_stats.dart';
 import 'package:platform_maps_flutter/platform_maps_flutter.dart';
 
 /// Home: the fog map is the stage, a navy striped HUD panel holds the
@@ -19,18 +17,12 @@ import 'package:platform_maps_flutter/platform_maps_flutter.dart';
 class SonicHome extends StatelessWidget {
   const SonicHome({super.key});
 
-  void _addPlace(BuildContext context, LatLng location) =>
-      showCupertinoDialog<void>(
-        context: context,
-        builder: (dialogContext) => PoiAddDialog(
-          location: location,
-          onAdd: (poi) {
-            context.read<PoiCubit>().addPOI(poi);
-            dialogContext.navigator.pop();
-          },
-          onCancel: dialogContext.navigator.pop,
-        ),
-      );
+  Future<void> _addPlace(BuildContext context, LatLng location) async {
+    final poi = await showSonicRingDialog(context, location);
+    if (poi != null && context.mounted) {
+      context.read<PoiCubit>().addPOI(poi);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -80,7 +72,7 @@ class SonicHome extends StatelessWidget {
                           const SonicHudText('GIRO', size: 32),
                           const Spacer(),
                           SonicRingChip(
-                            onTap: () => RedesignActions.places(context),
+                            onTap: () => SonicActions.places(context),
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
@@ -150,7 +142,7 @@ class SonicHome extends StatelessWidget {
                         color: SonicTheme.red,
                         shadow: SonicTheme.redDeep,
                         fontSize: 26,
-                        onTap: () => RedesignActions.record(context),
+                        onTap: () => SonicActions.record(context),
                       ),
                     ),
                     const SizedBox(width: 10),
@@ -159,7 +151,7 @@ class SonicHome extends StatelessWidget {
                       child: SonicButton(
                         label: 'Import',
                         caption: 'Health',
-                        onTap: () => RedesignActions.import(context),
+                        onTap: () => SonicActions.import(context),
                       ),
                     ),
                     const SizedBox(width: 10),
@@ -169,7 +161,7 @@ class SonicHome extends StatelessWidget {
                         label: 'Rings',
                         caption: '${pois.length} places',
                         semanticsLabel: 'Places',
-                        onTap: () => RedesignActions.places(context),
+                        onTap: () => SonicActions.places(context),
                       ),
                     ),
                     const SizedBox(width: 10),
@@ -179,7 +171,7 @@ class SonicHome extends StatelessWidget {
                         label: 'Stages',
                         caption: 'All walks',
                         semanticsLabel: 'All walks',
-                        onTap: () => RedesignActions.walks(context),
+                        onTap: () => SonicActions.walks(context),
                       ),
                     ),
                   ],
