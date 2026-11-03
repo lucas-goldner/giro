@@ -3,7 +3,7 @@ import 'package:duration/locale.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:map_launcher/map_launcher.dart';
-import 'package:platform_maps_flutter/platform_maps_flutter.dart';
+import 'package:giro/core/model/geo.dart';
 
 extension BuildContextExtensions on BuildContext {
   ColorScheme get colorScheme => Theme.of(this).colorScheme;

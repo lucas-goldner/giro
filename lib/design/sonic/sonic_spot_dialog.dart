@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:giro/core/model/poi.dart';
 import 'package:giro/design/sonic/sonic_theme.dart';
-import 'package:platform_maps_flutter/platform_maps_flutter.dart';
+import 'package:giro/core/model/geo.dart';
 
 /// "Mark a spot": name a place at [location]. Resolves with the new [POI]
 /// or null when cancelled.

@@ -1,0 +1,107 @@
+## 0.2.0
+
+* Reduce default symbol rendering work during camera movement with cached
+  text shaping and shared glyph atlases. Reference M1 Pro benchmarks with
+  semantics disabled measured up to 95% lower UI-thread frame time (p95).
+* Fix memory growth that could cause crashes during prolonged scrolling by
+  reclaiming retired native tile resources and adapting native and Flutter
+  cache budgets to device memory and memory pressure.
+* Add `MapLibreMap.fillExtrusionRendererBuilder` to hide individual building
+  parts, apply custom fragment materials, and access extruded tile geometry.
+* Add `SymbolSemanticsMode` to control whether default labels appear in the
+  accessibility tree.
+* Fix premature clipping of map and custom GPU geometry close to the camera.
+  `MapLibreGpuMapTransform.viewProjectionMatrix` now uses Flutter GPU's
+  normalized depth range from 0 to 1.
+* Keep visible maps rendering when desktop windows lose focus.
+* Adjust mouse drag inertia.
+
+## 0.1.1
+
+* Keep the user location marker above custom `overlayBuilder` content.
+
+## 0.1.0
+
+* Add application-supplied user location with heading, horizontal accuracy,
+  frame-aligned projection, and customizable Flutter marker builders.
+* Render heatmap and hillshade layers with Flutter GPU, with new layer property
+  types and controller methods.
+* Add externally controlled cameras through `MapLibreMap.cameraPosition` and
+  configurable viewport correction through `CameraConstrainMode`.
+* Expose adopted camera and viewport metadata through `MapFrameState`,
+  `onFrame`, `MapLibreMapController.frameState`, and `overlayBuilder`.
+* Add heatmap and hillshade controls, foreground location and follow controls,
+  and an Android TV map explorer to the examples.
+* Reduce default symbol update work, native draw command memory, and offscreen
+  planning overhead.
+* Keep consecutive partial camera updates in call order without restoring
+  stale camera values.
+* Complete scroll-wheel gestures and reject cancelled two-finger taps and
+  unintended pan flings.
+* Preserve Android HTTP cancellation and allow long style paint transitions
+  to complete.
+* Raise the minimum iOS version to 15.0.
+
+## 0.0.7
+
+* Fix Vulkan rendering crashes on certain Android devices and preserve
+  previously drawn layers.
+* Fix line label scaling and spacing on tilted maps.
+* Keep custom overlays aligned with the map when it resizes, including during
+  initialization.
+* Fix bounds spanning all longitudes being treated as a single meridian,
+  which could make the camera zoom in too far.
+* Make circle edge rendering consistent across blur widths and GPU drivers.
+
+## 0.0.6
+
+* Reduce symbol overlay rendering time by reusing unchanged widgets, avoiding
+  layout work during camera movement, and batching symbol widget rendering.
+
+## 0.0.5
+
+* Improve rendering performance by reusing GPU resources across frames.
+* Add Shift-drag camera tilt and Ctrl-drag rotation on Windows and Linux, plus
+  three-finger trackpad tilt on macOS.
+* Show Flutter-rendered symbol and text widgets wherever the same location
+  appears more than once in a wide viewport at low zoom, and add
+  `MapLibreMapController.toScreenOffsets` for custom overlays.
+* Fix Linux startup failures caused by libpng 1.6 patch-version differences.
+
+## 0.0.4
+
+* Render symbol icons and text with closer MapLibre parity, including
+  data-driven styling, halos, formatted text, inline images, multiple sprite
+  sources, and style layer ordering.
+* Make symbol text and icons follow roads and other lines, with support for
+  bidirectional and vertical text.
+* Add opt-in `SymbolCompositingMode.fastOverlay` for maps where speed is
+  preferred over exact style layer ordering.
+
+## 0.0.3
+
+* Add Linux and Windows support for x64 and ARM64 in debug and profile modes.
+* Upgrade to Flutter 3.47.0 and Dart 3.13.0.
+
+## 0.0.2
+
+* Improve Flutter GPU setup instructions and API documentation in the README.
+* Fix published shader bundle packaging and runtime lookup.
+* Restrict `IgnorePointer` to the default symbol builders instead of wrapping
+  every widget returned by custom symbol icon and text builders.
+* Stop the shared native runtime before macOS process teardown to prevent
+  shutdown crashes.
+
+## 0.0.1
+
+* Initial development release for iOS, Android, and macOS.
+* Render MapLibre fill, line, circle, raster, symbol, and fill-extrusion layers
+  with Flutter GPU.
+* Provide map camera, gesture, style, source, layer, filter, sprite, and
+  attribution APIs.
+* Support custom Flutter GPU map rendering with geographic transforms and
+  optional shared depth for 3D content.
+* Render idle maps on demand and suspend frame scheduling with the application
+  lifecycle.
+* Include examples for landmark markers, style controls, and custom GPU
+  rendering.

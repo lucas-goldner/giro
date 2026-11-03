@@ -33,11 +33,12 @@
   <link rel="manifest" href="manifest.json">
 
   <!--
-    Google Maps JavaScript API for google_maps_flutter_web. Without a key the
-    map still renders (dimmed, "for development purposes only"), which is fine
-    for previewing the UI. For production add `?key=YOUR_API_KEY` to the URL.
+    MapLibre GL JS for the web preview. It renders the same style
+    (assets/map/sonic_style.json on OpenFreeMap tiles) as the iOS app, which
+    uses MapLibre through Flutter GPU instead.
   -->
-  <script src="https://maps.googleapis.com/maps/api/js"></script>
+  <link href="https://unpkg.com/maplibre-gl@5/dist/maplibre-gl.css" rel="stylesheet" />
+  <script src="https://unpkg.com/maplibre-gl@5/dist/maplibre-gl.js"></script>
 </head>
 <body>
   <!--

@@ -1,0 +1,40 @@
+library;
+
+export 'src/geo/camera.dart' hide CameraUpdateKind;
+export 'src/geo/map_frame_state.dart';
+export 'src/geo/map_user_location.dart';
+export 'src/labels/label_data.dart'
+    show
+        LabelAffineTransform,
+        LabelData,
+        LabelPathPoint,
+        LabelTextJustify,
+        LabelTextSection;
+export 'src/fill_extrusion/fill_extrusion_renderer.dart';
+export 'src/gpu/render_context.dart';
+export 'src/widgets/maplibre_map.dart';
+export 'src/widgets/user_location_marker.dart';
+export 'src/controller/maplibre_map_controller.dart';
+export 'src/controller/layer_properties.dart';
+export 'src/widgets/controls/control_options.dart'
+    show
+        AttributionButtonPosition,
+        AttributionButtonWidgetBuilder,
+        AttributionLinkCallback,
+        CompassViewPosition,
+        CompassWidgetBuilder,
+        LogoViewPosition,
+        MapControlCorner,
+        ScaleBarValue,
+        ScaleControlPosition,
+        ScaleControlWidgetBuilder,
+        ScaleControlUnit;
+export 'src/geo/camera_constraints.dart';
+export 'src/state/gesture/gesture_options.dart';
+export 'src/controller/styles.dart';
+export 'src/sprites/sprite_atlas.dart'
+    show SpriteAtlas, SpriteIcon, SpriteIconWidget, SpriteTextFit;
+export 'src/widgets/symbols/map_symbol.dart'
+    show MapSymbol, SymbolWidgetBuilder;
+export 'src/widgets/symbols/symbol_overlay.dart'
+    show MapSymbolOverlay, SymbolSemanticsMode;

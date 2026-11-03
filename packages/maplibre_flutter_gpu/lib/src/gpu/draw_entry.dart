@@ -1,0 +1,227 @@
+import 'package:flutter_gpu/gpu.dart' as gpu;
+
+import '../frame/pipeline_key.dart';
+import '../frame/offscreen_pass_plan.dart';
+import '../frame/render_pass_plan.dart';
+import '../frame/ubo_abi.dart';
+import 'fill_extrusion_customizer.dart';
+import 'pipeline_registry.dart';
+import 'resource_cache.dart';
+
+/// One draw command decoded into the state required by a render pass.
+class DrawEntry(
+  /// Byte offset of this command inside the exported command block.
+  var int commandOffset,
+  @override var int shader,
+  var int drawMode,
+
+  /// DrawCommandFlags bitset.
+  @override var int flags,
+  @override var int layer,
+  var int vertexCount,
+  var int indexCount,
+  var GpuBufferEntry? vertexBuffer,
+  var GpuBufferEntry? indexBuffer,
+
+  /// Dash atlas, gradient ramp, pattern atlas, or raster tile.
+  var gpu.Texture? texture,
+  var int textureFilter,
+  var int stencilReference,
+  @override var int stencilMode, {
+
+  /// Native sublayer order retained after the command snapshot is released.
+  var int subLayerIndex = 0,
+}) implements RenderPassPlanningEntryView, OffscreenPlanningEntryView {
+  // Flutter GPU's HostBuffer rotates through four DeviceBuffers. Retaining one
+  // view bundle per ring slot removes steady-state wrapper allocation without
+  // keeping an unbounded history of transient uniform buffers.
+  static const _uniformBufferRingSize = 4;
+
+  /// The color-pass pipeline selected for this entry.
+  RenderPipelineKey? pipelineKey;
+
+  /// The depth-prepass pipeline, for fill extrusion only.
+  RenderPipelineKey? depthPipelineKey;
+
+  /// An application material pipeline that replaces [pipelineKey].
+  ResolvedPipeline? customPipeline;
+
+  /// The vertex stream drawn by [customPipeline].
+  GpuBufferEntry? materialVertexBuffer;
+
+  /// Application vertex attributes bound to the second vertex buffer slot.
+  GpuBufferEntry? customVertexBuffer;
+
+  /// The renderer state that customized this fill-extrusion entry.
+  FillExtrusionEntryCustomization? fillExtrusionCustomization;
+
+  @override
+  Object? get pipelineIdentity => customPipeline ?? pipelineKey;
+
+  /// Removes renderer customizations without changing native resources.
+  void clearFillExtrusionCustomization() {
+    customPipeline = null;
+    materialVertexBuffer = null;
+    customVertexBuffer = null;
+    fillExtrusionCustomization = null;
+  }
+
+  @override
+  Object? get depthPipelineIdentity => depthPipelineKey;
+
+  @override
+  var fillExtrusionOpacity = 1.0;
+
+  /// Offscreen output for preparation draws, or sampled input for composition.
+  @override
+  var renderTargetId = 0;
+  @override
+  var renderTargetWidth = 0;
+  @override
+  var renderTargetHeight = 0;
+
+  /// Offscreen texture resolved before recording the main map passes.
+  gpu.Texture? sampledRenderTarget;
+  var drawableUniformOffset = 0;
+  var drawableUniformLength = 0;
+  var propsUniformOffset = 0;
+  var propsUniformLength = 0;
+  var tilePropsUniformOffset = 0;
+  var tilePropsUniformLength = 0;
+  final _uniformViewCache = <UniformBindingViews>[];
+  var _uniformViewCursor = 0;
+
+  /// Resets this entry for another command while retaining reusable uniform
+  /// views.
+  void reset(
+    int nextCommandOffset,
+    int nextShader,
+    int nextDrawMode,
+    int nextFlags,
+    int nextLayer,
+    int nextVCount,
+    int nextICount,
+    GpuBufferEntry? nextVertexBuffer,
+    GpuBufferEntry? nextIndexBuffer,
+    gpu.Texture? nextTexture,
+    int nextTexFilter,
+    int nextStencilReference,
+    int nextStencilMode, {
+    int nextSubLayerIndex = 0,
+  }) {
+    commandOffset = nextCommandOffset;
+    shader = nextShader;
+    drawMode = nextDrawMode;
+    flags = nextFlags;
+    layer = nextLayer;
+    vertexCount = nextVCount;
+    indexCount = nextICount;
+    vertexBuffer = nextVertexBuffer;
+    indexBuffer = nextIndexBuffer;
+    texture = nextTexture;
+    textureFilter = nextTexFilter;
+    stencilReference = nextStencilReference;
+    stencilMode = nextStencilMode;
+    subLayerIndex = nextSubLayerIndex;
+    pipelineKey = null;
+    depthPipelineKey = null;
+    clearFillExtrusionCustomization();
+    fillExtrusionOpacity = 1.0;
+    renderTargetId = 0;
+    renderTargetWidth = 0;
+    renderTargetHeight = 0;
+    sampledRenderTarget = null;
+    drawableUniformOffset = 0;
+    drawableUniformLength = 0;
+    propsUniformOffset = 0;
+    propsUniformLength = 0;
+    tilePropsUniformOffset = 0;
+    tilePropsUniformLength = 0;
+  }
+
+  /// Drops references to GPU resources and cached uniform views.
+  void releaseResources() {
+    sampledRenderTarget = null;
+    vertexBuffer = null;
+    indexBuffer = null;
+    texture = null;
+    pipelineKey = null;
+    depthPipelineKey = null;
+    clearFillExtrusionCustomization();
+    _uniformViewCache.clear();
+    _uniformViewCursor = 0;
+  }
+
+  /// Returns uniform buffer views for this entry.
+  ///
+  /// Matching views are reused when [cache] is true.
+  UniformBindingViews uniformViews(
+    gpu.DeviceBuffer buffer,
+    int mapGlobalOffset, {
+    required bool cache,
+  }) {
+    if (cache) {
+      for (final views in _uniformViewCache) {
+        if (views.matches(this, buffer, mapGlobalOffset)) return views;
+      }
+    }
+    final views = UniformBindingViews(this, buffer, mapGlobalOffset);
+    if (!cache) return views;
+    if (_uniformViewCache.length < _uniformBufferRingSize) {
+      _uniformViewCache.add(views);
+    } else {
+      _uniformViewCache[_uniformViewCursor] = views;
+      _uniformViewCursor = (_uniformViewCursor + 1) % _uniformBufferRingSize;
+    }
+    return views;
+  }
+}
+
+/// Lazily created uniform buffer views for one draw entry and device buffer.
+class UniformBindingViews(
+  DrawEntry entry,
+  final gpu.DeviceBuffer buffer,
+  final int mapGlobalOffset,
+) {
+  final drawableOffset = entry.drawableUniformOffset;
+  final drawableLength = entry.drawableUniformLength;
+  final propsOffset = entry.propsUniformOffset;
+  final propsLength = entry.propsUniformLength;
+  final tilePropsOffset = entry.tilePropsUniformOffset;
+  final tilePropsLength = entry.tilePropsUniformLength;
+
+  late final drawable = gpu.BufferView(
+    buffer,
+    offsetInBytes: drawableOffset,
+    lengthInBytes: drawableLength,
+  );
+  late final props = gpu.BufferView(
+    buffer,
+    offsetInBytes: propsOffset,
+    lengthInBytes: propsLength,
+  );
+  late final global = gpu.BufferView(
+    buffer,
+    offsetInBytes: mapGlobalOffset,
+    lengthInBytes: RendererUboAbi.mapGlobalBytes,
+  );
+  late final tileProps = gpu.BufferView(
+    buffer,
+    offsetInBytes: tilePropsOffset,
+    lengthInBytes: tilePropsLength,
+  );
+
+  bool matches(
+    DrawEntry entry,
+    gpu.DeviceBuffer nextBuffer,
+    int nextMapGlobalOffset,
+  ) =>
+      identical(buffer, nextBuffer) &&
+      mapGlobalOffset == nextMapGlobalOffset &&
+      drawableOffset == entry.drawableUniformOffset &&
+      drawableLength == entry.drawableUniformLength &&
+      propsOffset == entry.propsUniformOffset &&
+      propsLength == entry.propsUniformLength &&
+      tilePropsOffset == entry.tilePropsUniformOffset &&
+      tilePropsLength == entry.tilePropsUniformLength;
+}

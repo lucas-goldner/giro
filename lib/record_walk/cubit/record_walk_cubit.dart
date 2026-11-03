@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:giro/core/model/walk_route.dart';
 import 'package:giro/core/repository/walk_routes_repo.dart';
-import 'package:platform_maps_flutter/platform_maps_flutter.dart';
+import 'package:giro/core/model/geo.dart';
 
 part 'record_walk_state.dart';
 
