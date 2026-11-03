@@ -58,6 +58,14 @@ $ tool/fetch_maplibre_native.sh
 once (Codemagic does it before `flutter pub get`). iOS needs
 `FLTEnableFlutterGPU` in `Info.plist` and iOS 15.5; Android needs API 29.
 
+The Dart side finds the MapLibre Native functions with
+`DynamicLibrary.process()`, which reads the app executable's export table.
+Xcode's default *Strip Style* ("All Symbols") removes that table from
+release archives, so every Runner configuration sets
+`STRIP_STYLE = non-global` (Flutter's rule for FFI plugins). Without it a
+TestFlight build fails with "Failed to lookup symbol
+'maplibre_session_create'".
+
 ## Fog of war
 
 The map starts out white. Every walk (and every saved spot) uncovers the
