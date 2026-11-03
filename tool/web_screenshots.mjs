@@ -85,7 +85,9 @@ async function tap(page, label) {
 async function back(page) {
   const backButton = page.getByRole('button', { name: /back/i }).first();
   if (await backButton.count()) {
-    await backButton.click();
+    // Over a map platform view Playwright can judge the chip obscured; the
+    // semantics node carries the tap action, so dispatching the click works.
+    await backButton.click({ timeout: 4000 }).catch(() => backButton.dispatchEvent('click'));
   } else {
     await page.goBack();
   }
@@ -117,7 +119,11 @@ async function main() {
     hasTouch: true,
   });
   page.on('pageerror', (e) => console.error('page error:', e.message));
-  page.on('console', (m) => { if (m.type() === 'error') console.error('console:', m.text()); });
+  page.on('console', (m) => {
+    // VERBOSE=1 prints every console line (Flutter reports framework errors
+    // through console.log in release builds).
+    if (m.type() === 'error' || process.env.VERBOSE) console.error('console:', m.text());
+  });
 
   try {
     await page.goto(url, { waitUntil: 'load' });
@@ -140,6 +146,24 @@ async function main() {
     await tap(page, 'Import');
     await tap(page, 'Load workouts');
     await snap(page, 'import');
+    await back(page);
+
+    await tap(page, 'Import');
+    await tap(page, 'Import everything');
+    await page.waitForTimeout(2500);
+    await snap(page, 'import_all');
+    await back(page);
+
+    await tap(page, 'Options');
+    await snap(page, 'options');
+    await tap(page, 'Download map area');
+    await page.waitForTimeout(2500);
+    await snap(page, 'map_download');
+    await tap(page, 'Download area');
+    await page.waitForTimeout(1200);
+    await snap(page, 'map_download_progress');
+    await page.waitForTimeout(6000);
+    await back(page);
     await back(page);
 
     // Long-press on the map marks a spot. The Google map (an HTML platform

@@ -44,6 +44,12 @@ class _MockPlatformMapState extends State<MockPlatformMap> {
   bool _userMovedCamera = false;
 
   @override
+  void initState() {
+    super.initState();
+    _reportCamera();
+  }
+
+  @override
   void didUpdateWidget(MockPlatformMap oldWidget) {
     super.didUpdateWidget(oldWidget);
     final target = widget.initialCameraPosition.target;

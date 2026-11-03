@@ -7,7 +7,7 @@ part 'healthkit_state.dart';
 
 class HealthkitCubit extends Cubit<HealthKitState> {
   HealthkitCubit(this._healthkitRepo)
-      : super(const HealthKitStateUninitialized());
+    : super(const HealthKitStateUninitialized());
   final HealthkitRepo _healthkitRepo;
 
   bool get isAuthorized => state.authorized;
@@ -21,13 +21,48 @@ class HealthkitCubit extends Cubit<HealthKitState> {
     );
   }
 
+  /// Walks through the whole Health history in pages of [pageSize], calling
+  /// [onPage] for each page so callers can save as they go.
+  Future<void> retrieveAll({
+    int pageSize = 25,
+    void Function(List<WalkWorkout> page)? onPage,
+  }) async {
+    if (state is! HealthKitStateAuthorized) {
+      return;
+    }
+    final all = <WalkWorkout>[];
+    DateTime? before;
+    emit(HealthKitStateImporting(workouts: const [], fetched: 0));
+    while (true) {
+      final page = await _healthkitRepo.retrieveWorkoutsWithRoutes(
+        limit: pageSize,
+        before: before,
+      );
+      if (page.isEmpty) {
+        break;
+      }
+      final sorted = [...page]..sort((a, b) => b.endDate.compareTo(a.endDate));
+      all.addAll(sorted);
+      onPage?.call(sorted);
+      emit(
+        HealthKitStateImporting(workouts: List.of(all), fetched: all.length),
+      );
+      if (page.length < pageSize) {
+        break;
+      }
+      before = sorted.last.endDate;
+    }
+    emit(HealthKitStateAuthorized(workouts: all));
+  }
+
   Future<void> retrieveWorkoutsWithRoutes({int limit = 25}) async {
     if (state is! HealthKitStateAuthorized) {
       return;
     }
     emit(const HealthKitStateLoadingWorkout());
-    final workouts =
-        await _healthkitRepo.retrieveWorkoutsWithRoutes(limit: limit);
+    final workouts = await _healthkitRepo.retrieveWorkoutsWithRoutes(
+      limit: limit,
+    );
     final workoutsOrdered = workouts
       ..sort((a, b) => b.startDate.compareTo(a.startDate));
     emit(

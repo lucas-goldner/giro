@@ -43,7 +43,8 @@ class WalkWorkout extends Equatable {
   }
 
   String get id {
-    final dataString = '''
+    final dataString =
+        '''
 $activityType${startDate.millisecondsSinceEpoch}${endDate.millisecondsSinceEpoch}$duration$totalDistance$totalEnergyBurned
 ''';
     var hash = 0;
@@ -76,18 +77,18 @@ $activityType${startDate.millisecondsSinceEpoch}${endDate.millisecondsSinceEpoch
       duration.toMinutesDuration().toLocalizedString(context);
 
   WalkRoute toRoute() => WalkRoute(
-        coordinates: routes,
-        startDate: startDate.withoutMilliOrMicroSeconds,
-        endDate: endDate.withoutMilliOrMicroSeconds,
-      );
+    coordinates: routes,
+    startDate: startDate.withoutMilliOrMicroSeconds,
+    endDate: endDate.withoutMilliOrMicroSeconds,
+  );
 
   @override
   List<Object?> get props => [
-        activityType,
-        startDate,
-        endDate,
-        duration,
-        totalDistance,
-        totalEnergyBurned,
-      ];
+    activityType,
+    startDate,
+    endDate,
+    duration,
+    totalDistance,
+    totalEnergyBurned,
+  ];
 }

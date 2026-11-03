@@ -33,7 +33,10 @@ class PlatformMapView extends StatefulWidget {
     this.myLocationEnabled = false,
     this.compassEnabled = true,
     this.fogOfWar = true,
+    this.revealRadiusMeters = 90,
+    this.pointRadiusMeters = 72,
     this.onLongPress,
+    this.onCameraMove,
     super.key,
   });
 
@@ -43,7 +46,16 @@ class PlatformMapView extends StatefulWidget {
   final bool myLocationEnabled;
   final bool compassEnabled;
   final bool fogOfWar;
+
+  /// How far around a walk the fog is lifted, in metres.
+  final double revealRadiusMeters;
+
+  /// How far around a spot the fog is lifted, in metres.
+  final double pointRadiusMeters;
   final void Function(LatLng)? onLongPress;
+
+  /// Every camera change the map reports (centre, zoom, bearing, tilt).
+  final void Function(CameraPosition)? onCameraMove;
 
   @override
   State<PlatformMapView> createState() => _PlatformMapViewState();
@@ -79,7 +91,9 @@ class _PlatformMapViewState extends State<PlatformMapView> {
     }
     if (_usesCanvasFog &&
         (!setEquals(widget.polylines, oldWidget.polylines) ||
-            !setEquals(widget.markers, oldWidget.markers))) {
+            !setEquals(widget.markers, oldWidget.markers) ||
+            widget.revealRadiusMeters != oldWidget.revealRadiusMeters ||
+            widget.pointRadiusMeters != oldWidget.pointRadiusMeters)) {
       unawaited(_rebuildMask());
     }
   }
@@ -97,6 +111,8 @@ class _PlatformMapViewState extends State<PlatformMapView> {
     final mask = await ExploredMask.build(
       paths: [for (final polyline in widget.polylines) polyline.points],
       points: [for (final marker in widget.markers) marker.position],
+      revealRadiusMeters: widget.revealRadiusMeters,
+      pointRadiusMeters: widget.pointRadiusMeters,
     );
     if (!mounted || generation != _maskGeneration) {
       mask?.dispose();
@@ -110,6 +126,7 @@ class _PlatformMapViewState extends State<PlatformMapView> {
   void _onCameraMove(CameraPosition position) {
     _cameraReported = true;
     _camera.value = position;
+    widget.onCameraMove?.call(position);
   }
 
   Widget _map() {
@@ -121,6 +138,8 @@ class _PlatformMapViewState extends State<PlatformMapView> {
         myLocationEnabled: widget.myLocationEnabled,
         compassEnabled: widget.compassEnabled,
         fogOfWar: widget.fogOfWar,
+        revealRadiusMeters: widget.revealRadiusMeters,
+        pointRadiusMeters: widget.pointRadiusMeters,
         onLongPress: widget.onLongPress,
         onCameraMove: _onCameraMove,
       );

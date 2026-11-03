@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:giro/core/cubit/launchable_maps_cubit.dart';
+import 'package:giro/core/cubit/map_settings_cubit.dart';
 import 'package:giro/core/cubit/poi_cubit.dart';
 import 'package:giro/core/cubit/walk_routes_cubit.dart';
 import 'package:giro/core/extensions.dart';
@@ -34,6 +35,7 @@ class SonicRouteDetail extends StatelessWidget {
   Widget build(BuildContext context) {
     final all = context.watch<WalkRoutesCubit>().state.routes;
     final pois = context.watch<PoiCubit>().state.pois;
+    final settings = context.watch<MapSettingsCubit>().state;
     final spots = pois
         .where((poi) => route.distanceTo(poi.coordinates) <= _spotRadiusMeters)
         .toList();
@@ -58,7 +60,9 @@ class SonicRouteDetail extends StatelessWidget {
                     target: route.coordinates.first,
                     zoom: 15.5,
                   ),
-                  polylines: SonicMap.polylines([route]),
+                  polylines: SonicMap.polylines([route], settings: settings),
+                  revealRadiusMeters: settings.revealRadiusMeters,
+                  pointRadiusMeters: settings.spotRadiusMeters,
                   markers: {
                     for (final poi in spots)
                       MapMarker(

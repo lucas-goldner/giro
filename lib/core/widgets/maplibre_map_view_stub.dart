@@ -11,6 +11,8 @@ class MapLibreMapView extends StatelessWidget {
     this.myLocationEnabled = false,
     this.compassEnabled = true,
     this.fogOfWar = true,
+    this.revealRadiusMeters = 90,
+    this.pointRadiusMeters = 72,
     this.onLongPress,
     this.onCameraMove,
     super.key,
@@ -22,6 +24,8 @@ class MapLibreMapView extends StatelessWidget {
   final bool myLocationEnabled;
   final bool compassEnabled;
   final bool fogOfWar;
+  final double revealRadiusMeters;
+  final double pointRadiusMeters;
   final void Function(LatLng)? onLongPress;
   final void Function(CameraPosition)? onCameraMove;
 

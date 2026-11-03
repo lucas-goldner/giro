@@ -25,6 +25,8 @@ dependencies:
   maplibre_flutter_gpu:
     path: packages/maplibre_flutter_gpu
   mmkv: ^2.4.3
+  package_info_plus: ^10.0.0
+  path_provider: ^2.1.5
   vector_math: ^2.2.0
   web: ^1.1.1
 

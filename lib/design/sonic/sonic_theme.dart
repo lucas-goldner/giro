@@ -153,6 +153,9 @@ class SonicButton extends StatelessWidget {
   Widget build(BuildContext context) => Semantics(
     button: true,
     label: semanticsLabel ?? label,
+    // The gesture detector below is excluded from semantics, so the tap
+    // action has to live here for VoiceOver and the web semantics tree.
+    onTap: onTap,
     child: ExcludeSemantics(
       child: Transform(
         transform: Matrix4.skewX(SonicTheme.skew),

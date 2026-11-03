@@ -39,7 +39,19 @@ import UIKit
             case "requestAuthorization":
                 self.requestAuthorization(result: result)
             case "retrieveWorkoutsWithRoutes":
-                self.retrieveWorkoutsWithRoutes(result: result, limit: call.arguments as! Int)
+                // Either a bare limit (older callers) or {limit, before}, where
+                // `before` is a Unix time: only workouts that ended before it.
+                var limit = 10
+                var before: Date? = nil
+                if let bare = call.arguments as? Int {
+                    limit = bare
+                } else if let args = call.arguments as? [String: Any] {
+                    limit = args["limit"] as? Int ?? 10
+                    if let seconds = args["before"] as? Double {
+                        before = Date(timeIntervalSince1970: seconds)
+                    }
+                }
+                self.retrieveWorkoutsWithRoutes(result: result, limit: limit, before: before)
             default: result(FlutterMethodNotImplemented)
             }
         }
@@ -57,18 +69,22 @@ import UIKit
         }
     }
     
-    func retrieveWorkoutsWithRoutes(result: @escaping FlutterResult, limit: Int) {
-        let workoutPredicate = HKQuery.predicateForWorkouts(with: .walking)
+    func retrieveWorkoutsWithRoutes(result: @escaping FlutterResult, limit: Int, before: Date? = nil) {
+        var predicates = [HKQuery.predicateForWorkouts(with: .walking)]
+        if let before = before {
+            predicates.append(HKQuery.predicateForSamples(withStart: nil, end: before, options: .strictEndDate))
+        }
+        let workoutPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
         let sortDescriptor = NSSortDescriptor(key: HKSampleSortIdentifierEndDate, ascending: false)
         
         let query = HKSampleQuery(sampleType: HKObjectType.workoutType(),
                                   predicate: workoutPredicate,
-                                  limit: limit,
+                                  limit: limit <= 0 ? HKObjectQueryNoLimit : limit,
                                   sortDescriptors: [sortDescriptor]) { [weak self] _, results, error in
             guard let self = self else { return }
             guard let workouts = results as? [HKWorkout], !workouts.isEmpty else {
-                print("No workouts found: \(error?.localizedDescription ?? "unknown error")")
-                result(FlutterError(code: "NO_WORKOUTS_FOUND", message: "No workouts found.", details: error?.localizedDescription))
+                // An empty page is a normal end of paging, not an error.
+                result([[String: Any]]())
                 return
             }
             

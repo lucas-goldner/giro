@@ -8,23 +8,28 @@ enum MethodChannelHealthkitMethods {
 }
 
 class HealthkitRepoMethodChannelImpl implements HealthkitRepo {
-  static const MethodChannel _channel =
-      MethodChannel('com.lucas-goldner.giro/healthkit');
+  static const MethodChannel _channel = MethodChannel(
+    'com.lucas-goldner.giro/healthkit',
+  );
 
   @override
   Future<bool> requestAuthorization() async => await _channel.invokeMethod(
-        MethodChannelHealthkitMethods.requestAuthorization.name,
-      ) as bool;
+    MethodChannelHealthkitMethods.requestAuthorization.name,
+  ) as bool;
 
   @override
   Future<List<WalkWorkout>> retrieveWorkoutsWithRoutes({
     int limit = 10,
+    DateTime? before,
   }) async {
     final List<dynamic> pastWorkoutsAsJSONStrings;
     try {
       pastWorkoutsAsJSONStrings = await _channel.invokeMethod(
         MethodChannelHealthkitMethods.retrieveWorkoutsWithRoutes.name,
-        limit,
+        {
+          'limit': limit,
+          if (before != null) 'before': before.millisecondsSinceEpoch / 1000,
+        },
       ) as List<dynamic>;
     } on PlatformException catch (_) {
       // print('Error retrieving workouts: ${e.message}');

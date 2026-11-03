@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:giro/core/cubit/map_settings_cubit.dart';
 import 'package:giro/core/cubit/walk_routes_cubit.dart';
 import 'package:giro/core/extensions.dart';
 import 'package:giro/core/model/walk_route.dart';
@@ -67,6 +68,7 @@ class _SonicRecordState extends State<_SonicRecord> {
   @override
   Widget build(BuildContext context) {
     final explored = context.watch<WalkRoutesCubit>().state.sortedRoutes;
+    final settings = context.watch<MapSettingsCubit>().state;
     return BlocConsumer<RecordWalkCubit, RecordWalkState>(
       listener: (context, state) {
         _syncClock(state);
@@ -114,9 +116,16 @@ class _SonicRecordState extends State<_SonicRecord> {
                         zoom: 16,
                       ),
                       polylines: {
-                        ...SonicMap.polylines(explored, faint: true),
-                        if (points.isNotEmpty) ...SonicMap.live(points),
+                        ...SonicMap.polylines(
+                          explored,
+                          settings: settings,
+                          faint: true,
+                        ),
+                        if (points.isNotEmpty)
+                          ...SonicMap.live(points, settings: settings),
                       },
+                      revealRadiusMeters: settings.revealRadiusMeters,
+                      pointRadiusMeters: settings.spotRadiusMeters,
                       myLocationEnabled: true,
                     ),
                     Positioned(

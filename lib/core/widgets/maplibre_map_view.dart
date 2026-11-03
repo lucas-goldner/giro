@@ -1,12 +1,15 @@
 import 'dart:async';
+import 'dart:math' as math;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:giro/core/map/explored_buildings.dart';
 import 'package:giro/core/map/explored_mask.dart';
 import 'package:giro/core/map/fog_gpu.dart';
 import 'package:giro/core/map/giro_map_style.dart';
+import 'package:giro/core/map/tile_store.dart';
 import 'package:giro/core/model/geo.dart';
 import 'package:giro/core/model/map_overlay.dart';
 import 'package:giro/design/sonic/sonic_theme.dart';
@@ -26,6 +29,8 @@ class MapLibreMapView extends StatefulWidget {
     this.myLocationEnabled = false,
     this.compassEnabled = true,
     this.fogOfWar = true,
+    this.revealRadiusMeters = 90,
+    this.pointRadiusMeters = 72,
     this.onLongPress,
     this.onCameraMove,
     super.key,
@@ -37,6 +42,8 @@ class MapLibreMapView extends StatefulWidget {
   final bool myLocationEnabled;
   final bool compassEnabled;
   final bool fogOfWar;
+  final double revealRadiusMeters;
+  final double pointRadiusMeters;
   final void Function(LatLng)? onLongPress;
   final void Function(CameraPosition)? onCameraMove;
 
@@ -56,6 +63,8 @@ class _MapLibreMapViewState extends State<MapLibreMapView> {
   ml.MapUserLocation? _userLocation;
   bool _userMovedCamera = false;
   bool _animatingCamera = false;
+  bool _idleOnce = false;
+  String? _tileUrlTemplate;
 
   @override
   void initState() {
@@ -68,13 +77,26 @@ class _MapLibreMapViewState extends State<MapLibreMapView> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // The on-device tile cache (null on platforms without one).
+    final template = context.read<TileStore?>()?.tileUrlTemplate;
+    if (template != _tileUrlTemplate) {
+      _tileUrlTemplate = template;
+      unawaited(_applyStyle());
+    }
+  }
+
+  @override
   void didUpdateWidget(MapLibreMapView oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (!setEquals(widget.polylines, oldWidget.polylines)) {
       unawaited(_applyStyle());
     }
     if (!setEquals(widget.polylines, oldWidget.polylines) ||
-        !setEquals(widget.markers, oldWidget.markers)) {
+        !setEquals(widget.markers, oldWidget.markers) ||
+        widget.revealRadiusMeters != oldWidget.revealRadiusMeters ||
+        widget.pointRadiusMeters != oldWidget.pointRadiusMeters) {
       unawaited(_rebuildMask());
     }
     if (widget.myLocationEnabled != oldWidget.myLocationEnabled) {
@@ -107,7 +129,11 @@ class _MapLibreMapViewState extends State<MapLibreMapView> {
     if (template == null) {
       return;
     }
-    final json = GiroMapStyle.encode(template, widget.polylines);
+    final json = GiroMapStyle.encode(
+      template,
+      widget.polylines,
+      tileUrlTemplate: _tileUrlTemplate,
+    );
     if (json == _styleJson || !mounted) {
       return;
     }
@@ -120,6 +146,8 @@ class _MapLibreMapViewState extends State<MapLibreMapView> {
     final mask = await ExploredMask.build(
       paths: [for (final polyline in widget.polylines) polyline.points],
       points: [for (final marker in widget.markers) marker.position],
+      revealRadiusMeters: widget.revealRadiusMeters,
+      pointRadiusMeters: widget.pointRadiusMeters,
     );
     if (!mounted || generation != _maskGeneration) {
       mask?.dispose();
@@ -245,32 +273,91 @@ class _MapLibreMapViewState extends State<MapLibreMapView> {
       return const ColoredBox(color: SonicTheme.white);
     }
     final camera = widget.initialCameraPosition;
-    return ml.MapLibreMap(
-      styleString: style,
-      initialCameraPosition: ml.CameraPosition(
-        target: _toMl(camera.target),
-        zoom: camera.zoom,
-        bearing: camera.bearing,
-        tilt: camera.tilt,
-      ),
-      onMapCreated: (controller) => _controller = controller,
-      onCameraMove: _onCameraMove,
-      onMapLongClick: widget.onLongPress == null
-          ? null
-          : (_, coordinates) => widget.onLongPress!(
-              LatLng(coordinates.latitude, coordinates.longitude),
+    // Below the status bar and the HUD chips, not under them.
+    final compassTop = MediaQuery.paddingOf(context).top + 64;
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        ml.MapLibreMap(
+          styleString: style,
+          initialCameraPosition: ml.CameraPosition(
+            target: _toMl(camera.target),
+            zoom: camera.zoom,
+            bearing: camera.bearing,
+            tilt: camera.tilt,
+          ),
+          onMapCreated: (controller) => _controller = controller,
+          onCameraMove: _onCameraMove,
+          onMapLongClick: widget.onLongPress == null
+              ? null
+              : (_, coordinates) => widget.onLongPress!(
+                  LatLng(coordinates.latitude, coordinates.longitude),
+                ),
+          compassEnabled: widget.compassEnabled,
+          compassViewPosition: ml.CompassViewPosition.topRight,
+          compassViewMargins: math.Point<num>(14, compassTop),
+          attributionButtonMargins: const math.Point<num>(10, 10),
+          onMapIdle: () {
+            if (!_idleOnce && mounted) {
+              setState(() => _idleOnce = true);
+            }
+          },
+          overlayBuilder: _markerOverlay,
+          userLocation: _userLocation,
+          gpuRenderCallback: widget.fogOfWar ? _fog.render : null,
+          gpuRepaint: _fog.repaint,
+          gpuOverlayReadsMapColor: widget.fogOfWar,
+          fillExtrusionRendererBuilder: widget.fogOfWar
+              ? (layer) => ExploredBuildings.layerIds.contains(layer.id)
+                    ? _buildings
+                    : null
+              : null,
+        ),
+        if (!_idleOnce)
+          Positioned(
+            right: 16,
+            bottom: 16,
+            child: IgnorePointer(
+              child: Semantics(
+                label: 'Loading map',
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 6,
+                  ),
+                  decoration: BoxDecoration(
+                    color: SonicTheme.navy.withValues(alpha: 0.85),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: const Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      SizedBox(
+                        width: 12,
+                        height: 12,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: SonicTheme.gold,
+                        ),
+                      ),
+                      SizedBox(width: 8),
+                      Text(
+                        'LOADING MAP',
+                        style: TextStyle(
+                          fontFamily: SonicTheme.font,
+                          fontWeight: FontWeight.w800,
+                          fontSize: 12,
+                          letterSpacing: 1,
+                          color: SonicTheme.white,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             ),
-      compassEnabled: widget.compassEnabled,
-      overlayBuilder: _markerOverlay,
-      userLocation: _userLocation,
-      gpuRenderCallback: widget.fogOfWar ? _fog.render : null,
-      gpuRepaint: _fog.repaint,
-      gpuOverlayReadsMapColor: widget.fogOfWar,
-      fillExtrusionRendererBuilder: widget.fogOfWar
-          ? (layer) => ExploredBuildings.layerIds.contains(layer.id)
-                ? _buildings
-                : null
-          : null,
+          ),
+      ],
     );
   }
 }
