@@ -1,0 +1,10 @@
+# Prebuilt MapLibre Native bridge binaries. They are not kept in git; run
+# `tool/fetch_maplibre_native.sh` from the repository root to download them
+# from the official pub.dev archive of the version this fork is based on.
+/darwin/maplibre_flutter_gpu/Frameworks/
+/android/src/main/jniLibs/
+/linux/
+/windows/
+# Compiled by hook/build.dart from shaders/ at build time.
+/assets/shaderbundles/*.shaderbundle
+.dart_tool/

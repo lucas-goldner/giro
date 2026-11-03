@@ -1,0 +1,452 @@
+import 'package:flutter/foundation.dart'
+    show defaultTargetPlatform, listEquals, visibleForTesting;
+import 'package:flutter/material.dart';
+import 'package:flutter_gpu/gpu.dart' as gpu;
+
+import '../gpu/pass_executor.dart';
+import '../gpu/render_context.dart';
+import '../gpu/renderer.dart';
+import '../native/maplibre_ffi.dart';
+import 'map/map_gpu_resources.dart';
+
+export 'map/map_gpu_resources.dart';
+
+/// Whether one stratum needs a render target for the current native frame.
+@visibleForTesting
+bool gpuStratumNeedsSurface({
+  required bool clearToTransparent,
+  required bool hasNativeCommands,
+  required bool hasGpuCallback,
+}) => !clearToTransparent || hasNativeCommands || hasGpuCallback;
+
+/// Paints native MapLibre frames and optional GPU callbacks onto a canvas.
+class MapGpuPainter({
+  /// Native bridge that supplies frame metadata and map transforms.
+  required final MaplibreBridge bridge,
+
+  /// Renderer that records MapLibre draw commands.
+  required final GpuFrameRenderer gpuRenderer,
+
+  /// Reusable textures, images, and derived frame values.
+  required final MapGpuResources resources,
+
+  /// Physical output width in pixels.
+  required final int width,
+
+  /// Physical output height in pixels.
+  required final int height,
+
+  /// Logical output width in pixels.
+  required final int logicalWidth,
+
+  /// Logical output height in pixels.
+  required final int logicalHeight,
+
+  /// Ratio between physical and logical pixels.
+  required final double devicePixelRatio,
+
+  /// Sequence number used to identify the requested frame.
+  required final int frameSeq,
+
+  /// Callback that records custom drawing in map coordinates.
+  required final MapLibreGpuRenderCallback? gpuMapRenderCallback,
+
+  /// Callback that records an overlay after the map.
+  required final MapLibreGpuRenderCallback? gpuRenderCallback,
+
+  /// Depth and stencil behavior used by [gpuRenderCallback].
+  required final MapLibreGpuDepthMode gpuOverlayDepthMode,
+
+  /// Whether [gpuRenderCallback] renders into its own texture with the
+  /// finished map bound as [MapLibreGpuRenderContext.mapColorTexture].
+  final bool gpuOverlayReadsMapColor = false,
+
+  /// Reports whether the current application state permits GPU rendering.
+  required final bool Function() gpuRenderingAllowed,
+
+  /// Acquires the native frame snapshot available for painting.
+  required final NativeFrameSnapshotLease? Function() frameSnapshotProvider,
+
+  /// Receives a snapshot after its native lease has been released.
+  required final ValueChanged<NativeFrameSnapshotLease>?
+  onFrameSnapshotReleased,
+
+  /// Position of this painter in [layerRanges].
+  required final int stratumIndex,
+
+  /// Ordered layer partitions shared by every painter in the frame.
+  required final List<GpuStyleLayerRange> layerRanges,
+
+  /// First native style layer rendered by this painter, inclusive.
+  final int? minimumLayerIndex,
+
+  /// First native style layer omitted by this painter, exclusive.
+  final int? maximumLayerIndex,
+
+  /// Whether this stratum starts transparent instead of using map clear color.
+  final bool clearToTransparent = false,
+
+  /// Whether this painter releases the shared native frame snapshot.
+  final bool releaseFrameSnapshot = true,
+
+  /// Whether this stratum advances the renderer's shared resource frame.
+  final bool advanceResourceFrame = true,
+
+  /// Whether this stratum runs cache eviction after recording.
+  final bool evictResourceCaches = true,
+  super.repaint,
+}) extends CustomPainter {
+  @override
+  void paint(canvas, size) {
+    // Preserve the pending native frame while GPU rendering is unavailable.
+    if (!gpuRenderingAllowed()) {
+      if (evictResourceCaches) gpuRenderer.finishFrame();
+      _drawLastImage(canvas, size);
+
+      return;
+    }
+    if (advanceResourceFrame) gpuRenderer.beginFrameReplay();
+    final currentFrameSeq = gpuRenderer.frameSeq;
+    final fillExtrusionRevision = gpuRenderer.fillExtrusions.repaintRevision;
+    final fillExtrusionsChanged =
+        fillExtrusionRevision != resources.lastPaintedFillExtrusionRevision;
+    // Metal begins encoders during recording and ends them on submit.
+    // Android records logical passes into a single native render pass.
+    final submitEachRenderPass =
+        defaultTargetPlatform == .iOS || defaultTargetPlatform == .macOS;
+    NativeFrameSnapshotLease? snapshot;
+    try {
+      snapshot = frameSnapshotProvider();
+      if (currentFrameSeq != resources.lastPaintedSeq ||
+          fillExtrusionsChanged ||
+          gpuMapRenderCallback != null ||
+          gpuRenderCallback != null ||
+          resources.hadGpuRenderCallback ||
+          (snapshot?.isActive ?? false)) {
+        final usesAsyncSnapshots = bridge.supportsAsyncRendering;
+        final acquiredGeneration = snapshot?.isActive ?? false
+            ? snapshot!.generation
+            : 0;
+        final hasReadableSnapshot =
+            !usesAsyncSnapshots || acquiredGeneration != 0;
+        var preparedFrame = acquiredGeneration == 0
+            ? gpuRenderer.prepareFrameReplay(
+                physicalWidth: width,
+                physicalHeight: height,
+                logicalWidth: logicalWidth.toDouble(),
+                logicalHeight: logicalHeight.toDouble(),
+                devicePixelRatio: devicePixelRatio,
+                layerRanges: layerRanges,
+              )
+            : null;
+        final replayingRetainedFrame = preparedFrame != null;
+        if (preparedFrame == null && hasReadableSnapshot) {
+          final frameMetadata = bridge.frameGetMetadata();
+          preparedFrame = gpuRenderer.prepareFrame(
+            frameMetadata: frameMetadata,
+            physicalWidth: width,
+            physicalHeight: height,
+            logicalWidth: logicalWidth.toDouble(),
+            logicalHeight: logicalHeight.toDouble(),
+            devicePixelRatio: devicePixelRatio,
+            layerRanges: layerRanges,
+            mapTransform: _toGpuMapTransform(bridge.frameGetMapTransform()),
+            advanceResourceFrame: advanceResourceFrame,
+          );
+        }
+        if (preparedFrame != null) {
+          final recordedGeneration = replayingRetainedFrame
+              ? resources.lastPaintedGeneration
+              : acquiredGeneration;
+          final hasGpuCallback =
+              gpuMapRenderCallback != null || gpuRenderCallback != null;
+          final needsSurface = gpuStratumNeedsSurface(
+            clearToTransparent: clearToTransparent,
+            hasNativeCommands: preparedFrame.hasCommandsInStratum(stratumIndex),
+            hasGpuCallback: hasGpuCallback,
+          );
+          if (!needsSurface) {
+            resources.hideLastImage();
+            resources.lastPaintedGeneration = recordedGeneration;
+            resources.hadGpuRenderCallback = false;
+          } else {
+            resources.resize(width, height);
+            final snapshotChanged = replayingRetainedFrame
+                ? currentFrameSeq != resources.lastPaintedSeq
+                : !usesAsyncSnapshots ||
+                      acquiredGeneration != resources.lastPaintedGeneration;
+            final mustRecord =
+                snapshotChanged ||
+                fillExtrusionsChanged ||
+                hasGpuCallback ||
+                resources.hadGpuRenderCallback;
+            if (mustRecord) {
+              var targetTextureIndex = -1;
+              for (
+                var candidateIndex = 0;
+                candidateIndex < resources.textures.length;
+                candidateIndex += 1
+              ) {
+                if (candidateIndex != resources.displayIndex) {
+                  targetTextureIndex = candidateIndex;
+                  break;
+                }
+              }
+              if (targetTextureIndex < 0) {
+                final created = gpu.gpuContext.createTexture(
+                  .devicePrivate,
+                  width,
+                  height,
+                  enableRenderTargetUsage: true,
+                  enableShaderReadUsage: true,
+                );
+                resources.textures.add(created);
+                resources.images.add(created.asImage());
+                targetTextureIndex = resources.textures.length - 1;
+              }
+              final texture = resources.textures[targetTextureIndex];
+              final mapTransform = preparedFrame.mapTransform;
+              final clearColor = clearToTransparent
+                  ? null
+                  : preparedFrame.clearColor;
+              var depthStencilTexture = gpuRenderer.prepareDepthStencilTexture(
+                texture,
+              );
+              late gpu.CommandBuffer commandBuffer;
+              while (true) {
+                commandBuffer = gpu.gpuContext.createCommandBuffer();
+                try {
+                  gpuRenderer.renderPreparedFrame(
+                    preparedFrame: preparedFrame,
+                    stratumIndex: stratumIndex,
+                    commandBuffer: commandBuffer,
+                    texture: texture,
+                    frameClearColor: resources.cachedFrameClearValue(
+                      clearColor,
+                    ),
+                    submitEachRenderPass: submitEachRenderPass,
+                    initialDepthStencilTexture: depthStencilTexture,
+                    gpuMapRenderCallback: gpuMapRenderCallback,
+                    mapTransform: mapTransform,
+                  );
+                  break;
+                } on DepthStencilAttachmentError catch (error) {
+                  if (depthStencilTexture == null) rethrow;
+                  gpuRenderer.disableDepthStencil(error.cause);
+                  depthStencilTexture = null;
+                }
+              }
+              var presentedIndex = targetTextureIndex;
+              try {
+                if (submitEachRenderPass && gpuRenderCallback != null) {
+                  commandBuffer = gpu.gpuContext.createCommandBuffer();
+                }
+                gpu.Texture? overlayTexture;
+                if (gpuOverlayReadsMapColor && gpuRenderCallback != null) {
+                  // Post-processing overlay: render into a third texture so
+                  // the callback can sample the finished map.
+                  final overlayIndex = _acquireTextureIndex(
+                    width,
+                    height,
+                    exclude: {resources.displayIndex, targetTextureIndex},
+                  );
+                  overlayTexture = resources.textures[overlayIndex];
+                  presentedIndex = overlayIndex;
+                }
+                _renderGpuOverlay(
+                  commandBuffer,
+                  texture,
+                  depthStencilTexture,
+                  mapTransform,
+                  overlayTexture: overlayTexture,
+                );
+              } catch (e, st) {
+                presentedIndex = targetTextureIndex;
+                debugPrint('[MapLibreMap] GPU overlay pass error: $e\n$st');
+              }
+              if (!submitEachRenderPass || gpuRenderCallback != null) {
+                commandBuffer.submit();
+              }
+
+              resources.lastImage = resources.images[presentedIndex];
+              resources.displayIndex = presentedIndex;
+              resources.lastPaintedGeneration = recordedGeneration;
+              resources.hadGpuRenderCallback = hasGpuCallback;
+            }
+          }
+          // Mark the sequence handled without replaying the native frame.
+          resources.lastPaintedSeq = currentFrameSeq;
+          resources.lastPaintedFillExtrusionRevision = fillExtrusionRevision;
+        }
+      }
+    } catch (e) {
+      debugPrint('[MapLibreMap] paint error: $e');
+    } finally {
+      final activeSnapshot = snapshot;
+      if (releaseFrameSnapshot &&
+          activeSnapshot != null &&
+          activeSnapshot.isActive) {
+        try {
+          activeSnapshot.release();
+        } finally {
+          onFrameSnapshotReleased?.call(activeSnapshot);
+        }
+      }
+      if (evictResourceCaches) gpuRenderer.finishFrame();
+    }
+
+    _drawLastImage(canvas, size);
+  }
+
+  /// Draws the most recently completed frame when one is available.
+  void _drawLastImage(Canvas canvas, Size size) {
+    final image = resources.lastImage;
+    if (image != null) {
+      canvas.drawImageRect(
+        image,
+        resources.sourceRect(image),
+        resources.destinationRect(size),
+        resources.imagePaint,
+      );
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant MapGpuPainter oldDelegate) =>
+      frameSeq != oldDelegate.frameSeq ||
+      width != oldDelegate.width ||
+      height != oldDelegate.height ||
+      logicalWidth != oldDelegate.logicalWidth ||
+      logicalHeight != oldDelegate.logicalHeight ||
+      devicePixelRatio != oldDelegate.devicePixelRatio ||
+      gpuMapRenderCallback != oldDelegate.gpuMapRenderCallback ||
+      gpuRenderCallback != oldDelegate.gpuRenderCallback ||
+      gpuOverlayDepthMode != oldDelegate.gpuOverlayDepthMode ||
+      gpuOverlayReadsMapColor != oldDelegate.gpuOverlayReadsMapColor ||
+      gpuRenderingAllowed != oldDelegate.gpuRenderingAllowed ||
+      frameSnapshotProvider != oldDelegate.frameSnapshotProvider ||
+      onFrameSnapshotReleased != oldDelegate.onFrameSnapshotReleased ||
+      minimumLayerIndex != oldDelegate.minimumLayerIndex ||
+      maximumLayerIndex != oldDelegate.maximumLayerIndex ||
+      stratumIndex != oldDelegate.stratumIndex ||
+      !listEquals(layerRanges, oldDelegate.layerRanges) ||
+      clearToTransparent != oldDelegate.clearToTransparent ||
+      releaseFrameSnapshot != oldDelegate.releaseFrameSnapshot ||
+      advanceResourceFrame != oldDelegate.advanceResourceFrame ||
+      evictResourceCaches != oldDelegate.evictResourceCaches ||
+      resources != oldDelegate.resources ||
+      gpuRenderer != oldDelegate.gpuRenderer ||
+      bridge != oldDelegate.bridge;
+
+  /// Returns the index of a pooled render texture not in [exclude], creating
+  /// one when every existing texture is excluded.
+  int _acquireTextureIndex(
+    int width,
+    int height, {
+    required Set<int> exclude,
+  }) {
+    for (var index = 0; index < resources.textures.length; index += 1) {
+      if (!exclude.contains(index)) return index;
+    }
+    final created = gpu.gpuContext.createTexture(
+      .devicePrivate,
+      width,
+      height,
+      enableRenderTargetUsage: true,
+      enableShaderReadUsage: true,
+    );
+    resources.textures.add(created);
+    resources.images.add(created.asImage());
+    return resources.textures.length - 1;
+  }
+
+  /// Records the configured GPU overlay after the map render pass.
+  ///
+  /// With [overlayTexture] the pass targets that cleared texture and hands
+  /// [texture] (the finished map) to the callback as
+  /// [MapLibreGpuRenderContext.mapColorTexture].
+  void _renderGpuOverlay(
+    gpu.CommandBuffer commandBuffer,
+    gpu.Texture texture,
+    gpu.Texture? depthStencilTexture,
+    MapLibreGpuMapTransform? mapTransform, {
+    gpu.Texture? overlayTexture,
+  }) {
+    final callback = gpuRenderCallback;
+    if (callback == null) return;
+
+    gpu.RenderTarget renderTarget(gpu.Texture? depthStencil) => .singleColor(
+      .new(
+        texture: overlayTexture ?? texture,
+        loadAction: overlayTexture == null ? .load : .clear,
+      ),
+      depthStencilAttachment: depthStencil == null
+          ? null
+          : gpu.DepthStencilAttachment(
+              texture: depthStencil,
+              depthLoadAction: gpuOverlayDepthMode == .isolated
+                  ? .clear
+                  : .load,
+              depthStoreAction: .store,
+              depthClearValue: 1.0,
+              stencilLoadAction: gpuOverlayDepthMode == .isolated
+                  ? .clear
+                  : .load,
+              stencilStoreAction: .store,
+              stencilClearValue: 0,
+            ),
+    );
+
+    late gpu.RenderPass renderPass;
+    var sharedDepthStencil = depthStencilTexture;
+    try {
+      renderPass = gpuRenderer.createOverlayRenderPass(
+        commandBuffer,
+        renderTarget(sharedDepthStencil),
+      );
+    } catch (error) {
+      if (sharedDepthStencil == null) rethrow;
+      debugPrint(
+        '[MapLibreMap] GPU overlay depth unavailable. '
+        'Using a color-only pass. $error',
+      );
+      sharedDepthStencil = null;
+      renderPass = gpuRenderer.createOverlayRenderPass(
+        commandBuffer,
+        renderTarget(null),
+      );
+    }
+
+    try {
+      callback(
+        .new(
+          gpuContext: gpu.gpuContext,
+          renderPass: renderPass,
+          logicalSize: .new(logicalWidth.toDouble(), logicalHeight.toDouble()),
+          physicalSize: .new(width.toDouble(), height.toDouble()),
+          devicePixelRatio: devicePixelRatio,
+          frameSequence: frameSeq,
+          mapTransform: mapTransform,
+          hasDepthStencilAttachment: sharedDepthStencil != null,
+          depthMode: gpuOverlayDepthMode,
+          mapColorTexture: overlayTexture == null ? null : texture,
+        ),
+      );
+    } catch (e, st) {
+      debugPrint('[MapLibreMap] gpuRenderCallback error: $e\n$st');
+    }
+  }
+
+  /// Converts a native frame transform for use by public GPU callbacks.
+  static MapLibreGpuMapTransform? _toGpuMapTransform(
+    FrameMapTransform? transform,
+  ) => transform == null
+      ? null
+      : .new(
+          viewProjectionMatrix: transform.viewProjectionMatrix,
+          worldSize: transform.worldSize,
+          originX: transform.originX,
+          originY: transform.originY,
+          zoom: transform.zoom,
+        );
+}
