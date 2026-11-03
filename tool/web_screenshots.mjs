@@ -12,7 +12,7 @@
 //          --out <dir>  screenshot directory (default build/web_screenshots)
 //          --material   open with ?style=material
 import { createServer } from 'node:http';
-import { createReadStream, existsSync, mkdirSync, statSync } from 'node:fs';
+import { createReadStream, existsSync, mkdirSync, readdirSync, statSync, unlinkSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import { extname, join, resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -31,6 +31,10 @@ const outDir = resolve(flag('--out') ?? join(projectRoot, 'build/web_screenshots
 const material = args.includes('--material');
 const shotDir = outDir;
 mkdirSync(shotDir, { recursive: true });
+// Numbering shifts when steps are added, so drop the previous run's files.
+for (const file of readdirSync(shotDir)) {
+  if (file.endsWith('.png')) unlinkSync(join(shotDir, file));
+}
 
 const mime = {
   '.html': 'text/html', '.js': 'text/javascript', '.mjs': 'text/javascript',
