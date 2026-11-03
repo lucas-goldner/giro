@@ -1,5 +1,6 @@
 import 'package:giro/core/model/geo.dart';
 import 'package:giro/core/model/map_overlay.dart';
+import 'package:giro/core/model/map_settings.dart';
 import 'package:giro/core/model/walk_route.dart';
 import 'package:giro/design/sonic/sonic_theme.dart';
 
@@ -9,6 +10,7 @@ import 'package:giro/design/sonic/sonic_theme.dart';
 abstract final class SonicMap {
   static Set<MapPolyline> polylines(
     Iterable<WalkRoute> routes, {
+    required MapSettings settings,
     bool faint = false,
   }) => {
     for (final route in routes) ...[
@@ -16,25 +18,28 @@ abstract final class SonicMap {
         id: 'glow_${route.id}',
         points: route.coordinates,
         color: SonicTheme.sky.withValues(alpha: faint ? 0.18 : 0.45),
-        width: 14,
+        width: settings.glowWidth,
       ),
       MapPolyline(
         id: 'route_${route.id}',
         points: route.coordinates,
         color: faint ? SonicTheme.outline : SonicTheme.blue,
-        width: 5,
+        width: settings.trailWidth,
       ),
     ],
   };
 
-  static Set<MapPolyline> live(List<LatLng> points) => {
+  static Set<MapPolyline> live(
+    List<LatLng> points, {
+    required MapSettings settings,
+  }) => {
     MapPolyline(
       id: 'live_glow',
       points: points,
       color: SonicTheme.sky.withValues(alpha: 0.5),
-      width: 16,
+      width: settings.glowWidth * 1.1,
     ),
-    MapPolyline(id: 'live', points: points, width: 6),
+    MapPolyline(id: 'live', points: points, width: settings.trailWidth * 1.15),
   };
 
   static const LatLng tokyo = LatLng(35.682839, 139.759455);

@@ -5,6 +5,8 @@ import 'package:giro/core/platform_style.dart';
 import 'package:giro/design/sonic/sonic_bootstrap.dart';
 import 'package:giro/design/sonic/sonic_home.dart';
 import 'package:giro/design/sonic/sonic_import_page.dart';
+import 'package:giro/design/sonic/sonic_map_download_page.dart';
+import 'package:giro/design/sonic/sonic_options_page.dart';
 import 'package:giro/design/sonic/sonic_places_page.dart';
 import 'package:giro/design/sonic/sonic_record_page.dart';
 import 'package:giro/design/sonic/sonic_route_detail.dart';
@@ -18,6 +20,8 @@ abstract final class AppRoutes {
   static const String places = '/places';
   static const String record = '/record';
   static const String import = '/import';
+  static const String options = '/options';
+  static const String mapDownload = '/map-download';
 }
 
 Route<void>? generateRoutes(RouteSettings settings) => switch (settings.name) {
@@ -29,6 +33,11 @@ Route<void>? generateRoutes(RouteSettings settings) => switch (settings.name) {
   AppRoutes.places => _adaptiveRoute(settings, const SonicPlacesPage()),
   AppRoutes.record => _adaptiveRoute(settings, const SonicRecordPage()),
   AppRoutes.import => _adaptiveRoute(settings, const SonicImportPage()),
+  AppRoutes.options => _adaptiveRoute(settings, const SonicOptionsPage()),
+  AppRoutes.mapDownload => _adaptiveRoute(
+    settings,
+    SonicMapDownloadPage(firstRun: settings.arguments == true),
+  ),
   _ => _adaptiveRoute(settings, const SonicBootstrap(child: SonicHome())),
 };
 

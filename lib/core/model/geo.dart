@@ -54,3 +54,31 @@ class CameraPosition {
   String toString() =>
       'CameraPosition($target, zoom: $zoom, bearing: $bearing, tilt: $tilt)';
 }
+
+/// An axis-aligned area on the map.
+@immutable
+class LatLngBounds {
+  const LatLngBounds({required this.southWest, required this.northEast});
+
+  final LatLng southWest;
+  final LatLng northEast;
+
+  double get north => northEast.latitude;
+  double get south => southWest.latitude;
+  double get east => northEast.longitude;
+  double get west => southWest.longitude;
+
+  LatLng get center => LatLng((north + south) / 2, (east + west) / 2);
+
+  @override
+  bool operator ==(Object other) =>
+      other is LatLngBounds &&
+      other.southWest == southWest &&
+      other.northEast == northEast;
+
+  @override
+  int get hashCode => Object.hash(southWest, northEast);
+
+  @override
+  String toString() => 'LatLngBounds($southWest, $northEast)';
+}

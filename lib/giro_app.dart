@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:giro/core/cubit/launchable_maps_cubit.dart';
+import 'package:giro/core/cubit/map_settings_cubit.dart';
 import 'package:giro/core/cubit/poi_cubit.dart';
 import 'package:giro/core/cubit/walk_routes_cubit.dart';
+import 'package:giro/core/map/tile_store.dart';
 import 'package:giro/core/model/app_init_deps.dart';
 import 'package:giro/core/repository/launchable_maps_repo.dart';
+import 'package:giro/core/repository/map_settings_repo.dart';
 import 'package:giro/core/repository/poi_repo.dart';
 import 'package:giro/core/repository/walk_routes_repo.dart';
 import 'package:giro/core/widgets/adaptive_app.dart';
@@ -39,47 +42,53 @@ class _GiroAppState extends State<GiroApp> {
 
   @override
   Widget build(BuildContext context) => FutureBuilder<AppInitDeps>(
-        future: _appLoader,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
-            if (!WidgetsBinding.instance.firstFrameRasterized) {
-              WidgetsBinding.instance.allowFirstFrame();
-            }
+    future: _appLoader,
+    builder: (context, snapshot) {
+      if (snapshot.connectionState == ConnectionState.done) {
+        if (!WidgetsBinding.instance.firstFrameRasterized) {
+          WidgetsBinding.instance.allowFirstFrame();
+        }
 
-            final deps = snapshot.requireData;
+        final deps = snapshot.requireData;
 
-            return MultiRepositoryProvider(
-              providers: [
-                RepositoryProvider<WalkRoutesRepo>.value(
-                  value: deps.walkRoutesRepo,
-                ),
-                RepositoryProvider<PoiRepo>.value(value: deps.poiRepo),
-                RepositoryProvider<LaunchableMapsRepo>.value(
-                  value: deps.launchableMapsRepo,
-                ),
-                RepositoryProvider<HealthkitRepo>.value(
-                  value: deps.healthkitRepo,
-                ),
-              ],
-              child: MultiBlocProvider(
-                providers: [
-                  BlocProvider<WalkRoutesCubit>(
-                    create: (context) => WalkRoutesCubit(deps.walkRoutesRepo),
-                  ),
-                  BlocProvider<PoiCubit>(
-                    create: (context) => PoiCubit(deps.poiRepo),
-                  ),
-                  BlocProvider<LaunchableMapsCubit>(
-                    create: (context) =>
-                        LaunchableMapsCubit(deps.launchableMapsRepo),
-                  ),
-                ],
-                child: const AdaptiveApp(),
+        return MultiRepositoryProvider(
+          providers: [
+            RepositoryProvider<WalkRoutesRepo>.value(
+              value: deps.walkRoutesRepo,
+            ),
+            RepositoryProvider<PoiRepo>.value(value: deps.poiRepo),
+            RepositoryProvider<LaunchableMapsRepo>.value(
+              value: deps.launchableMapsRepo,
+            ),
+            RepositoryProvider<HealthkitRepo>.value(value: deps.healthkitRepo),
+            RepositoryProvider<MapSettingsRepo>.value(
+              value: deps.mapSettingsRepo,
+            ),
+            RepositoryProvider<TileStore>.value(value: deps.tileStore),
+          ],
+          child: MultiBlocProvider(
+            providers: [
+              BlocProvider<WalkRoutesCubit>(
+                create: (context) => WalkRoutesCubit(deps.walkRoutesRepo),
               ),
-            );
-          }
+              BlocProvider<PoiCubit>(
+                create: (context) => PoiCubit(deps.poiRepo),
+              ),
+              BlocProvider<LaunchableMapsCubit>(
+                create: (context) =>
+                    LaunchableMapsCubit(deps.launchableMapsRepo),
+              ),
+              BlocProvider<MapSettingsCubit>(
+                create: (context) =>
+                    MapSettingsCubit(deps.mapSettingsRepo)..load(),
+              ),
+            ],
+            child: const AdaptiveApp(),
+          ),
+        );
+      }
 
-          return const SizedBox.shrink();
-        },
-      );
+      return const SizedBox.shrink();
+    },
+  );
 }

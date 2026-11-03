@@ -14,6 +14,12 @@ import 'package:giro/core/model/map_overlay.dart';
 abstract final class GiroMapStyle {
   static const asset = 'assets/map/sonic_style.json';
   static const walksSource = 'giro_walks';
+  static const tilesSource = 'openmaptiles';
+  static const openFreeMapAttribution =
+      '<a href="https://openfreemap.org" target="_blank">OpenFreeMap</a> '
+      '<a href="https://www.openmaptiles.org/" target="_blank">&copy; '
+      'OpenMapTiles</a> Data from <a href="https://www.openstreetmap.org/'
+      'copyright" target="_blank">OpenStreetMap</a>';
   static const glowLayer = 'giro_walk_glow';
   static const lineLayer = 'giro_walk_line';
 
@@ -31,19 +37,37 @@ abstract final class GiroMapStyle {
   /// The complete style, with [polylines] injected, encoded as JSON.
   static String encode(
     Map<String, dynamic> template,
-    Iterable<MapPolyline> polylines,
-  ) => jsonEncode(withWalks(template, polylines));
+    Iterable<MapPolyline> polylines, {
+    String? tileUrlTemplate,
+  }) => jsonEncode(
+    withWalks(template, polylines, tileUrlTemplate: tileUrlTemplate),
+  );
 
   /// A copy of [template] with a `giro_walks` GeoJSON source and the walk
   /// layers inserted below the first symbol layer, so labels stay on top.
   static Map<String, dynamic> withWalks(
     Map<String, dynamic> template,
-    Iterable<MapPolyline> polylines,
-  ) {
+    Iterable<MapPolyline> polylines, {
+    String? tileUrlTemplate,
+  }) {
     final style = Map<String, dynamic>.from(template);
     final sources = Map<String, dynamic>.from(
       style['sources'] as Map<String, dynamic>,
     );
+    if (tileUrlTemplate != null && sources.containsKey(tilesSource)) {
+      // Route the vector tiles through the on-device cache instead of
+      // OpenFreeMap's TileJSON; attribution stays the same.
+      final original = Map<String, dynamic>.from(
+        sources[tilesSource] as Map<String, dynamic>,
+      );
+      sources[tilesSource] = {
+        'type': 'vector',
+        'tiles': [tileUrlTemplate],
+        'minzoom': 0,
+        'maxzoom': 14,
+        'attribution': original['attribution'] ?? openFreeMapAttribution,
+      };
+    }
     sources[walksSource] = {'type': 'geojson', 'data': geoJson(polylines)};
     style['sources'] = sources;
 

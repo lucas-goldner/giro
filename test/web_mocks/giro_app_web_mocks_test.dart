@@ -5,6 +5,8 @@ import 'package:giro/core/model/flavor_config.dart';
 import 'package:giro/core/platform_style.dart';
 import 'package:giro/design/sonic/sonic_home.dart';
 import 'package:giro/design/sonic/sonic_import_page.dart';
+import 'package:giro/design/sonic/sonic_map_download_page.dart';
+import 'package:giro/design/sonic/sonic_options_page.dart';
 import 'package:giro/design/sonic/sonic_places_page.dart';
 import 'package:giro/design/sonic/sonic_record_page.dart';
 import 'package:giro/design/sonic/sonic_route_detail.dart';
@@ -125,5 +127,56 @@ void main() {
     await tester.tap(find.bySemanticsLabel('Stop recording'));
     await tester.pumpAndSettle();
     expect(find.bySemanticsLabel('View finished recording'), findsOneWidget);
+  });
+
+  testWidgets('imports every walk from Health in one go', (tester) async {
+    await pumpApp(tester);
+
+    await tester.tap(find.bySemanticsLabel('Import'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.bySemanticsLabel('Import everything'));
+    await tester.pumpAndSettle(const Duration(seconds: 1));
+    // Two seeded workouts are not stages yet; the rest are already saved.
+    expect(find.text('2 new stages'), findsOneWidget);
+    expect(find.textContaining('STAGE CLEARED'), findsWidgets);
+  });
+
+  testWidgets('options sliders change the trail width and reveal radius', (
+    tester,
+  ) async {
+    await pumpApp(tester);
+
+    await tester.tap(find.bySemanticsLabel('Options'));
+    await tester.pumpAndSettle();
+    expect(find.byType(SonicOptionsPage), findsOneWidget);
+    expect(find.text('9 px'), findsOneWidget);
+
+    final slider = find.byType(Slider).first;
+    await tester.drag(slider, const Offset(120, 0));
+    await tester.pumpAndSettle();
+    expect(find.text('9 px'), findsNothing);
+  });
+
+  testWidgets('map download frames an area and reports progress', (
+    tester,
+  ) async {
+    await pumpApp(tester);
+
+    await tester.tap(find.bySemanticsLabel('Options'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.bySemanticsLabel('Download map area'));
+    await tester.pumpAndSettle();
+    expect(find.byType(SonicMapDownloadPage), findsOneWidget);
+    expect(find.text('DOWNLOAD AREA'), findsWidgets);
+
+    await tester.tap(find.bySemanticsLabel('Download area'));
+    await tester.pump(const Duration(milliseconds: 200));
+    expect(find.bySemanticsLabel('Download progress'), findsOneWidget);
+    // The mock store ticks on timers, so pump through them.
+    for (var second = 0; second < 8; second++) {
+      await tester.pump(const Duration(seconds: 1));
+    }
+    expect(find.text('Area stored'), findsOneWidget);
+    expect(find.textContaining('1 area stored'), findsOneWidget);
   });
 }

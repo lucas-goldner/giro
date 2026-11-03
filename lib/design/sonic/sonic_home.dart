@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:giro/core/cubit/launchable_maps_cubit.dart';
+import 'package:giro/core/cubit/map_settings_cubit.dart';
 import 'package:giro/core/cubit/poi_cubit.dart';
 import 'package:giro/core/cubit/walk_routes_cubit.dart';
 import 'package:giro/core/widgets/platform_map_view.dart';
@@ -29,6 +30,7 @@ class SonicHome extends StatelessWidget {
   Widget build(BuildContext context) {
     final routes = context.watch<WalkRoutesCubit>().state.sortedRoutes;
     final pois = context.watch<PoiCubit>().state.pois;
+    final settings = context.watch<MapSettingsCubit>().state;
     final totalMeters = routes.totalDistanceMeters;
 
     return Scaffold(
@@ -47,7 +49,9 @@ class SonicHome extends StatelessWidget {
                         : SonicMap.tokyo,
                     zoom: 15,
                   ),
-                  polylines: SonicMap.polylines(routes),
+                  polylines: SonicMap.polylines(routes, settings: settings),
+                  revealRadiusMeters: settings.revealRadiusMeters,
+                  pointRadiusMeters: settings.spotRadiusMeters,
                   markers: {
                     for (final poi in pois)
                       MapMarker(
@@ -81,6 +85,18 @@ class SonicHome extends StatelessWidget {
                                 const SizedBox(width: 6),
                                 Text('${pois.length}'),
                               ],
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          SonicHudChip(
+                            onTap: () => SonicActions.options(context),
+                            child: Semantics(
+                              label: 'Options',
+                              child: const Icon(
+                                Icons.tune_rounded,
+                                size: 18,
+                                color: SonicTheme.navy,
+                              ),
                             ),
                           ),
                         ],

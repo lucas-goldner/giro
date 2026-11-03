@@ -54,6 +54,12 @@
 	<string>We update your Health data to save the walking routes you track in the app, allowing you to maintain a comprehensive activity history.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>We use your location to display your position on the map and help you track and navigate your walking routes.</string>
+	<!-- The map loads its tiles from Giro's own loopback tile cache. -->
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsLocalNetworking</key>
+		<true/>
+	</dict>
 	<key>FLTEnableFlutterGPU</key>
 	<true/>
 	<key>UIApplicationSceneManifest</key>

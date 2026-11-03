@@ -41,6 +41,31 @@ class _SonicImportState extends State<_SonicImport> {
     }
   }
 
+  int _importedAll = 0;
+
+  /// Pages through the whole Health history and saves every walk that is
+  /// not a stage yet, as the pages arrive.
+  Future<void> _importAll() async {
+    final routes = context.read<WalkRoutesCubit>();
+    setState(() {
+      _loaded = true;
+      _importedAll = 0;
+    });
+    await context.read<HealthkitCubit>().retrieveAll(
+      onPage: (page) {
+        for (final workout in page) {
+          if (workout.routes.length > 1 && !_imported(workout)) {
+            routes.addRoute(workout.toRoute());
+            _importedAll++;
+          }
+        }
+        if (mounted) {
+          setState(() {});
+        }
+      },
+    );
+  }
+
   void _save() {
     for (final workout in _selected) {
       context.read<WalkRoutesCubit>().addRoute(workout.toRoute());
@@ -74,6 +99,7 @@ class _SonicImportState extends State<_SonicImport> {
                       snapshot.connectionState != ConnectionState.done;
                   final workouts = state.workouts;
                   final pending = workouts.where((w) => !_imported(w)).length;
+                  final importing = state is HealthKitStateImporting;
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
@@ -131,14 +157,42 @@ class _SonicImportState extends State<_SonicImport> {
                             ? _Message(
                                 'ITEM BOX CLOSED',
                                 'Load your recent walks to pick the ones '
-                                    'worth a stage.',
-                                action: SonicButton(
-                                  label: 'Load workouts',
-                                  caption: 'From Health',
+                                    'worth a stage, or import every walk '
+                                    'ever recorded in one go.',
+                                action: Column(
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.stretch,
+                                  children: [
+                                    SonicButton(
+                                      label: 'Load workouts',
+                                      caption: 'The 25 most recent',
+                                      color: SonicTheme.gold,
+                                      shadow: SonicTheme.goldDeep,
+                                      height: 56,
+                                      onTap: _load,
+                                    ),
+                                    const SizedBox(height: 10),
+                                    SonicButton(
+                                      label: 'Import everything',
+                                      caption: 'Every walk in Health',
+                                      semanticsLabel: 'Import everything',
+                                      color: SonicTheme.red,
+                                      shadow: SonicTheme.redDeep,
+                                      height: 56,
+                                      onTap: _importAll,
+                                    ),
+                                  ],
+                                ),
+                              )
+                            : importing
+                            ? _Message(
+                                'IMPORTING',
+                                '${state.fetched} walks read from Health, '
+                                    '$_importedAll new stages so far.',
+                                action: const LinearProgressIndicator(
+                                  backgroundColor: SonicTheme.navyDeep,
                                   color: SonicTheme.gold,
-                                  shadow: SonicTheme.goldDeep,
-                                  height: 56,
-                                  onTap: _load,
+                                  minHeight: 10,
                                 ),
                               )
                             : workouts.isEmpty
@@ -174,7 +228,18 @@ class _SonicImportState extends State<_SonicImport> {
                                 },
                               ),
                       ),
-                      if (_loaded && pending > 0)
+                      if (_loaded && !importing && _importedAll > 0)
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+                          child: SonicRow(
+                            label: 'Imported',
+                            value:
+                                '$_importedAll new stage'
+                                '${_importedAll == 1 ? '' : 's'}',
+                            gold: true,
+                          ),
+                        ),
+                      if (_loaded && !importing && pending > 0)
                         Padding(
                           padding: const EdgeInsets.fromLTRB(16, 8, 16, 14),
                           child: SonicButton(

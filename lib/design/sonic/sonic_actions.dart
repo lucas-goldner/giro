@@ -15,4 +15,10 @@ abstract final class SonicActions {
 
   static void import(BuildContext context) =>
       context.navigator.pushNamed(AppRoutes.import);
+
+  static void options(BuildContext context) =>
+      context.navigator.pushNamed(AppRoutes.options);
+
+  static void mapDownload(BuildContext context, {bool firstRun = false}) =>
+      context.navigator.pushNamed(AppRoutes.mapDownload, arguments: firstRun);
 }

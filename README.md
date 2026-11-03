@@ -28,7 +28,11 @@ explorations (Zenly × Apple and the Sonic concept itself) live in
 
 | Spots | Mark a spot | Recording |
 |---|---|---|
-| ![Spots](docs/design/screenshots/04_spots.png) | ![Mark a spot](docs/design/screenshots/06_mark_spot.png) | ![Recording](docs/design/screenshots/08_record_live.png) |
+| ![Spots](docs/design/screenshots/04_spots.png) | ![Mark a spot](docs/design/screenshots/10_mark_spot.png) | ![Recording](docs/design/screenshots/12_record_live.png) |
+
+| Options | Map download | Import everything |
+|---|---|---|
+| ![Options](docs/design/screenshots/07_options.png) | ![Map download](docs/design/screenshots/09_map_download_progress.png) | ![Import](docs/design/screenshots/06_import_all.png) |
 
 The PNGs are half-size copies of `tool/web_screenshots.mjs` output.
 
@@ -65,6 +69,38 @@ release archives, so every Runner configuration sets
 `STRIP_STYLE = non-global` (Flutter's rule for FFI plugins). Without it a
 TestFlight build fails with "Failed to lookup symbol
 'maplibre_session_create'".
+
+## Options
+
+The tune icon on the home HUD opens Options (`SonicOptionsPage`): two
+sliders, **trail width** (how thick walks are drawn, 3 to 24 px) and
+**reveal radius** (how far around a walk the fog lifts, 30 to 400 m), with a
+live preview of each. They are `MapSettings`, persisted in MMKV and provided
+app-wide by `MapSettingsCubit`, so every map reacts at once.
+
+## Map data (offline)
+
+The map's vector tiles go through an on-device cache, `TileCacheHttp`: a
+loopback HTTP server the map loads `/tiles/{z}/{x}/{y}.pbf` from. Cached
+tiles are served from disk, missing ones are fetched from OpenFreeMap once
+and kept, so a city is only ever downloaded a single time and the map works
+offline afterwards. The OpenFreeMap tile URL (its dated path changes weekly)
+is resolved from their TileJSON and remembered for offline starts.
+
+"Download area" (first launch, and Options > Download map area) stores every
+tile of the framed area for zoom 0 to 14, which is all OpenFreeMap serves,
+with a progress bar, tile and size estimates, and OpenFreeMap's 3000-tile
+limit enforced. `NSAllowsLocalNetworking` in `Info.plist` lets the map talk
+to the loopback server. On the web the map loads from OpenFreeMap directly
+and `MockTileStore` simulates the download.
+
+## Import everything
+
+Besides picking from the 25 most recent walks, the Health item box can
+import the whole history: `HealthkitCubit.retrieveAll` pages through
+HealthKit 25 workouts at a time (the method channel takes `limit` and
+`before`), saving each page's new walks as stages while a counter shows
+progress.
 
 ## Fog of war
 

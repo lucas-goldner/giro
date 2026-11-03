@@ -19,9 +19,15 @@ class MockHealthkitRepo implements HealthkitRepo {
       Future<bool>.delayed(latency, () => authorized);
 
   @override
-  Future<List<WalkWorkout>> retrieveWorkoutsWithRoutes({int limit = 10}) =>
-      Future<List<WalkWorkout>>.delayed(
-        latency,
-        () => workouts.take(limit).toList(),
-      );
+  Future<List<WalkWorkout>> retrieveWorkoutsWithRoutes({
+    int limit = 10,
+    DateTime? before,
+  }) => Future<List<WalkWorkout>>.delayed(latency, () {
+    final sorted = [...workouts]
+      ..sort((a, b) => b.endDate.compareTo(a.endDate));
+    final page = before == null
+        ? sorted
+        : sorted.where((w) => w.endDate.isBefore(before)).toList();
+    return limit <= 0 ? page : page.take(limit).toList();
+  });
 }
