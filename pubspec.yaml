@@ -13,18 +13,20 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_bloc: ^9.1.1
+  flutter_gpu:
+    sdk: flutter
   geolocator: ^14.1.2
-  # Direct dependency so the web build can embed GoogleMap (platform_maps_flutter
-  # only switches between Apple Maps and Google Maps on iOS/Android).
-  google_maps_flutter: ^2.19.0
-  # Replaces the endorsed google_maps_flutter_ios implementation (pulled in by
-  # platform_maps_flutter), which is CocoaPods-only. A direct dependency on an
-  # alternative implementation wins over the endorsed default.
-  google_maps_flutter_ios_sdk10: ^2.19.0
+  hooks: ^2.0.2
   intl: ^0.20.3
   map_launcher: ^7.0.0
+  # MapLibre rendered with Flutter GPU (no platform view), so the fog of war
+  # and markers are drawn in the same frame as the map. Vendored fork of
+  # hyshu/maplibre_flutter_gpu 0.2.0; see packages/maplibre_flutter_gpu/GIRO.md.
+  maplibre_flutter_gpu:
+    path: packages/maplibre_flutter_gpu
   mmkv: ^2.4.3
-  platform_maps_flutter: ^1.0.2
+  vector_math: ^2.2.0
+  web: ^1.1.1
 
 dev_dependencies:
   flutter_lints: ^6.0.0
@@ -32,17 +34,13 @@ dev_dependencies:
     sdk: flutter
   very_good_analysis: ^11.0.0
 
-dependency_overrides:
-  # Upstream apple_maps_flutter (pulled in by platform_maps_flutter) has no
-  # Swift Package Manager support. This fork is upstream master plus a
-  # Package.swift, which the CocoaPods-free iOS build requires.
-  apple_maps_flutter:
-    git:
-      url: https://github.com/AppMachine/apple_maps_flutter.git
-      ref: 505d27edc1be188d742306b3824c474948149bd6
-
 flutter:
   uses-material-design: true
+  assets:
+    # Sonic-coloured MapLibre style on OpenFreeMap tiles (tool/make_sonic_style.py).
+    - assets/map/sonic_style.json
+    # Fog of war + building shaders, compiled by hook/build.dart from shaders/.
+    - assets/shaderbundles/
   fonts:
     # Sonic Generations-style HUD type (SIL Open Font License, see
     # assets/fonts/OFL-BarlowCondensed.txt).

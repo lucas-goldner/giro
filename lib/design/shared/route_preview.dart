@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:platform_maps_flutter/platform_maps_flutter.dart';
+import 'package:giro/core/model/geo.dart';
 
 /// A small, map-free sketch of a walk: the route scaled into the box with a
 /// start and end dot. Used as list thumbnails by every redesign.

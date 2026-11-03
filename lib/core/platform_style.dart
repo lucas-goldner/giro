@@ -1,8 +1,7 @@
 import 'package:flutter/foundation.dart';
 
-/// Decides which widget flavour the app renders and whether the native map
-/// plugins are available, without touching `dart:io` (which is not usable on
-/// the web).
+/// Decides which widget flavour the app renders and which map backend is
+/// available, without touching `dart:io` (which is not usable on the web).
 abstract final class PlatformStyle {
   /// Forces the Cupertino look regardless of the host platform.
   ///
@@ -18,8 +17,9 @@ abstract final class PlatformStyle {
   /// this because the test binding pretends to be Android.
   static bool forceMockMap = false;
 
-  /// platform_maps_flutter only ships Apple Maps and Google Maps bindings, so
-  /// everywhere else (web, desktop, widget tests) the mock map is used.
+  /// Whether the Flutter GPU MapLibre map (maplibre_flutter_gpu) is used.
+  /// It needs Flutter GPU, which exists on iOS and Android but not on the
+  /// web; everywhere else (desktop, widget tests) the mock map is used.
   static bool get hasNativeMap =>
       !forceMockMap &&
       !kIsWeb &&

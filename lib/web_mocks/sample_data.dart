@@ -1,7 +1,7 @@
 import 'package:giro/core/model/poi.dart';
 import 'package:giro/core/model/walk_route.dart';
 import 'package:giro/core/model/walk_workout.dart';
-import 'package:platform_maps_flutter/platform_maps_flutter.dart';
+import 'package:giro/core/model/geo.dart';
 
 /// Deterministic sample content (walks around Tokyo) for the web preview and
 /// widget tests.

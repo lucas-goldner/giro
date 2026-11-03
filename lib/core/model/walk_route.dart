@@ -2,7 +2,7 @@ import 'dart:math';
 import 'dart:ui';
 
 import 'package:equatable/equatable.dart';
-import 'package:platform_maps_flutter/platform_maps_flutter.dart';
+import 'package:giro/core/model/geo.dart';
 
 const _coordinatesForEvery5Seconds = 5;
 

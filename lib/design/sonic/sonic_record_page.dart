@@ -13,7 +13,7 @@ import 'package:giro/design/sonic/sonic_map.dart';
 import 'package:giro/design/sonic/sonic_stats.dart';
 import 'package:giro/design/sonic/sonic_theme.dart';
 import 'package:giro/record_walk/cubit/record_walk_cubit.dart';
-import 'package:platform_maps_flutter/platform_maps_flutter.dart';
+import 'package:giro/core/model/geo.dart';
 
 /// Recording as an act in progress: HUD timer, a gold ring gauge for new
 /// ground, live stats, and the fog uncovering behind the glowing dot.

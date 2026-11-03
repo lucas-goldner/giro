@@ -10,7 +10,8 @@ import 'package:giro/design/sonic/sonic_map.dart';
 import 'package:giro/design/sonic/sonic_spot_dialog.dart';
 import 'package:giro/design/sonic/sonic_stats.dart';
 import 'package:giro/design/sonic/sonic_theme.dart';
-import 'package:platform_maps_flutter/platform_maps_flutter.dart';
+import 'package:giro/core/model/geo.dart';
+import 'package:giro/core/model/map_overlay.dart';
 
 /// Home: the fog map is the stage, a navy striped HUD panel holds the
 /// week's score (distance) with its rank, and GO! is the one red button.
@@ -49,8 +50,8 @@ class SonicHome extends StatelessWidget {
                   polylines: SonicMap.polylines(routes),
                   markers: {
                     for (final poi in pois)
-                      Marker(
-                        markerId: MarkerId(poi.id),
+                      MapMarker(
+                        id: poi.id,
                         position: poi.coordinates,
                         onTap: () => context
                             .read<LaunchableMapsCubit>()

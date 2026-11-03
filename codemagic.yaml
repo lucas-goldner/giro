@@ -14,6 +14,9 @@ workflows:
     scripts:
       - name: Install dependencies
         script: |
+          # MapLibre Native binaries for the vendored maplibre_flutter_gpu fork
+          # (too large for git; downloaded from the upstream pub.dev archive).
+          tool/fetch_maplibre_native.sh
           flutter pub get
 
       - name: Analyze and test

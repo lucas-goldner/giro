@@ -2,9 +2,10 @@ import 'dart:math' as math;
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:platform_maps_flutter/platform_maps_flutter.dart';
+import 'package:giro/core/model/geo.dart';
+import 'package:giro/core/model/map_overlay.dart';
 
-/// A stand-in for [PlatformMap] on platforms without Apple/Google Maps.
+/// A stand-in for the MapLibre map on platforms without Flutter GPU.
 ///
 /// It draws a street-like grid in Web Mercator projection plus the given
 /// [polylines] and [markers], supports drag-to-pan, pinch/scroll zoom, marker
@@ -14,8 +15,8 @@ import 'package:platform_maps_flutter/platform_maps_flutter.dart';
 class MockPlatformMap extends StatefulWidget {
   const MockPlatformMap({
     required this.initialCameraPosition,
-    this.markers = const <Marker>{},
-    this.polylines = const <Polyline>{},
+    this.markers = const <MapMarker>{},
+    this.polylines = const <MapPolyline>{},
     this.myLocationEnabled = false,
     this.onLongPress,
     this.onCameraMove,
@@ -23,8 +24,8 @@ class MockPlatformMap extends StatefulWidget {
   });
 
   final CameraPosition initialCameraPosition;
-  final Set<Marker> markers;
-  final Set<Polyline> polylines;
+  final Set<MapMarker> markers;
+  final Set<MapPolyline> polylines;
   final bool myLocationEnabled;
   final void Function(LatLng)? onLongPress;
   final void Function(CameraPosition)? onCameraMove;
@@ -34,7 +35,7 @@ class MockPlatformMap extends StatefulWidget {
 }
 
 class _MockPlatformMapState extends State<MockPlatformMap> {
-  static const _tileSize = 256.0;
+  static const _tileSize = 512.0;
   static const _markerHitRadius = 24.0;
 
   late LatLng _center = widget.initialCameraPosition.target;
@@ -205,8 +206,8 @@ class _MockMapPainter extends CustomPainter {
 
   final LatLng center;
   final double zoom;
-  final Set<Marker> markers;
-  final Set<Polyline> polylines;
+  final Set<MapMarker> markers;
+  final Set<MapPolyline> polylines;
   final LatLng? myLocation;
   final Offset Function(LatLng) project;
   final Offset worldOffset;
@@ -240,7 +241,7 @@ class _MockMapPainter extends CustomPainter {
         path,
         Paint()
           ..color = polyline.color
-          ..strokeWidth = polyline.width.toDouble() + 2
+          ..strokeWidth = polyline.width + 2
           ..style = PaintingStyle.stroke
           ..strokeCap = StrokeCap.round
           ..strokeJoin = StrokeJoin.round,

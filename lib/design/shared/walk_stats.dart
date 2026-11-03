@@ -1,7 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:giro/core/model/walk_route.dart';
-import 'package:platform_maps_flutter/platform_maps_flutter.dart';
+import 'package:giro/core/model/geo.dart';
 
 /// Derived numbers the redesigns show (the model only stores coordinates).
 extension WalkRouteStats on WalkRoute {

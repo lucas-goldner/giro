@@ -11,7 +11,8 @@ import 'package:giro/design/sonic/sonic_map.dart';
 import 'package:giro/design/sonic/sonic_spot_dialog.dart';
 import 'package:giro/design/sonic/sonic_stats.dart';
 import 'package:giro/design/sonic/sonic_theme.dart';
-import 'package:platform_maps_flutter/platform_maps_flutter.dart';
+import 'package:giro/core/model/geo.dart';
+import 'package:giro/core/model/map_overlay.dart';
 
 /// "Stage clear!" result screen for one walk: rank, time, pace, how much
 /// of the city it uncovered, and the spots (places) visited on it.
@@ -60,8 +61,8 @@ class SonicRouteDetail extends StatelessWidget {
                   polylines: SonicMap.polylines([route]),
                   markers: {
                     for (final poi in spots)
-                      Marker(
-                        markerId: MarkerId(poi.id),
+                      MapMarker(
+                        id: poi.id,
                         position: poi.coordinates,
                         onTap: () => context
                             .read<LaunchableMapsCubit>()
