@@ -20,6 +20,10 @@ abstract class TileStore {
   /// directly (web).
   String? get tileUrlTemplate;
 
+  /// Base URL (no trailing slash) that mirrors OpenFreeMap's sprites and
+  /// fonts through the same cache, or null to load them directly.
+  String? get localBaseUrl;
+
   Future<void> start();
 
   List<OfflineRegion> get regions;

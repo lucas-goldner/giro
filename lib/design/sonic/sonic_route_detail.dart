@@ -39,10 +39,7 @@ class SonicRouteDetail extends StatelessWidget {
     final spots = pois
         .where((poi) => route.distanceTo(poi.coordinates) <= _spotRadiusMeters)
         .toList();
-    final newShare = SonicStats.newGroundShare(
-      route,
-      SonicStats.earlierThan(route, all),
-    );
+    final newShare = ExploredIndex.cached(all).newGroundShare(route);
     final newMeters = route.distanceMeters * newShare;
 
     return Scaffold(

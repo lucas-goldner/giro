@@ -85,7 +85,6 @@ class SonicOptionsPage extends StatelessWidget {
                 caption:
                     '${MapSettings.defaultTrailWidth.round()} px · '
                     '${MapSettings.defaultRevealRadius.round()} m',
-                height: 52,
                 onTap: () => cubit.update(
                   settings.copyWith(
                     trailWidth: MapSettings.defaultTrailWidth,
@@ -107,7 +106,6 @@ class SonicOptionsPage extends StatelessWidget {
                 caption: 'Offline tiles',
                 color: SonicTheme.gold,
                 shadow: SonicTheme.goldDeep,
-                height: 52,
                 onTap: () => SonicActions.mapDownload(context),
               ),
             ],

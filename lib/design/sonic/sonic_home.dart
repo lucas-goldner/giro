@@ -95,7 +95,7 @@ class SonicHome extends StatelessWidget {
                               child: const Icon(
                                 Icons.tune_rounded,
                                 size: 18,
-                                color: SonicTheme.navy,
+                                color: SonicTheme.gold,
                               ),
                             ),
                           ),

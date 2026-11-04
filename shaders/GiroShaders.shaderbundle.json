@@ -1,5 +1,10 @@
 {
-  "FogVertex": { "type": "vertex", "file": "fog.vert" },
-  "FogFragment": { "type": "fragment", "file": "fog.frag" },
-  "ExploredBuildingFragment": { "type": "fragment", "file": "explored_building.frag" }
+  "FogVertex": {
+    "type": "vertex",
+    "file": "fog.vert"
+  },
+  "FogFragment": {
+    "type": "fragment",
+    "file": "fog.frag"
+  }
 }

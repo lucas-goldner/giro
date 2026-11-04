@@ -70,6 +70,16 @@ release archives, so every Runner configuration sets
 TestFlight build fails with "Failed to lookup symbol
 'maplibre_session_create'".
 
+## Ranks without the lag
+
+Every stage's rank comes from how much of it was new ground: points farther
+than 60 m from any earlier walk. `ExploredIndex` buckets every coordinate of
+every walk into a 60 m grid once per list of walks, so a rank is a few cell
+lookups per point instead of a scan of every other walk. Stage select,
+stage clear and the live recording HUD all share it. Route thumbnails
+(`RoutePreview`) thin long walks, cache their path and sit in a repaint
+boundary.
+
 ## Options
 
 The tune icon on the home HUD opens Options (`SonicOptionsPage`): two
@@ -85,7 +95,9 @@ loopback HTTP server the map loads `/tiles/{z}/{x}/{y}.pbf` from. Cached
 tiles are served from disk, missing ones are fetched from OpenFreeMap once
 and kept, so a city is only ever downloaded a single time and the map works
 offline afterwards. The OpenFreeMap tile URL (its dated path changes weekly)
-is resolved from their TileJSON and remembered for offline starts.
+is resolved from their TileJSON and remembered for offline starts. Sprites
+and font glyphs are mirrored through the same cache, so a start with
+everything stored needs no network.
 
 "Download area" (first launch, and Options > Download map area) stores every
 tile of the framed area for zoom 0 to 14, which is all OpenFreeMap serves,
@@ -118,9 +130,8 @@ on a screen.
   `gpuOverlayReadsMapColor` the shader also sees the finished map, so
   unexplored ground is rendered as a pale sketch of the map rather than a
   flat white blend.
-- `ExploredBuildings` replaces the fragment shader of the `building-3d`
-  layer (`shaders/explored_building.frag`): buildings are white blocks until
-  the walk passed them, then keep their colour.
+- 3D buildings (`building-3d`) are hidden until the map is tilted, then
+  shown opaque with soft lighting; flat buildings are the default look.
 - On the web and in tests the canvas `FogOfWar` overlay draws the same mask
   with one `dstOut` image draw per camera move.
 

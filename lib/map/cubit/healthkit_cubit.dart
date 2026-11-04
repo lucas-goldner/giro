@@ -32,7 +32,7 @@ class HealthkitCubit extends Cubit<HealthKitState> {
     }
     final all = <WalkWorkout>[];
     DateTime? before;
-    emit(HealthKitStateImporting(workouts: const [], fetched: 0));
+    emit(const HealthKitStateImporting(workouts: [], fetched: 0));
     while (true) {
       final page = await _healthkitRepo.retrieveWorkoutsWithRoutes(
         limit: pageSize,
