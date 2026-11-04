@@ -15,6 +15,9 @@ class MockTileStore implements TileStore {
   String? get tileUrlTemplate => null;
 
   @override
+  String? get localBaseUrl => null;
+
+  @override
   Future<void> start() async {}
 
   @override

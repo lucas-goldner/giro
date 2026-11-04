@@ -23,6 +23,8 @@ class SonicWalksPage extends StatelessWidget {
     final routes = context.watch<WalkRoutesCubit>().state.sortedRoutes;
     final pois = context.watch<PoiCubit>().state.pois;
     final km = SonicTheme.kilometres(routes.totalDistanceMeters);
+    // One spatial index for every rank; the cards only look up their own.
+    final explored = ExploredIndex.cached(routes);
 
     return Scaffold(
       backgroundColor: SonicTheme.navy,
@@ -79,10 +81,6 @@ class SonicWalksPage extends StatelessWidget {
                   separatorBuilder: (_, _) => const SizedBox(height: 10),
                   itemBuilder: (context, index) {
                     final route = routes[index];
-                    final share = SonicStats.newGroundShare(
-                      route,
-                      SonicStats.earlierThan(route, routes),
-                    );
                     final spots = pois
                         .where(
                           (poi) =>
@@ -92,7 +90,7 @@ class SonicWalksPage extends StatelessWidget {
                         .length;
                     return _StageCard(
                       route: route,
-                      rank: SonicStats.rankFor(share),
+                      rank: explored.rankOf(route),
                       spots: spots,
                     );
                   },

@@ -37,6 +37,8 @@ LABEL_SECONDARY = OUTLINE
 
 def recolour(style):
     style['name'] = 'Giro Sonic'
+    # Soft lighting so extruded walls stay in the pale palette.
+    style['light'] = {'anchor': 'viewport', 'color': '#FFFFFF', 'intensity': 0.15}
     style['metadata'] = {
         'giro:derived-from': 'OpenFreeMap Liberty',
         'giro:generator': 'tool/make_sonic_style.py',
@@ -82,8 +84,13 @@ def recolour(style):
                 paint['fill-color'] = WHITE
                 paint.pop('fill-pattern', None)
         elif t == 'fill-extrusion':
+            # Opaque: translucent extrusions are composited without depth
+            # sorting and show seams between building parts. Hidden until the
+            # map is tilted (MapLibreMapView toggles the layer).
             paint['fill-extrusion-color'] = BUILDING_3D
-            paint['fill-extrusion-opacity'] = 0.9
+            paint['fill-extrusion-opacity'] = 1
+            paint['fill-extrusion-vertical-gradient'] = False
+            layer.setdefault('layout', {})['visibility'] = 'none'
         elif t == 'line':
             if 'waterway' in lid:
                 paint['line-color'] = SKY

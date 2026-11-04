@@ -5,7 +5,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:giro/core/map/explored_buildings.dart';
 import 'package:giro/core/map/explored_mask.dart';
 import 'package:giro/core/map/fog_gpu.dart';
 import 'package:giro/core/map/giro_map_style.dart';
@@ -17,10 +16,11 @@ import 'package:maplibre_flutter_gpu/maplibre_flutter_gpu.dart' as ml;
 
 /// The iOS/Android map: MapLibre rendered with Flutter GPU.
 ///
-/// No platform view is involved, so the fog of war ([FogGpu]), the 3D
-/// buildings ([ExploredBuildings]) and the spot markers are all drawn in the
-/// same frame as the map. Walks are part of the style itself (see
-/// [GiroMapStyle]); the style is reloaded when they change.
+/// No platform view is involved, so the fog of war ([FogGpu]) and the spot
+/// markers are drawn in the same frame as the map. The 3D buildings layer
+/// is shown only while the map is tilted; flat on top is the clean look.
+/// Walks are part of the style itself (see [GiroMapStyle]); the style is
+/// reloaded when they change.
 class MapLibreMapView extends StatefulWidget {
   const MapLibreMapView({
     required this.initialCameraPosition,
@@ -56,7 +56,6 @@ class _MapLibreMapViewState extends State<MapLibreMapView> {
   Map<String, dynamic>? _template;
   String? _styleJson;
   final _fog = FogGpu();
-  final _buildings = ExploredBuildings();
   ExploredMask? _mask;
   int _maskGeneration = 0;
   StreamSubscription<Position>? _locationSubscription;
@@ -65,24 +64,54 @@ class _MapLibreMapViewState extends State<MapLibreMapView> {
   bool _animatingCamera = false;
   bool _idleOnce = false;
   String? _tileUrlTemplate;
+  String? _localBaseUrl;
+  bool _styleLoaded = false;
+  bool? _buildingsShown;
+  Timer? _loadingTimeout;
 
   @override
   void initState() {
     super.initState();
     unawaited(_loadStyle());
     unawaited(_fog.ensureLoaded());
-    unawaited(_buildings.ensureLoaded());
     unawaited(_rebuildMask());
     _updateLocationStream();
+    // The idle callback is the real signal; this is the safety net.
+    _loadingTimeout = Timer(const Duration(seconds: 8), _hideLoading);
+  }
+
+  void _hideLoading() {
+    _loadingTimeout?.cancel();
+    if (!_idleOnce && mounted) {
+      setState(() => _idleOnce = true);
+    }
+  }
+
+  /// 3D buildings only while the map is tilted; flat buildings otherwise.
+  void _syncBuildings(double tilt) {
+    final controller = _controller;
+    final show = tilt > 3;
+    if (controller == null || !_styleLoaded || show == _buildingsShown) {
+      return;
+    }
+    _buildingsShown = show;
+    unawaited(
+      controller
+          .setLayerVisibility(GiroMapStyle.buildings3dLayer, show)
+          .catchError((Object _) {}),
+    );
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     // The on-device tile cache (null on platforms without one).
-    final template = context.read<TileStore?>()?.tileUrlTemplate;
-    if (template != _tileUrlTemplate) {
+    final store = context.read<TileStore?>();
+    final template = store?.tileUrlTemplate;
+    final base = store?.localBaseUrl;
+    if (template != _tileUrlTemplate || base != _localBaseUrl) {
       _tileUrlTemplate = template;
+      _localBaseUrl = base;
       unawaited(_applyStyle());
     }
   }
@@ -112,9 +141,9 @@ class _MapLibreMapViewState extends State<MapLibreMapView> {
 
   @override
   void dispose() {
+    _loadingTimeout?.cancel();
     unawaited(_locationSubscription?.cancel());
     _fog.dispose();
-    _buildings.dispose();
     _mask?.dispose();
     super.dispose();
   }
@@ -133,6 +162,7 @@ class _MapLibreMapViewState extends State<MapLibreMapView> {
       template,
       widget.polylines,
       tileUrlTemplate: _tileUrlTemplate,
+      localBaseUrl: _localBaseUrl,
     );
     if (json == _styleJson || !mounted) {
       return;
@@ -155,7 +185,6 @@ class _MapLibreMapViewState extends State<MapLibreMapView> {
     }
     _mask?.dispose();
     _mask = mask;
-    _buildings.setMask(mask);
     await _fog.setMask(mask);
   }
 
@@ -207,6 +236,7 @@ class _MapLibreMapViewState extends State<MapLibreMapView> {
     if (!_animatingCamera) {
       _userMovedCamera = true;
     }
+    _syncBuildings(camera.tilt);
     widget.onCameraMove?.call(
       CameraPosition(
         target: LatLng(camera.target.latitude, camera.target.longitude),
@@ -297,21 +327,20 @@ class _MapLibreMapViewState extends State<MapLibreMapView> {
           compassViewPosition: ml.CompassViewPosition.topRight,
           compassViewMargins: math.Point<num>(14, compassTop),
           attributionButtonMargins: const math.Point<num>(10, 10),
-          onMapIdle: () {
-            if (!_idleOnce && mounted) {
-              setState(() => _idleOnce = true);
-            }
+          onStyleLoadedCallback: () {
+            _styleLoaded = true;
+
+            _buildingsShown = null;
+
+            _syncBuildings(_controller?.frameState?.camera.tilt ?? 0);
           },
+
+          onMapIdle: _hideLoading,
           overlayBuilder: _markerOverlay,
           userLocation: _userLocation,
           gpuRenderCallback: widget.fogOfWar ? _fog.render : null,
           gpuRepaint: _fog.repaint,
           gpuOverlayReadsMapColor: widget.fogOfWar,
-          fillExtrusionRendererBuilder: widget.fogOfWar
-              ? (layer) => ExploredBuildings.layerIds.contains(layer.id)
-                    ? _buildings
-                    : null
-              : null,
         ),
         if (!_idleOnce)
           Positioned(

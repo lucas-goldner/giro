@@ -14,11 +14,14 @@ import 'package:giro/core/model/geo.dart';
 /// and stored, so an area is only ever downloaded a single time. "Download
 /// this area" pre-fills the same directory. The OpenFreeMap tile URL (it
 /// carries a dated path that changes weekly) is resolved from its TileJSON
-/// and remembered for offline starts.
+/// and remembered for offline starts. Sprites and fonts (`/sprites/...`,
+/// `/fonts/...`) are mirrored the same way, so a start with everything
+/// cached needs no network at all.
 class TileCacheHttp implements TileStore {
   TileCacheHttp({required this.directory, required this.userAgent});
 
   static const tileJsonUrl = 'https://tiles.openfreemap.org/planet';
+  static const upstreamBase = 'https://tiles.openfreemap.org';
   static const _concurrency = 4;
 
   final Directory directory;
@@ -30,6 +33,7 @@ class TileCacheHttp implements TileStore {
   final _regions = <OfflineRegion>[];
 
   Directory get _tilesDir => Directory('${directory.path}/tiles');
+  Directory get _assetsDir => Directory('${directory.path}/assets');
   File get _tileJsonFile => File('${directory.path}/tilejson.json');
   File get _regionsFile => File('${directory.path}/regions.json');
 
@@ -40,6 +44,12 @@ class TileCacheHttp implements TileStore {
       return null;
     }
     return 'http://127.0.0.1:${server.port}/tiles/{z}/{x}/{y}.pbf';
+  }
+
+  @override
+  String? get localBaseUrl {
+    final server = _server;
+    return server == null ? null : 'http://127.0.0.1:${server.port}';
   }
 
   @override
@@ -115,6 +125,11 @@ class TileCacheHttp implements TileStore {
     final response = request.response;
     try {
       final segments = request.uri.pathSegments;
+      if (segments.length >= 2 &&
+          (segments.first == 'sprites' || segments.first == 'fonts')) {
+        await _serveAsset(request.uri.path, response);
+        return;
+      }
       if (segments.length != 4 ||
           segments.first != 'tiles' ||
           !segments.last.endsWith('.pbf')) {
@@ -146,19 +161,36 @@ class TileCacheHttp implements TileStore {
     }
   }
 
-  /// Downloads one tile from OpenFreeMap into the cache. Returns null when
-  /// the tile does not exist (404) or the network failed.
-  Future<File?> _fetch(TileId tile) async {
-    final template = await _resolveUpstream();
-    if (template == null) {
-      return null;
+  /// Sprites and glyph ranges: cached under assets/ by their upstream path.
+  Future<void> _serveAsset(String path, HttpResponse response) async {
+    if (path.contains('..')) {
+      response.statusCode = HttpStatus.notFound;
+      return;
     }
-    final url = template
-        .replaceAll('{z}', '${tile.z}')
-        .replaceAll('{x}', '${tile.x}')
-        .replaceAll('{y}', '${tile.y}');
+    var file = File('${_assetsDir.path}$path');
+    if (!file.existsSync()) {
+      final fetched = await _download(Uri.parse('$upstreamBase$path'), file);
+      if (fetched == null) {
+        response.statusCode = HttpStatus.notFound;
+        return;
+      }
+      file = fetched;
+    }
+    final type = path.endsWith('.json')
+        ? ContentType.json
+        : path.endsWith('.png')
+        ? ContentType('image', 'png')
+        : ContentType('application', 'x-protobuf');
+    response.headers
+      ..contentType = type
+      ..set(HttpHeaders.cacheControlHeader, 'max-age=31536000');
+    await response.addStream(file.openRead());
+  }
+
+  /// Downloads [url] into [file] (through a temp file). Null on failure.
+  Future<File?> _download(Uri url, File file) async {
     try {
-      final request = await _client.getUrl(Uri.parse(url));
+      final request = await _client.getUrl(url);
       request.headers.set(HttpHeaders.userAgentHeader, userAgent);
       final response = await request.close().timeout(
         const Duration(seconds: 30),
@@ -171,16 +203,29 @@ class TileCacheHttp implements TileStore {
         BytesBuilder(copy: false),
         (builder, chunk) => builder..add(chunk),
       );
-      final file = _fileFor(tile);
       await file.parent.create(recursive: true);
       final temp = File('${file.path}.part');
       await temp.writeAsBytes(bytes.takeBytes(), flush: true);
       await temp.rename(file.path);
       return file;
     } on Object catch (error) {
-      debugPrint('[TileCache] ${tile.path}: $error');
+      debugPrint('[TileCache] $url: $error');
       return null;
     }
+  }
+
+  /// Downloads one tile from OpenFreeMap into the cache. Returns null when
+  /// the tile does not exist (404) or the network failed.
+  Future<File?> _fetch(TileId tile) async {
+    final template = await _resolveUpstream();
+    if (template == null) {
+      return null;
+    }
+    final url = template
+        .replaceAll('{z}', '${tile.z}')
+        .replaceAll('{x}', '${tile.x}')
+        .replaceAll('{y}', '${tile.y}');
+    return _download(Uri.parse(url), _fileFor(tile));
   }
 
   @override
@@ -287,6 +332,9 @@ class TileCacheHttp implements TileStore {
     if (_tilesDir.existsSync()) {
       await _tilesDir.delete(recursive: true);
       await _tilesDir.create(recursive: true);
+    }
+    if (_assetsDir.existsSync()) {
+      await _assetsDir.delete(recursive: true);
     }
     _regions.clear();
     if (_regionsFile.existsSync()) {

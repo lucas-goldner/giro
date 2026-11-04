@@ -88,10 +88,7 @@ class _SonicRecordState extends State<_SonicRecord> {
         // Once saved, the walk is part of `explored`; compare against the
         // walks that came before it only.
         final newShare = points.length > 1
-            ? SonicStats.newGroundShare(
-                live,
-                SonicStats.earlierThan(live, explored),
-              )
+            ? ExploredIndex.cached(explored).newGroundShare(live)
             : 0.0;
         final newMeters = live.distanceMeters * newShare;
         final target = points.isNotEmpty

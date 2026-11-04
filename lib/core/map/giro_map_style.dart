@@ -15,11 +15,14 @@ abstract final class GiroMapStyle {
   static const asset = 'assets/map/sonic_style.json';
   static const walksSource = 'giro_walks';
   static const tilesSource = 'openmaptiles';
+  static const openFreeMapBase = 'https://tiles.openfreemap.org';
+  static const buildings3dLayer = 'building-3d';
   static const openFreeMapAttribution =
       '<a href="https://openfreemap.org" target="_blank">OpenFreeMap</a> '
       '<a href="https://www.openmaptiles.org/" target="_blank">&copy; '
-      'OpenMapTiles</a> Data from <a href="https://www.openstreetmap.org/'
-      'copyright" target="_blank">OpenStreetMap</a>';
+      'OpenMapTiles</a> Data from '
+      '<a href="https://www.openstreetmap.org/copyright" target="_blank">'
+      'OpenStreetMap</a>';
   static const glowLayer = 'giro_walk_glow';
   static const lineLayer = 'giro_walk_line';
 
@@ -39,8 +42,14 @@ abstract final class GiroMapStyle {
     Map<String, dynamic> template,
     Iterable<MapPolyline> polylines, {
     String? tileUrlTemplate,
+    String? localBaseUrl,
   }) => jsonEncode(
-    withWalks(template, polylines, tileUrlTemplate: tileUrlTemplate),
+    withWalks(
+      template,
+      polylines,
+      tileUrlTemplate: tileUrlTemplate,
+      localBaseUrl: localBaseUrl,
+    ),
   );
 
   /// A copy of [template] with a `giro_walks` GeoJSON source and the walk
@@ -49,8 +58,18 @@ abstract final class GiroMapStyle {
     Map<String, dynamic> template,
     Iterable<MapPolyline> polylines, {
     String? tileUrlTemplate,
+    String? localBaseUrl,
   }) {
     final style = Map<String, dynamic>.from(template);
+    if (localBaseUrl != null) {
+      // Sprites and glyphs through the on-device cache as well.
+      for (final key in ['sprite', 'glyphs']) {
+        final value = style[key];
+        if (value is String && value.startsWith(openFreeMapBase)) {
+          style[key] = localBaseUrl + value.substring(openFreeMapBase.length);
+        }
+      }
+    }
     final sources = Map<String, dynamic>.from(
       style['sources'] as Map<String, dynamic>,
     );
