@@ -63,7 +63,14 @@ class SonicWalksPage extends StatelessWidget {
                       ],
                     ),
                     const SizedBox(height: 10),
-                    SonicHudText('TOKYO · ${routes.length} STAGES', size: 34),
+                    FittedBox(
+                      fit: BoxFit.scaleDown,
+                      alignment: Alignment.centerLeft,
+                      child: SonicHudText(
+                        'TOKYO · ${routes.length} STAGES',
+                        size: 34,
+                      ),
+                    ),
                     const SizedBox(height: 6),
                     Text(
                       '$km km · '

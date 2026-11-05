@@ -78,9 +78,6 @@ class ExploredIndex {
     }
   }
 
-  static ExploredIndex? _cachedIndex;
-  static int? _cachedKey;
-
   /// The index for [routes], reused while the same walks are shown.
   factory ExploredIndex.cached(List<WalkRoute> routes) {
     final key = Object.hashAll([for (final route in routes) route.id]);
@@ -93,6 +90,9 @@ class ExploredIndex {
     _cachedKey = key;
     return index;
   }
+
+  static ExploredIndex? _cachedIndex;
+  static int? _cachedKey;
 
   static const double _metersPerDegreeLat = 111320;
 

@@ -188,6 +188,19 @@ async function main() {
       console.warn('skipping mark-spot dialog:', error.message);
     }
 
+    // Demo data: all of Tokyo walked. Last so the other shots stay real.
+    await tap(page, 'Options');
+    await tap(page, 'Fill Tokyo');
+    await back(page);
+    await page.waitForTimeout(4000); // the style with 300 walks reloads
+    await snap(page, 'demo_tokyo_home');
+    await tap(page, 'All walks');
+    await snap(page, 'demo_tokyo_stages');
+    await back(page);
+    await tap(page, 'Options');
+    await tap(page, 'Remove demo data');
+    await back(page);
+
     await tap(page, 'Record');
     await snap(page, 'record_ready');
     await tap(page, 'Start recording');

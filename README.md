@@ -28,11 +28,15 @@ explorations (Zenly × Apple and the Sonic concept itself) live in
 
 | Spots | Mark a spot | Recording |
 |---|---|---|
-| ![Spots](docs/design/screenshots/04_spots.png) | ![Mark a spot](docs/design/screenshots/10_mark_spot.png) | ![Recording](docs/design/screenshots/12_record_live.png) |
+| ![Spots](docs/design/screenshots/04_spots.png) | ![Mark a spot](docs/design/screenshots/10_mark_spot.png) | ![Recording](docs/design/screenshots/14_record_live.png) |
 
 | Options | Map download | Import everything |
 |---|---|---|
 | ![Options](docs/design/screenshots/07_options.png) | ![Map download](docs/design/screenshots/09_map_download_progress.png) | ![Import](docs/design/screenshots/06_import_all.png) |
+
+| Demo: Tokyo filled | Demo: 327 stages |
+|---|---|
+| ![Demo home](docs/design/screenshots/11_demo_tokyo_home.png) | ![Demo stages](docs/design/screenshots/12_demo_tokyo_stages.png) |
 
 The PNGs are half-size copies of `tool/web_screenshots.mjs` output.
 
@@ -113,6 +117,14 @@ import the whole history: `HealthkitCubit.retrieveAll` pages through
 HealthKit 25 workouts at a time (the method channel takes `limit` and
 `before`), saving each page's new walks as stages while a counter shows
 progress.
+
+## Demo data
+
+Options > Demo data > **Fill Tokyo** adds 322 generated walks across all 23
+wards plus 45 famous spots (`TokyoDemoData`), to preview the app with most
+of the city explored: Manhattan-style strolls of 2 to 9 km with GPS jitter,
+dated over the last two years. They come from a fixed seed, so **Remove
+demo data** deletes exactly those walks again and leaves real ones alone.
 
 ## Fog of war
 

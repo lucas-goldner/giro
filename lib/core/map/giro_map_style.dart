@@ -21,6 +21,7 @@ abstract final class GiroMapStyle {
       '<a href="https://openfreemap.org" target="_blank">OpenFreeMap</a> '
       '<a href="https://www.openmaptiles.org/" target="_blank">&copy; '
       'OpenMapTiles</a> Data from '
+      // ignore: missing_whitespace_between_adjacent_strings
       '<a href="https://www.openstreetmap.org/copyright" target="_blank">'
       'OpenStreetMap</a>';
   static const glowLayer = 'giro_walk_glow';
