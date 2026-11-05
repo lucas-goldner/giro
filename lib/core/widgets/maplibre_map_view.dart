@@ -255,14 +255,20 @@ class _MapLibreMapViewState extends State<MapLibreMapView> {
     if (controller == null || widget.markers.isEmpty) {
       return null;
     }
-    const size = 26.0;
+    // Spots shrink at city zoom so 45 of them do not bury the map.
+    final zoom = frame.camera.zoom;
+    final size = zoom >= 14
+        ? 26.0
+        : zoom >= 12
+        ? 18.0
+        : 12.0;
     return Stack(
       clipBehavior: Clip.none,
       children: [
         for (final marker in widget.markers)
           for (final offset in controller.toScreenOffsets(
             _toMl(marker.position),
-            padding: const EdgeInsets.all(size),
+            padding: EdgeInsets.all(size),
           ))
             Positioned(
               left: offset.dx - size / 2,
@@ -275,8 +281,8 @@ class _MapLibreMapViewState extends State<MapLibreMapView> {
                 child: Semantics(
                   button: marker.onTap != null,
                   label: 'Spot',
-                  child: const DecoratedBox(
-                    decoration: BoxDecoration(
+                  child: DecoratedBox(
+                    decoration: const BoxDecoration(
                       shape: BoxShape.circle,
                       color: SonicTheme.white,
                       boxShadow: [
@@ -287,7 +293,7 @@ class _MapLibreMapViewState extends State<MapLibreMapView> {
                         ),
                       ],
                     ),
-                    child: Center(child: SonicSpotIcon(size: 18)),
+                    child: Center(child: SonicSpotIcon(size: size * 0.7)),
                   ),
                 ),
               ),

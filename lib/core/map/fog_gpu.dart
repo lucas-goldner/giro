@@ -18,8 +18,8 @@ import 'package:vector_math/vector_math_64.dart' as vm;
 class FogGpu {
   FogGpu({
     this.fogColor = const Color(0xFFFFFFFF),
-    this.fogStrength = 0.97,
-    this.sketchContrast = 0.45,
+    this.fogStrength = 0.985,
+    this.sketchContrast = 0.14,
   });
 
   final Color fogColor;

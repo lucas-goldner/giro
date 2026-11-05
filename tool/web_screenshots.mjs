@@ -194,6 +194,12 @@ async function main() {
     await back(page);
     await page.waitForTimeout(4000); // the style with 300 walks reloads
     await snap(page, 'demo_tokyo_home');
+    // Zoom out to city scale: the explored wards should read as colour on
+    // white, not as a blue blot of walk lines.
+    await page.mouse.move(195, 300);
+    for (let i = 0; i < 9; i++) { await page.mouse.wheel(0, 400); await page.waitForTimeout(250); }
+    await page.waitForTimeout(3000);
+    await snap(page, 'demo_tokyo_city');
     await tap(page, 'All walks');
     await snap(page, 'demo_tokyo_stages');
     await back(page);
