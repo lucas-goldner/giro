@@ -19,20 +19,28 @@ GOLD = '#FFC400'
 PALE = '#B9D3FF'
 OUTLINE = '#2C57D6'
 WHITE = '#FFFFFF'
-LAND = '#F4F7FF'
-RESIDENTIAL = '#E8EEFC'
-PARK = '#8FE37A'
-GRASS = '#A9ECA0'
-WOOD = '#7FD98A'
-SAND = '#FFF1B8'
-BUILDING = '#C8D8FF'
-BUILDING_3D = '#B9D3FF'
-ROAD_CASING = '#9FB4E8'
-ROAD_MAJOR = '#FFD84D'
-ROAD_HIGHWAY = '#FFB347'
-RAIL = '#8A9BC9'
+
+# The explored map is a toy world: warm paper land, vivid parks, bright
+# water, clay buildings, white roads with sandy casings. Unexplored areas are
+# white (the fog), so the contrast is colourful city versus blank paper.
+LAND = '#F7F1E3'
+RESIDENTIAL = '#F1E8D4'
+PARK = '#7ED957'
+GRASS = '#A9E87B'
+WOOD = '#5CC95A'
+SAND = '#FFE9A8'
+WATER = '#4FC3F7'
+BUILDING = '#EADFC8'
+BUILDING_OUTLINE = 'rgba(176, 150, 104, 0.55)'
+BUILDING_3D = '#EADFC8'
+ROAD_CASING = '#E3CFA6'
+ROAD_MAJOR = '#FFD166'
+ROAD_HIGHWAY = '#FF9F5A'
+RAIL = '#B9B2A5'
 LABEL = NAVY
-LABEL_SECONDARY = OUTLINE
+LABEL_SECONDARY = '#4A5A8A'
+BOUNDARY = '#C9A86A'
+WATER_LABEL = '#1677C8'
 
 
 def recolour(style):
@@ -54,8 +62,8 @@ def recolour(style):
         elif t == 'fill':
             if lid.startswith('park'):
                 paint['fill-color'] = PARK
-                paint['fill-opacity'] = 0.55
-                paint['fill-outline-color'] = '#5FC86A'
+                paint['fill-opacity'] = 0.7
+                paint['fill-outline-color'] = '#56B84A'
             elif lid == 'landuse_residential':
                 paint['fill-color'] = RESIDENTIAL
             elif lid in ('landcover_wood',):
@@ -69,17 +77,17 @@ def recolour(style):
             elif lid in ('landcover_ice',):
                 paint['fill-color'] = WHITE
             elif lid in ('landcover_wetland',):
-                paint['fill-color'] = '#BFEFFF'
+                paint['fill-color'] = '#A5E3F5'
                 paint['fill-opacity'] = 0.5
             elif lid in ('landuse_cemetery', 'landuse_hospital', 'landuse_school'):
-                paint['fill-color'] = '#DCE6FF'
+                paint['fill-color'] = '#EFE4CF'
             elif lid == 'water':
-                paint['fill-color'] = SKY
+                paint['fill-color'] = WATER
             elif lid == 'building':
                 paint['fill-color'] = BUILDING
-                paint['fill-outline-color'] = 'rgba(44, 87, 214, 0.35)'
+                paint['fill-outline-color'] = BUILDING_OUTLINE
             elif lid.startswith('aeroway'):
-                paint['fill-color'] = '#DDE5F7'
+                paint['fill-color'] = '#E8E0CE'
             elif lid == 'road_area_pattern':
                 paint['fill-color'] = WHITE
                 paint.pop('fill-pattern', None)
@@ -93,9 +101,9 @@ def recolour(style):
             layer.setdefault('layout', {})['visibility'] = 'none'
         elif t == 'line':
             if 'waterway' in lid:
-                paint['line-color'] = SKY
+                paint['line-color'] = WATER
             elif lid.startswith('boundary'):
-                paint['line-color'] = OUTLINE
+                paint['line-color'] = BOUNDARY
             elif 'rail' in lid:
                 paint['line-color'] = RAIL
             elif lid.endswith('_casing'):
@@ -118,7 +126,7 @@ def recolour(style):
                 paint['text-color'] = LABEL_SECONDARY
                 paint['text-halo-color'] = WHITE
             if lid.startswith('water'):
-                paint['text-color'] = '#1677C8'
+                paint['text-color'] = WATER_LABEL
     return style
 
 

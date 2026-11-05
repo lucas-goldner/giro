@@ -156,6 +156,10 @@ abstract final class GiroMapStyle {
     return {'type': 'FeatureCollection', 'features': features};
   }
 
+  /// Walk lines scale with zoom: at street level they are the width the
+  /// user chose, towards city zoom they thin out and fade away completely,
+  /// so an explored district reads as coloured map on white paper instead
+  /// of a blue blot of lines.
   static Map<String, dynamic> _lineLayer(
     String id, {
     required String colorKey,
@@ -167,7 +171,42 @@ abstract final class GiroMapStyle {
     'layout': {'line-cap': 'round', 'line-join': 'round'},
     'paint': {
       'line-color': ['get', colorKey],
-      'line-width': ['get', widthKey],
+      'line-width': [
+        'interpolate',
+        ['exponential', 1.5],
+        ['zoom'],
+        9,
+        [
+          '*',
+          ['get', widthKey],
+          0.12,
+        ],
+        12,
+        [
+          '*',
+          ['get', widthKey],
+          0.3,
+        ],
+        14,
+        [
+          '*',
+          ['get', widthKey],
+          0.6,
+        ],
+        16,
+        ['get', widthKey],
+      ],
+      // At city scale the uncovered colours say "explored"; the lines
+      // themselves only matter at street level.
+      'line-opacity': [
+        'interpolate',
+        ['linear'],
+        ['zoom'],
+        13.5,
+        0,
+        15,
+        1,
+      ],
     },
   };
 

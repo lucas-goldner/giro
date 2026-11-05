@@ -179,6 +179,7 @@ class _WebMapLibreMapState extends State<WebMapLibreMap> {
     if (map == null) {
       return;
     }
+    _scaleMarkers(map.getZoom());
     final centre = map.getCenter();
     widget.onCameraMove?.call(
       CameraPosition(
@@ -188,6 +189,18 @@ class _WebMapLibreMapState extends State<WebMapLibreMap> {
         tilt: map.getPitch(),
       ),
     );
+  }
+
+  /// Spots shrink at city zoom so dozens of them do not bury the map.
+  void _scaleMarkers(double zoom) {
+    final scale = zoom >= 14
+        ? 1.0
+        : zoom >= 12
+        ? 0.7
+        : 0.46;
+    for (final marker in _markers.values) {
+      marker.getElement().style.transform = 'scale($scale)';
+    }
   }
 
   void _syncMarkers() {
@@ -292,6 +305,7 @@ extension type _JsMarker._(JSObject _) implements JSObject {
   external _JsMarker(JSObject options);
   external _JsMarker setLngLat(JSArray<JSNumber> lngLat);
   external _JsMarker addTo(_JsMap map);
+  external web.HTMLElement getElement();
   external void remove();
 }
 

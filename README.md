@@ -28,15 +28,15 @@ explorations (Zenly × Apple and the Sonic concept itself) live in
 
 | Spots | Mark a spot | Recording |
 |---|---|---|
-| ![Spots](docs/design/screenshots/04_spots.png) | ![Mark a spot](docs/design/screenshots/10_mark_spot.png) | ![Recording](docs/design/screenshots/14_record_live.png) |
+| ![Spots](docs/design/screenshots/04_spots.png) | ![Mark a spot](docs/design/screenshots/10_mark_spot.png) | ![Recording](docs/design/screenshots/15_record_live.png) |
 
 | Options | Map download | Import everything |
 |---|---|---|
 | ![Options](docs/design/screenshots/07_options.png) | ![Map download](docs/design/screenshots/09_map_download_progress.png) | ![Import](docs/design/screenshots/06_import_all.png) |
 
-| Demo: Tokyo filled | Demo: 327 stages |
-|---|---|
-| ![Demo home](docs/design/screenshots/11_demo_tokyo_home.png) | ![Demo stages](docs/design/screenshots/12_demo_tokyo_stages.png) |
+| Demo: street zoom | Demo: city zoom | Demo: 327 stages |
+|---|---|---|
+| ![Demo home](docs/design/screenshots/11_demo_tokyo_home.png) | ![Demo city](docs/design/screenshots/12_demo_tokyo_city.png) | ![Demo stages](docs/design/screenshots/13_demo_tokyo_stages.png) |
 
 The PNGs are half-size copies of `tool/web_screenshots.mjs` output.
 
@@ -149,6 +149,13 @@ on a screen.
 
 Shaders under `shaders/` are compiled by `hook/build.dart` with the Flutter
 SDK's `impellerc` into `assets/shaderbundles/` at build time.
+
+Walk lines are only the full chosen width at street zoom (16+); they thin
+out from there and fade away below zoom 13.5, so at city scale an explored
+district reads as coloured map on white paper rather than a tangle of
+lines. The style itself (`tool/make_sonic_style.py`) is a toy-world
+palette: warm paper land, vivid parks, bright water, clay buildings, white
+roads with sandy casings.
 
 ## Web preview
 
