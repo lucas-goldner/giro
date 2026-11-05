@@ -157,6 +157,36 @@ void main() {
     expect(find.text('9 px'), findsNothing);
   });
 
+  testWidgets('demo data fills Tokyo and can be removed again', (tester) async {
+    await pumpApp(tester);
+
+    await tester.tap(find.bySemanticsLabel('Options'));
+    await tester.pumpAndSettle();
+    // The demo section sits below the fold of the options list.
+    await tester.fling(find.byType(ListView), const Offset(0, -900), 2500);
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('FILL TOKYO'));
+    await tester.pumpAndSettle();
+    expect(find.textContaining('demo walks loaded'), findsOneWidget);
+
+    Navigator.of(tester.element(find.byType(SonicOptionsPage))).pop();
+    await tester.pumpAndSettle();
+    expect(find.byType(SonicHome), findsOneWidget);
+    expect(find.textContaining('walks ·'), findsOneWidget);
+    expect(
+      find.textContaining('${SampleData.walkRoutes.length + 322} walks'),
+      findsOneWidget,
+    );
+
+    await tester.tap(find.bySemanticsLabel('Options'));
+    await tester.pumpAndSettle();
+    await tester.fling(find.byType(ListView), const Offset(0, -900), 2500);
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('REMOVE DEMO DATA'));
+    await tester.pumpAndSettle();
+    expect(find.text('FILL TOKYO'), findsOneWidget);
+  });
+
   testWidgets('map download frames an area and reports progress', (
     tester,
   ) async {

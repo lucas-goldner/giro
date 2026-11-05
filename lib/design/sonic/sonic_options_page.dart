@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:giro/core/cubit/map_settings_cubit.dart';
+import 'package:giro/core/cubit/poi_cubit.dart';
+import 'package:giro/core/cubit/walk_routes_cubit.dart';
+import 'package:giro/core/demo/tokyo_demo_data.dart';
 import 'package:giro/core/extensions.dart';
 import 'package:giro/core/model/map_settings.dart';
 import 'package:giro/design/sonic/sonic_actions.dart';
@@ -108,6 +111,8 @@ class SonicOptionsPage extends StatelessWidget {
                 shadow: SonicTheme.goldDeep,
                 onTap: () => SonicActions.mapDownload(context),
               ),
+              const SizedBox(height: 26),
+              const _DemoDataSection(),
             ],
           ),
         ),
@@ -296,4 +301,60 @@ class _RevealPainter extends CustomPainter {
   @override
   bool shouldRepaint(_RevealPainter oldDelegate) =>
       oldDelegate.radius != radius;
+}
+
+/// Fills the app with generated walks across all 23 wards, to preview the
+/// look of a mostly explored Tokyo. Generated from a fixed seed, so the
+/// same walks can be removed again without touching real data.
+class _DemoDataSection extends StatelessWidget {
+  const _DemoDataSection();
+
+  @override
+  Widget build(BuildContext context) {
+    final routes = context.watch<WalkRoutesCubit>().state.routes;
+    final demoIds = {for (final route in TokyoDemoData.walks()) route.id};
+    final loaded = routes.where((route) => demoIds.contains(route.id)).length;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text('DEMO DATA', style: SonicTheme.label),
+        const SizedBox(height: 6),
+        Text(
+          loaded == 0
+              ? 'Preview a Tokyo that is almost fully explored: '
+                    '${demoIds.length} generated walks across all 23 wards '
+                    'and ${TokyoDemoData.spots().length} famous spots. '
+                    'Real walks stay untouched.'
+              : '$loaded demo walks loaded. Remove them to get back to '
+                    'your own stages.',
+          style: SonicTheme.body,
+        ),
+        const SizedBox(height: 12),
+        if (loaded == 0)
+          SonicButton(
+            label: 'Fill Tokyo',
+            caption: 'Generated walks and spots',
+            semanticsLabel: 'Fill Tokyo',
+            color: SonicTheme.red,
+            shadow: SonicTheme.redDeep,
+            onTap: () {
+              context.read<WalkRoutesCubit>().addRoutes(TokyoDemoData.walks());
+              context.read<PoiCubit>().addPOIs(TokyoDemoData.spots());
+            },
+          )
+        else
+          SonicButton(
+            label: 'Remove demo data',
+            caption: 'Keeps your real walks',
+            semanticsLabel: 'Remove demo data',
+            onTap: () {
+              context.read<WalkRoutesCubit>().removeRoutesByIds(demoIds);
+              context.read<PoiCubit>().removePOIsByIds({
+                for (final poi in TokyoDemoData.spots()) poi.id,
+              });
+            },
+          ),
+      ],
+    );
+  }
 }

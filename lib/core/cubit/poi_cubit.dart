@@ -23,6 +23,27 @@ class PoiCubit extends Cubit<PoiState> {
     emit(PoisLoaded([...pois]));
   }
 
+  /// Adds many spots with a single state change, skipping duplicates.
+  void addPOIs(Iterable<POI> pois) {
+    emit(PoisLoading(state.pois));
+    final existing = {for (final poi in state.pois) poi.id};
+    final added = <POI>[];
+    for (final poi in pois) {
+      if (existing.add(poi.id)) {
+        _poiRepo.addPOI(poi);
+        added.add(poi);
+      }
+    }
+    emit(PoisLoaded([...state.pois, ...added]));
+  }
+
+  /// Removes every spot whose id is in [ids] with a single state change.
+  void removePOIsByIds(Set<String> ids) {
+    emit(PoisLoading(state.pois));
+    ids.forEach(_poiRepo.removePOIById);
+    emit(PoisLoaded(state.pois.where((poi) => !ids.contains(poi.id)).toList()));
+  }
+
   void removePOI(POI poi) {
     emit(PoisLoading(state.pois));
     _poiRepo.removePOIById(poi.id);

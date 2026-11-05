@@ -121,22 +121,38 @@ class SonicHome extends StatelessWidget {
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    SonicHudText(SonicTheme.kilometres(totalMeters), size: 60),
-                    const SizedBox(width: 10),
-                    const Padding(
-                      padding: EdgeInsets.only(bottom: 6),
-                      child: Text(
-                        'KM',
-                        style: TextStyle(
-                          fontFamily: SonicTheme.font,
-                          fontWeight: FontWeight.w800,
-                          fontSize: 20,
-                          letterSpacing: 1,
-                          color: SonicTheme.sky,
+                    // Shrinks for four-digit totals instead of overflowing.
+                    Expanded(
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        alignment: Alignment.bottomLeft,
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            SonicHudText(
+                              SonicTheme.kilometres(totalMeters),
+                              size: 60,
+                            ),
+                            const SizedBox(width: 10),
+                            const Padding(
+                              padding: EdgeInsets.only(bottom: 6),
+                              child: Text(
+                                'KM',
+                                style: TextStyle(
+                                  fontFamily: SonicTheme.font,
+                                  fontWeight: FontWeight.w800,
+                                  fontSize: 20,
+                                  letterSpacing: 1,
+                                  color: SonicTheme.sky,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ),
-                    const Spacer(),
+                    const SizedBox(width: 12),
                     SonicRank(SonicStats.weekRank(totalMeters)),
                   ],
                 ),
