@@ -128,8 +128,14 @@ demo data** deletes exactly those walks again and leaves real ones alone.
 
 ## The toy city
 
-The explored map is a model city in the spirit of Fenn, built from the same
-OpenStreetMap data in the tiles:
+The reference for the look is **Anywhere — Your only map** by Fenn AI
+(https://apps.apple.com/jp/app/anywhere-your-only-map/id6823839358): a
+miniature globe that zooms into detailed, pastel 3D street scenes with
+windows, trees, cars and landmark models, rendered by their own engine
+with their own geometry and terrain materials (their credits page says so),
+and with its own fog that lifts as you explore. Giro aims for the same
+experience in the uncovered areas, built from the OpenStreetMap data in the
+tiles:
 
 - **Camera:** every map opens tilted (`SonicMap.tilt`, 55°), like a model on
   a table. 3D buildings are always on.
