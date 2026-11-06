@@ -8,10 +8,11 @@
 // Two modes, selected by params.y:
 //   0: blend mode. The pass draws over the finished map, so the shader
 //      outputs premultiplied white with alpha = strength * (1 - explored).
-//   1: sketch mode (fork of maplibre_flutter_gpu). The finished map is bound
+//   1: model mode (fork of maplibre_flutter_gpu). The finished map is bound
 //      as map_texture and this pass renders the final image: unexplored
-//      ground becomes a pale grey line drawing of the map on white, explored
-//      ground keeps its colours.
+//      areas look like a white architectural model (clay buildings keep
+//      their grey shading, the ground goes white), explored areas keep
+//      their colours, with tilt-shift and a little grading on top.
 #version 460 core
 
 layout(location = 0) in vec2 v_clip;
@@ -94,11 +95,17 @@ void main() {
     float luma = dot(rgb, vec3(0.2126, 0.7152, 0.0722));
     // Explored ground: a touch more saturation and warmth, toy-camera style.
     vec3 graded = mix(vec3(luma), rgb, 1.18) * vec3(1.0, 0.985, 0.95);
-    // Lines and text are the dark parts of the map; lift everything else to
-    // the fog colour so unexplored ground reads as white clay.
+    // Unexplored: a white architectural model. The building material
+    // already draws unexplored buildings as white clay with grey shading;
+    // those pixels are neutral (no hue), so keep them exactly as rendered.
+    // Everything else on the ground is tinted (roads, parks, water, labels)
+    // and gets lifted to white with only a faint trace left for orientation.
+    float saturation = max(rgb.r, max(rgb.g, rgb.b)) - min(rgb.r, min(rgb.g, rgb.b));
+    float clay = 1.0 - smoothstep(0.035, 0.11, saturation);
     float ink = (1.0 - luma) * fog.params.z;
-    vec3 sketch = fog.fog_color.rgb * (1.0 - ink);
-    vec3 result = mix(mix(graded, sketch, strength), graded, explored);
+    vec3 ground = fog.fog_color.rgb * (1.0 - ink);
+    vec3 model = mix(ground, rgb, clay);
+    vec3 result = mix(mix(graded, model, strength), graded, explored);
     // A soft vignette keeps the eye in the middle of the model.
     float vignette = 1.0 - 0.12 * smoothstep(0.55, 1.25, length(v_clip));
     frag_color = vec4(result * vignette, 1.0);

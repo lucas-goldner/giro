@@ -19,7 +19,7 @@ class FogGpu {
   FogGpu({
     this.fogColor = const Color(0xFFFFFFFF),
     this.fogStrength = 0.985,
-    this.sketchContrast = 0.14,
+    this.sketchContrast = 0.08,
   });
 
   final Color fogColor;

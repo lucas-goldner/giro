@@ -51,8 +51,10 @@ void main() {
         }
     }
 
-    // Unexplored: white clay with the same shading, no windows.
-    vec3 clay = vec3(0.97, 0.96, 0.93) * (roof ? 1.0 : key);
+    // Unexplored: plain white clay, walls shaded grey by the key light, no
+    // windows. Kept strictly neutral so the fog pass can tell it from the
+    // coloured ground and leave the shading alone.
+    vec3 clay = vec3(0.985) * (roof ? 1.0 : 0.62 + 0.38 * (key - 0.70) / 0.30);
     vec3 rgb = mix(clay, wall, explored);
     frag_color = vec4(rgb * alpha, alpha);
 }
