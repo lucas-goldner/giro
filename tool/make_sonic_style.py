@@ -133,6 +133,12 @@ def recolour(style):
             else:
                 paint['line-color'] = ROAD_MINOR
         elif t == 'symbol':
+            # Fewer, calmer labels: the model should carry the scene.
+            later = {'label_other': 16, 'poi_r1': 16, 'poi_r7': 17, 'poi_r20': 18,
+                     'poi_transit': 16, 'highway-name-minor': 16,
+                     'highway-name-path': 17}
+            if lid in later:
+                layer['minzoom'] = max(layer.get('minzoom', 0), later[lid])
             if lid.startswith('label_'):
                 paint['text-color'] = LABEL
                 paint['text-halo-color'] = WHITE
