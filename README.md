@@ -169,8 +169,11 @@ opt out on a screen.
   MapLibre frame (`shaders/fog.frag`): each pixel is unprojected onto the
   ground with the camera matrix and looked up in the mask. With the fork's
   `gpuOverlayReadsMapColor` the shader also sees the finished map, so
-  unexplored ground is rendered as near-white clay (a faint trace of the
-  map stays for orientation) and explored ground keeps its colours.
+  unexplored areas are rendered as a white architectural model: the clay
+  buildings keep the grey shading the building shader gives them (the pass
+  recognises them as the only neutral-coloured pixels) and the tinted
+  ground goes white with a faint trace left for orientation; explored areas
+  keep their colours.
 - On the web and in tests the canvas `FogOfWar` overlay draws the same mask
   with one `dstOut` image draw per camera move (top-down projection only).
 
