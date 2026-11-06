@@ -36,6 +36,40 @@ layout(binding = 0) uniform FogUniforms {
 uniform sampler2D mask_texture;
 uniform sampler2D map_texture;
 
+float luma_of(vec3 rgb) {
+    return dot(rgb, vec3(0.299, 0.587, 0.114));
+}
+
+// FXAA (the classic "console" variant): detects an edge from the luma of
+// the diagonal neighbours and blends along it. One pass, five to nine taps.
+vec4 fxaa(vec2 uv, vec2 px) {
+    vec4 centre = texture(map_texture, uv);
+    vec3 nw = texture(map_texture, uv + vec2(-1.0, -1.0) * px).rgb;
+    vec3 ne = texture(map_texture, uv + vec2(1.0, -1.0) * px).rgb;
+    vec3 sw = texture(map_texture, uv + vec2(-1.0, 1.0) * px).rgb;
+    vec3 se = texture(map_texture, uv + vec2(1.0, 1.0) * px).rgb;
+    float l_nw = luma_of(nw);
+    float l_ne = luma_of(ne);
+    float l_sw = luma_of(sw);
+    float l_se = luma_of(se);
+    float l_m = luma_of(centre.rgb);
+    float l_min = min(l_m, min(min(l_nw, l_ne), min(l_sw, l_se)));
+    float l_max = max(l_m, max(max(l_nw, l_ne), max(l_sw, l_se)));
+    if (l_max - l_min < 0.04) {
+        return centre;
+    }
+    vec2 dir = vec2(-((l_nw + l_ne) - (l_sw + l_se)), (l_nw + l_sw) - (l_ne + l_se));
+    float reduce = max((l_nw + l_ne + l_sw + l_se) * 0.03125, 1.0 / 128.0);
+    float scale = 1.0 / (min(abs(dir.x), abs(dir.y)) + reduce);
+    dir = clamp(dir * scale, vec2(-8.0), vec2(8.0)) * px;
+    vec4 a = 0.5 * (texture(map_texture, uv + dir * (1.0 / 3.0 - 0.5))
+        + texture(map_texture, uv + dir * (2.0 / 3.0 - 0.5)));
+    vec4 b = a * 0.5 + 0.25 * (texture(map_texture, uv - dir * 0.5)
+        + texture(map_texture, uv + dir * 0.5));
+    float l_b = luma_of(b.rgb);
+    return (l_b < l_min || l_b > l_max) ? a : b;
+}
+
 float explored_at(vec2 clip) {
     vec4 near = fog.inverse_view_projection * vec4(clip, 0.0, 1.0);
     vec4 far = fog.inverse_view_projection * vec4(clip, 1.0, 1.0);
@@ -72,11 +106,13 @@ void main() {
     }
 
     vec2 screen_uv = gl_FragCoord.xy * fog.screen.xy;
+    // The map is rendered without multisampling, so building edges come in
+    // as hard stair-steps; smooth them with FXAA before anything else.
+    vec4 map = fxaa(screen_uv, fog.screen.xy);
     // Tilt-shift: the top and bottom of the frame go soft, like a model
     // photographed up close. Nine taps, radius grows towards the edges.
     float band = max(abs(v_clip.y) - 0.35, 0.0) / 0.65;
     float radius = band * band * 3.5;
-    vec4 map = texture(map_texture, screen_uv);
     if (radius > 0.3) {
         vec2 px = fog.screen.xy * radius;
         vec4 sum = map * 2.0;

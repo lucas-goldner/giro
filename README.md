@@ -148,9 +148,16 @@ tiles:
   same shading; the per-vertex explored value comes from the fog mask.
 - **Ground:** grassy land, soft asphalt roads with white dashed centre lines
   on the bigger streets, vivid parks, bright water, warm directional light.
-- **Post-process (iOS):** the fog pass also applies a tilt-shift blur at the
-  top and bottom of the frame, a touch of saturation and warmth, and a soft
-  vignette (`shaders/fog.frag`).
+- **Post-process (iOS):** the map is rendered without multisampling, so the
+  fog pass runs FXAA over the finished frame first (building edges stop
+  stair-stepping), then a tilt-shift blur at the top and bottom of the
+  frame, a touch of saturation and warmth, and a soft vignette
+  (`shaders/fog.frag`).
+- **Facade detail:** walls darken towards the ground (contact shadow), the
+  top two metres get a lighter parapet crown, and the window grid fades out
+  once a window is only a few pixels wide so distant facades stay calm.
+- **Labels:** neighbourhood names, POIs and minor street names only appear
+  from zoom 16 to 18, so the model carries the scene.
 
 Next in this direction: low-poly trees in parks and along streets, and
 landmark models at spots, both through the map's GPU mesh callback.

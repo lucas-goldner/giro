@@ -32,29 +32,47 @@ void main() {
         float facing = dot(normalize(normal + vec2(1e-4)), normalize(vec2(-0.6, 0.8)));
         key = 0.70 + 0.30 * max(facing, 0.0);
     }
-    vec3 wall = roof ? mix(base, vec3(1.0), 0.22) : base * key;
-
-    // Windows: 3.2 m wide bays, 3.4 m storeys, inset within each cell.
     float top = v_extrusion.w;
     float height = v_position.z;
+
+    // Contact shadow: walls darken towards the ground, which is what makes
+    // a block read as standing on the street instead of floating.
+    float contact = 1.0;
+    if (!roof) {
+        float rise = clamp(height / max(min(top, 24.0), 1.0), 0.0, 1.0);
+        contact = 0.74 + 0.26 * smoothstep(0.0, 0.5, rise);
+    }
+    vec3 wall = roof ? mix(base, vec3(1.0), 0.22) : base * key * contact;
+
+    // A lighter crown on the top two metres, like a parapet.
+    if (!roof && height > top - 2.0 && top > 8.0) {
+        wall = mix(wall, vec3(1.0), 0.30);
+    }
+
+    // Windows: 3.2 m wide bays, 3.4 m storeys, inset within each cell. They
+    // fade out once a cell is only a few pixels wide, so far facades stay a
+    // calm flat colour instead of shimmering.
     if (!roof && top > 6.0) {
         float along = v_extrusion.x * v_extrusion.y;
         vec2 cell = vec2(along / 3.2, height / 3.4);
+        float cells_per_pixel = fwidth(cell.x) + fwidth(cell.y);
+        float detail = 1.0 - smoothstep(0.12, 0.3, cells_per_pixel);
         vec2 f = fract(cell);
         bool inside = f.x > 0.28 && f.x < 0.72 && f.y > 0.32 && f.y < 0.74
-            && height > 1.6 && height < top - 1.2;
-        if (inside) {
+            && height > 1.6 && height < top - 2.4;
+        if (inside && detail > 0.0) {
             float r = hash(floor(cell) + floor(v_position.xy * 0.02));
             vec3 glass = mix(wall * 0.45, vec3(0.20, 0.26, 0.40), 0.6);
             vec3 lit = vec3(1.0, 0.88, 0.58);
-            wall = r < 0.28 ? lit : glass;
+            wall = mix(wall, r < 0.28 ? lit : glass, detail);
         }
     }
 
-    // Unexplored: plain white clay, walls shaded grey by the key light, no
-    // windows. Kept strictly neutral so the fog pass can tell it from the
-    // coloured ground and leave the shading alone.
-    vec3 clay = vec3(0.985) * (roof ? 1.0 : 0.62 + 0.38 * (key - 0.70) / 0.30);
+    // Unexplored: plain white clay, walls shaded grey by the key light and
+    // the same contact shadow, no windows. Kept strictly neutral so the fog
+    // pass can tell it from the coloured ground and leave the shading alone.
+    float shade = roof ? 1.0 : (0.62 + 0.38 * (key - 0.70) / 0.30) * contact;
+    vec3 clay = vec3(0.985) * shade;
     vec3 rgb = mix(clay, wall, explored);
     frag_color = vec4(rgb * alpha, alpha);
 }
