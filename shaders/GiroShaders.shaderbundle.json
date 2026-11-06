@@ -10,5 +10,13 @@
   "ToyBuildingFragment": {
     "type": "fragment",
     "file": "toy_building.frag"
+  },
+  "SceneryVertex": {
+    "type": "vertex",
+    "file": "scenery.vert"
+  },
+  "SceneryFragment": {
+    "type": "fragment",
+    "file": "scenery.frag"
   }
 }

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:typed_data';
 
 import 'package:giro/core/map/tile_store.dart';
 import 'package:giro/core/model/geo.dart';
@@ -78,4 +79,7 @@ class MockTileStore implements TileStore {
 
   @override
   Future<void> clear() async => _regions.clear();
+
+  @override
+  Future<Uint8List?> readTile(TileId tile) async => null;
 }

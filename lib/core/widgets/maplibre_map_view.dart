@@ -8,6 +8,8 @@ import 'package:geolocator/geolocator.dart';
 import 'package:giro/core/map/explored_mask.dart';
 import 'package:giro/core/map/fog_gpu.dart';
 import 'package:giro/core/map/giro_map_style.dart';
+import 'package:giro/core/map/scenery/scenery_controller.dart';
+import 'package:giro/core/map/scenery/scenery_gpu.dart';
 import 'package:giro/core/map/tile_store.dart';
 import 'package:giro/core/map/toy_buildings.dart';
 import 'package:giro/core/model/geo.dart';
@@ -57,6 +59,9 @@ class _MapLibreMapViewState extends State<MapLibreMapView> {
   String? _styleJson;
   final _fog = FogGpu();
   final _buildings = ToyBuildings();
+  final _scenery = SceneryGpu();
+  SceneryController? _sceneryController;
+  late final _gpuRepaint = Listenable.merge([_fog.repaint, _scenery.repaint]);
   ExploredMask? _mask;
   int _maskGeneration = 0;
   StreamSubscription<Position>? _locationSubscription;
@@ -74,6 +79,7 @@ class _MapLibreMapViewState extends State<MapLibreMapView> {
     unawaited(_loadStyle());
     unawaited(_fog.ensureLoaded());
     unawaited(_buildings.ensureLoaded());
+    unawaited(_scenery.ensureLoaded());
     unawaited(_rebuildMask());
     _updateLocationStream();
     // The idle callback is the real signal; this is the safety net.
@@ -98,6 +104,13 @@ class _MapLibreMapViewState extends State<MapLibreMapView> {
       _tileUrlTemplate = template;
       _localBaseUrl = base;
       unawaited(_applyStyle());
+    }
+    // Trees and landmarks come from the same vector tiles as the map.
+    if (store != null && _sceneryController?.store != store) {
+      _sceneryController?.dispose();
+      _sceneryController = SceneryController(gpu: _scenery, store: store)
+        ..setMask(_mask)
+        ..onCamera(widget.initialCameraPosition);
     }
   }
 
@@ -130,6 +143,8 @@ class _MapLibreMapViewState extends State<MapLibreMapView> {
     unawaited(_locationSubscription?.cancel());
     _fog.dispose();
     _buildings.dispose();
+    _sceneryController?.dispose();
+    _scenery.dispose();
     _mask?.dispose();
     super.dispose();
   }
@@ -172,6 +187,7 @@ class _MapLibreMapViewState extends State<MapLibreMapView> {
     _mask?.dispose();
     _mask = mask;
     _buildings.setMask(mask);
+    _sceneryController?.setMask(mask);
     await _fog.setMask(mask);
   }
 
@@ -223,14 +239,14 @@ class _MapLibreMapViewState extends State<MapLibreMapView> {
     if (!_animatingCamera) {
       _userMovedCamera = true;
     }
-    widget.onCameraMove?.call(
-      CameraPosition(
-        target: LatLng(camera.target.latitude, camera.target.longitude),
-        zoom: camera.zoom,
-        bearing: camera.bearing,
-        tilt: camera.tilt,
-      ),
+    final position = CameraPosition(
+      target: LatLng(camera.target.latitude, camera.target.longitude),
+      zoom: camera.zoom,
+      bearing: camera.bearing,
+      tilt: camera.tilt,
     );
+    _sceneryController?.onCamera(position);
+    widget.onCameraMove?.call(position);
   }
 
   static ml.LatLng _toMl(LatLng point) =>
@@ -323,8 +339,9 @@ class _MapLibreMapViewState extends State<MapLibreMapView> {
           onMapIdle: _hideLoading,
           overlayBuilder: _markerOverlay,
           userLocation: _userLocation,
+          gpuMapRenderCallback: _scenery.render,
           gpuRenderCallback: widget.fogOfWar ? _fog.render : null,
-          gpuRepaint: _fog.repaint,
+          gpuRepaint: _gpuRepaint,
           gpuOverlayReadsMapColor: widget.fogOfWar,
           fillExtrusionRendererBuilder: (layer) =>
               ToyBuildings.layerIds.contains(layer.id) ? _buildings : null,

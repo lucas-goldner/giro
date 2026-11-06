@@ -159,8 +159,20 @@ tiles:
 - **Labels:** neighbourhood names, POIs and minor street names only appear
   from zoom 16 to 18, so the model carries the scene.
 
-Next in this direction: low-poly trees in parks and along streets, and
-landmark models at spots, both through the map's GPU mesh callback.
+- **Trees (iOS):** the same vector tiles that draw the map are decoded on
+  the device (`lib/core/map/mvt/mvt_decoder.dart`, pure Dart, runs in an
+  isolate) and `TreeScatter` places low-poly trees on a seeded, jittered
+  grid: dense conifers and round trees in woods (13 m apart), looser in
+  parks and grass (24–30 m), and a street tree every 26 m along residential
+  roads, alternating sides. The seed is the tile id, so trees never move.
+  Three meshes (round, conifer, bush; 37–100 triangles each,
+  `scenery_meshes.dart`) are drawn instanced through the map's 3D callback
+  with the shared depth buffer, 160 trees per draw, so buildings occlude
+  them (`shaders/scenery.vert`, `SceneryGpu`). Up to 7 000 trees a frame
+  from the 3×3 zoom-14 tiles around the camera, half of them below zoom
+  14.5, none below 13.5. Unexplored trees are white clay like the buildings.
+
+Next in this direction: landmark models at spots through the same pipeline.
 
 ## Fog of war
 

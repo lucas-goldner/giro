@@ -229,6 +229,19 @@ class TileCacheHttp implements TileStore {
   }
 
   @override
+  Future<Uint8List?> readTile(TileId tile) async {
+    var file = _fileFor(tile);
+    if (!file.existsSync()) {
+      final fetched = await _fetch(tile);
+      if (fetched == null) {
+        return null;
+      }
+      file = fetched;
+    }
+    return file.readAsBytes();
+  }
+
+  @override
   Future<int> cachedBytes() async {
     var total = 0;
     if (!_tilesDir.existsSync()) {

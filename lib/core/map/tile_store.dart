@@ -1,4 +1,5 @@
 import 'dart:math' as math;
+import 'dart:typed_data';
 
 import 'package:equatable/equatable.dart';
 import 'package:giro/core/model/geo.dart';
@@ -38,6 +39,10 @@ abstract class TileStore {
   Stream<DownloadProgress> download(LatLngBounds bounds, {String? name});
 
   Future<void> clear();
+
+  /// The raw vector tile, from the cache or fetched once, or null when it
+  /// is not available (web, offline miss). Used by the scenery generator.
+  Future<Uint8List?> readTile(TileId tile);
 
   /// Slippy-map tiles covering [bounds] at [zoom].
   static Iterable<TileId> tilesFor(LatLngBounds bounds, int zoom) sync* {
