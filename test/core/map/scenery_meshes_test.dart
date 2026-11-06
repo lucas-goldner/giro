@@ -3,9 +3,9 @@ import 'package:giro/core/map/scenery/scenery_meshes.dart';
 import 'package:giro/core/map/scenery/tree_scatter.dart';
 
 void main() {
-  for (final kind in SceneryKind.values) {
-    test('$kind mesh is well formed', () {
-      final mesh = SceneryMesh.of(kind);
+  for (final key in SceneryMesh.keys) {
+    test('$key mesh is well formed', () {
+      final mesh = SceneryMesh.of(key);
       expect(mesh.vertices.length % SceneryMesh.floatsPerVertex, 0);
       expect(mesh.indexCount % 3, 0);
       expect(mesh.indexCount, greaterThan(0));
@@ -28,15 +28,15 @@ void main() {
       }
       expect(minZ, closeTo(0, 1e-9));
       expect(maxZ, greaterThan(0.5));
-      expect(mesh.vertexCount, lessThan(2000));
+      expect(mesh.vertexCount, lessThan(3000));
     });
   }
 
   test('meshes are cached', () {
     expect(
       identical(
-        SceneryMesh.of(SceneryKind.treeRound),
-        SceneryMesh.of(SceneryKind.treeRound),
+        SceneryMesh.of(SceneryKind.treeRound.name),
+        SceneryMesh.of(SceneryKind.treeRound.name),
       ),
       isTrue,
     );

@@ -172,7 +172,14 @@ tiles:
   from the 3×3 zoom-14 tiles around the camera, half of them below zoom
   14.5, none below 13.5. Unexplored trees are white clay like the buildings.
 
-Next in this direction: landmark models at spots through the same pipeline.
+- **Landmarks (iOS):** every saved spot gets a 3D model through the same
+  instanced pipeline, picked from its name (`LandmarkModel.forName`):
+  Tokyo Tower (333 m, orange and white tiers), Skytree (634 m), a vermilion
+  torii for shrines (names with shrine, jingū, jinja, myōjin, tenjin,
+  taisha, 神社…), a five-storey pagoda for temples (temple, -ji, -dera,
+  寺…), a white dome for domes, and a gold beacon on a navy plinth for
+  everything else. Landmarks are drawn at every zoom and never dropped by
+  the per-frame budget; unexplored ones are white clay too.
 
 ## Fog of war
 

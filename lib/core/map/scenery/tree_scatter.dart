@@ -198,6 +198,9 @@ class SceneryInstance {
 
   double get longitude => u * 360 - 180;
 
+  /// Which mesh draws this instance (`SceneryMesh.of`).
+  String get meshKey => model ?? kind.name;
+
   /// Flat list for crossing isolate boundaries.
   List<double> toList() => [
     kind.index.toDouble(),

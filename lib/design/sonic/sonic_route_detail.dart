@@ -5,6 +5,7 @@ import 'package:giro/core/cubit/map_settings_cubit.dart';
 import 'package:giro/core/cubit/poi_cubit.dart';
 import 'package:giro/core/cubit/walk_routes_cubit.dart';
 import 'package:giro/core/extensions.dart';
+import 'package:giro/core/map/scenery/landmarks.dart';
 import 'package:giro/core/model/walk_route.dart';
 import 'package:giro/core/widgets/platform_map_view.dart';
 import 'package:giro/design/shared/walk_stats.dart';
@@ -66,6 +67,7 @@ class SonicRouteDetail extends StatelessWidget {
                       MapMarker(
                         id: poi.id,
                         position: poi.coordinates,
+                        landmark: LandmarkModel.forName(poi.name),
                         onTap: () => context
                             .read<LaunchableMapsCubit>()
                             .launchMapAtPOI(poi),

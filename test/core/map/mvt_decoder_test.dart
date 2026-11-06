@@ -5,10 +5,14 @@ import 'package:giro/core/map/mvt/mvt_decoder.dart';
 
 void main() {
   test('decodes an OpenFreeMap tile of central Tokyo', () {
-    final bytes = File('test/fixtures/tokyo_14_14552_6451.pbf').readAsBytesSync();
+    final bytes = File('test/fixtures/tokyo_14_14552_6451.pbf')
+        .readAsBytesSync();
     final tile = MvtTile.decode(bytes);
 
-    expect(tile.layers.keys, containsAll(['building', 'landcover', 'transportation']));
+    expect(
+      tile.layers.keys,
+      containsAll(['building', 'landcover', 'transportation']),
+    );
     final buildings = tile.layers['building']!;
     expect(buildings.extent, 4096);
     expect(buildings.features.length, 145);
@@ -19,9 +23,13 @@ void main() {
     expect(first.polygons.first.area, greaterThan(0));
 
     final landcover = tile.layers['landcover']!;
-    final classes = landcover.features.map((f) => f.properties['class']).toSet();
+    final classes = landcover.features
+        .map((f) => f.properties['class'])
+        .toSet();
     expect(classes, containsAll(['wood', 'grass']));
-    final wood = landcover.features.firstWhere((f) => f.properties['class'] == 'wood');
+    final wood = landcover.features.firstWhere(
+      (f) => f.properties['class'] == 'wood',
+    );
     final polygon = wood.polygons.first;
     final (minX, minY, maxX, maxY) = polygon.bounds;
     // The polygon contains the centre of its own bounding box more often

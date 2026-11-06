@@ -1,23 +1,36 @@
 import 'dart:ui';
 
 import 'package:flutter/foundation.dart';
+import 'package:giro/core/map/scenery/landmarks.dart';
 import 'package:giro/core/model/geo.dart';
 
 /// A tappable point drawn on the map (a saved spot).
 @immutable
 class MapMarker {
-  const MapMarker({required this.id, required this.position, this.onTap});
+  const MapMarker({
+    required this.id,
+    required this.position,
+    this.onTap,
+    this.landmark,
+  });
 
   final String id;
   final LatLng position;
   final VoidCallback? onTap;
 
-  @override
-  bool operator ==(Object other) =>
-      other is MapMarker && other.id == id && other.position == position;
+  /// The 3D model drawn at this spot in the toy city (iOS); see
+  /// `LandmarkModel`. Null draws nothing in 3D.
+  final LandmarkModel? landmark;
 
   @override
-  int get hashCode => Object.hash(id, position);
+  bool operator ==(Object other) =>
+      other is MapMarker &&
+      other.id == id &&
+      other.position == position &&
+      other.landmark == landmark;
+
+  @override
+  int get hashCode => Object.hash(id, position, landmark);
 }
 
 /// A line drawn on the map (a walk).
