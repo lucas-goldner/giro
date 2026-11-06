@@ -126,12 +126,35 @@ of the city explored: Manhattan-style strolls of 2 to 9 km with GPS jitter,
 dated over the last two years. They come from a fixed seed, so **Remove
 demo data** deletes exactly those walks again and leaves real ones alone.
 
+## The toy city
+
+The explored map is a model city in the spirit of Fenn, built from the same
+OpenStreetMap data in the tiles:
+
+- **Camera:** every map opens tilted (`SonicMap.tilt`, 55°), like a model on
+  a table. 3D buildings are always on.
+- **Buildings:** OSM footprints extruded by `render_height`, each coloured
+  from a pastel palette by its OSM id (`tool/make_sonic_style.py`), so
+  neighbours differ. On iOS `ToyBuildings` replaces the fragment shader of
+  the `building-3d` layer with `shaders/toy_building.frag`: a procedural
+  window grid (3.2 m bays, 3.4 m storeys, a quarter of them lit warm), a warm
+  key light and lighter roofs. Unexplored buildings are white clay with the
+  same shading; the per-vertex explored value comes from the fog mask.
+- **Ground:** grassy land, soft asphalt roads with white dashed centre lines
+  on the bigger streets, vivid parks, bright water, warm directional light.
+- **Post-process (iOS):** the fog pass also applies a tilt-shift blur at the
+  top and bottom of the frame, a touch of saturation and warmth, and a soft
+  vignette (`shaders/fog.frag`).
+
+Next in this direction: low-poly trees in parks and along streets, and
+landmark models at spots, both through the map's GPU mesh callback.
+
 ## Fog of war
 
-The map starts out white. Every walk (and every saved spot) uncovers the
-colourful map underneath along its path, with a soft edge, so the city fills
-in as you explore it. Pass `fogOfWar: false` to `PlatformMapView` to opt out
-on a screen.
+The map starts out white clay. Every walk (and every saved spot) uncovers
+the colourful city underneath along its path, with a soft edge, so Tokyo
+fills in as you explore it. Pass `fogOfWar: false` to `PlatformMapView` to
+opt out on a screen.
 
 - `ExploredMask` (`lib/core/map/explored_mask.dart`) rasterises where the
   user has been once, in Web Mercator space, with the reveal radius in
@@ -140,22 +163,17 @@ on a screen.
   MapLibre frame (`shaders/fog.frag`): each pixel is unprojected onto the
   ground with the camera matrix and looked up in the mask. With the fork's
   `gpuOverlayReadsMapColor` the shader also sees the finished map, so
-  unexplored ground is rendered as a pale sketch of the map rather than a
-  flat white blend.
-- 3D buildings (`building-3d`) are hidden until the map is tilted, then
-  shown opaque with soft lighting; flat buildings are the default look.
+  unexplored ground is rendered as near-white clay (a faint trace of the
+  map stays for orientation) and explored ground keeps its colours.
 - On the web and in tests the canvas `FogOfWar` overlay draws the same mask
-  with one `dstOut` image draw per camera move.
+  with one `dstOut` image draw per camera move (top-down projection only).
 
 Shaders under `shaders/` are compiled by `hook/build.dart` with the Flutter
 SDK's `impellerc` into `assets/shaderbundles/` at build time.
 
 Walk lines are only the full chosen width at street zoom (16+); they thin
 out from there and fade away below zoom 13.5, so at city scale an explored
-district reads as coloured map on white paper rather than a tangle of
-lines. The style itself (`tool/make_sonic_style.py`) is a toy-world
-palette: warm paper land, vivid parks, bright water, clay buildings, white
-roads with sandy casings.
+district reads as coloured city on white clay rather than a tangle of lines.
 
 ## Web preview
 

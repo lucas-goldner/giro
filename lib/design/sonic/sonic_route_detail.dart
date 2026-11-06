@@ -56,6 +56,7 @@ class SonicRouteDetail extends StatelessWidget {
                   initialCameraPosition: CameraPosition(
                     target: route.coordinates.first,
                     zoom: 15.5,
+                    tilt: SonicMap.tilt,
                   ),
                   polylines: SonicMap.polylines([route], settings: settings),
                   revealRadiusMeters: settings.revealRadiusMeters,

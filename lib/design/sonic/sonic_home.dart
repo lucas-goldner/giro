@@ -47,7 +47,8 @@ class SonicHome extends StatelessWidget {
                     target: routes.isNotEmpty
                         ? routes.first.coordinates.first
                         : SonicMap.tokyo,
-                    zoom: 15,
+                    zoom: 15.5,
+                    tilt: SonicMap.tilt,
                   ),
                   polylines: SonicMap.polylines(routes, settings: settings),
                   revealRadiusMeters: settings.revealRadiusMeters,

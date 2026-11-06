@@ -20,33 +20,48 @@ PALE = '#B9D3FF'
 OUTLINE = '#2C57D6'
 WHITE = '#FFFFFF'
 
-# The explored map is a toy world: warm paper land, vivid parks, bright
-# water, clay buildings, white roads with sandy casings. Unexplored areas are
-# white (the fog), so the contrast is colourful city versus blank paper.
-LAND = '#F7F1E3'
-RESIDENTIAL = '#F1E8D4'
-PARK = '#7ED957'
-GRASS = '#A9E87B'
-WOOD = '#5CC95A'
+# The explored map is a toy city in the spirit of Fenn: grassy ground, soft
+# asphalt roads with white markings, pastel buildings coloured per building,
+# vivid parks, bright water. Unexplored areas are white clay (the fog), so
+# the contrast is colourful city versus blank model.
+LAND = '#E6EDD2'
+RESIDENTIAL = '#EAF0D9'
+PARK = '#86DB5E'
+GRASS = '#ACE87F'
+WOOD = '#62C85E'
 SAND = '#FFE9A8'
-WATER = '#4FC3F7'
-BUILDING = '#EADFC8'
-BUILDING_OUTLINE = 'rgba(176, 150, 104, 0.55)'
-BUILDING_3D = '#EADFC8'
-ROAD_CASING = '#E3CFA6'
-ROAD_MAJOR = '#FFD166'
-ROAD_HIGHWAY = '#FF9F5A'
-RAIL = '#B9B2A5'
+WATER = '#58C5F2'
+BUILDING = '#E8E0D2'
+BUILDING_OUTLINE = 'rgba(120, 110, 95, 0.45)'
+ROAD_CASING = '#8A93B3'
+ROAD_MINOR = '#D9DDE9'
+ROAD_MAJOR = '#B7BED6'
+ROAD_HIGHWAY = '#A1AAC8'
+ROAD_PATH = '#F4F2EA'
+RAIL = '#9A9FB5'
 LABEL = NAVY
 LABEL_SECONDARY = '#4A5A8A'
 BOUNDARY = '#C9A86A'
 WATER_LABEL = '#1677C8'
 
+# Pastel facades, picked per building from its OSM id so neighbours differ.
+PASTELS = ['#F7C8AC', '#BFE9D0', '#D3C8F4', '#F8E7A8', '#C2E1F8', '#F6C2D2',
+           '#F9D9B0', '#CDEBB8']
+
+
+def pastel_by_id():
+    expr = ['match', ['%', ['id'], len(PASTELS)]]
+    for index, colour in enumerate(PASTELS):
+        expr += [index, colour]
+    expr.append(PASTELS[0])
+    return expr
+
 
 def recolour(style):
     style['name'] = 'Giro Sonic'
-    # Soft lighting so extruded walls stay in the pale palette.
-    style['light'] = {'anchor': 'viewport', 'color': '#FFFFFF', 'intensity': 0.15}
+    # Warm key light from the upper left; walls get a gentle gradient.
+    style['light'] = {'anchor': 'viewport', 'color': '#FFF3DC',
+                      'position': [1.15, 210, 35], 'intensity': 0.35}
     style['metadata'] = {
         'giro:derived-from': 'OpenFreeMap Liberty',
         'giro:generator': 'tool/make_sonic_style.py',
@@ -84,7 +99,7 @@ def recolour(style):
             elif lid == 'water':
                 paint['fill-color'] = WATER
             elif lid == 'building':
-                paint['fill-color'] = BUILDING
+                paint['fill-color'] = pastel_by_id()
                 paint['fill-outline-color'] = BUILDING_OUTLINE
             elif lid.startswith('aeroway'):
                 paint['fill-color'] = '#E8E0CE'
@@ -93,12 +108,11 @@ def recolour(style):
                 paint.pop('fill-pattern', None)
         elif t == 'fill-extrusion':
             # Opaque: translucent extrusions are composited without depth
-            # sorting and show seams between building parts. Hidden until the
-            # map is tilted (MapLibreMapView toggles the layer).
-            paint['fill-extrusion-color'] = BUILDING_3D
+            # sorting and show seams between building parts. Always on; the
+            # toy city is meant to be seen tilted.
+            paint['fill-extrusion-color'] = pastel_by_id()
             paint['fill-extrusion-opacity'] = 1
             paint['fill-extrusion-vertical-gradient'] = False
-            layer.setdefault('layout', {})['visibility'] = 'none'
         elif t == 'line':
             if 'waterway' in lid:
                 paint['line-color'] = WATER
@@ -109,15 +123,15 @@ def recolour(style):
             elif lid.endswith('_casing'):
                 paint['line-color'] = ROAD_CASING
             elif 'motorway' in lid or 'trunk_primary' in lid:
-                paint['line-color'] = ROAD_HIGHWAY if 'motorway' in lid else GOLD
-            elif 'secondary_tertiary' in lid:
+                paint['line-color'] = ROAD_HIGHWAY
+            elif 'secondary_tertiary' in lid or lid.endswith('_link'):
                 paint['line-color'] = ROAD_MAJOR
             elif 'path_pedestrian' in lid:
-                paint['line-color'] = WHITE
+                paint['line-color'] = ROAD_PATH
             elif lid.startswith('aeroway'):
-                paint['line-color'] = WHITE
+                paint['line-color'] = ROAD_PATH
             else:
-                paint['line-color'] = WHITE
+                paint['line-color'] = ROAD_MINOR
         elif t == 'symbol':
             if lid.startswith('label_'):
                 paint['text-color'] = LABEL
@@ -127,7 +141,32 @@ def recolour(style):
                 paint['text-halo-color'] = WHITE
             if lid.startswith('water'):
                 paint['text-color'] = WATER_LABEL
+    add_road_markings(style)
     return style
+
+
+def add_road_markings(style):
+    """White dashed centre lines on bigger roads, under the buildings."""
+    layer = {
+        'id': 'giro_road_markings',
+        'type': 'line',
+        'source': 'openmaptiles',
+        'source-layer': 'transportation',
+        'minzoom': 15,
+        'filter': ['all',
+                   ['match', ['geometry-type'], ['LineString', 'MultiLineString'], True, False],
+                   ['match', ['get', 'class'],
+                    ['motorway', 'trunk', 'primary', 'secondary', 'tertiary'], True, False],
+                   ['!=', ['get', 'brunnel'], 'tunnel']],
+        'layout': {'line-cap': 'butt', 'line-join': 'round'},
+        'paint': {
+            'line-color': 'rgba(255, 255, 255, 0.85)',
+            'line-width': ['interpolate', ['exponential', 1.3], ['zoom'], 15, 0.6, 18, 1.8],
+            'line-dasharray': [3, 3],
+        },
+    }
+    index = next(i for i, l in enumerate(style['layers']) if l['id'] == 'building')
+    style['layers'].insert(index, layer)
 
 
 def main():

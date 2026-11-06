@@ -111,6 +111,7 @@ class _SonicRecordState extends State<_SonicRecord> {
                       initialCameraPosition: CameraPosition(
                         target: target,
                         zoom: 16,
+                        tilt: SonicMap.tilt,
                       ),
                       polylines: {
                         ...SonicMap.polylines(
