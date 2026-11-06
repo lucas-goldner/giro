@@ -31,6 +31,7 @@ class SceneryController {
   final _cache = <TileId, SceneryBatchSource>{};
   final _loading = <TileId>{};
   final _empty = <TileId>{};
+  SceneryBatchSource? _landmarks;
   ExploredMask? _mask;
   CameraPosition? _camera;
   bool _disposed = false;
@@ -39,10 +40,8 @@ class SceneryController {
   void onCamera(CameraPosition camera) {
     _camera = camera;
     if (camera.zoom < SceneryGpu.minZoom - 0.5) {
-      // Far out: nothing is drawn, keep the cache for the way back.
-      if (gpu.sources.isNotEmpty) {
-        gpu.sources = const [];
-      }
+      // Far out: only landmarks; keep the tile cache for the way back.
+      _publish(const []);
       return;
     }
     final centre = _tileAt(camera.target);
@@ -72,11 +71,34 @@ class SceneryController {
   void setMask(ExploredMask? mask) {
     _mask = mask;
     _cache.values.forEach(_sample);
+    if (_landmarks case final source?) {
+      _sample(source);
+    }
     gpu.repaint.trigger();
   }
 
+  /// Replaces the 3D models standing at saved spots.
+  void setLandmarks(Iterable<SceneryInstance> instances) {
+    final list = instances.toList(growable: false);
+    _landmarks = list.isEmpty ? null : SceneryBatchSource(list);
+    if (_landmarks case final source?) {
+      _sample(source);
+    }
+    _republish();
+  }
+
+  void _republish() {
+    final camera = _camera;
+    if (camera == null) {
+      _publish(const []);
+    } else {
+      onCamera(camera);
+    }
+  }
+
   void _publish(List<TileId> wanted) {
-    gpu.sources = [for (final id in wanted) ?_cache[id]];
+    // Landmarks first so the per-frame budget never drops them.
+    gpu.sources = [?_landmarks, for (final id in wanted) ?_cache[id]];
     gpu.repaint.trigger();
   }
 
@@ -104,10 +126,7 @@ class SceneryController {
       );
       _sample(source);
       _cache[id] = source;
-      final camera = _camera;
-      if (camera != null) {
-        onCamera(camera);
-      }
+      _republish();
     } on Object catch (error, stackTrace) {
       debugPrint('[Scenery] tile $id failed: $error\n$stackTrace');
       _empty.add(id);

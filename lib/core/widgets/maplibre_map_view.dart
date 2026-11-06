@@ -10,6 +10,7 @@ import 'package:giro/core/map/fog_gpu.dart';
 import 'package:giro/core/map/giro_map_style.dart';
 import 'package:giro/core/map/scenery/scenery_controller.dart';
 import 'package:giro/core/map/scenery/scenery_gpu.dart';
+import 'package:giro/core/map/scenery/tree_scatter.dart';
 import 'package:giro/core/map/tile_store.dart';
 import 'package:giro/core/map/toy_buildings.dart';
 import 'package:giro/core/model/geo.dart';
@@ -110,6 +111,7 @@ class _MapLibreMapViewState extends State<MapLibreMapView> {
       _sceneryController?.dispose();
       _sceneryController = SceneryController(gpu: _scenery, store: store)
         ..setMask(_mask)
+        ..setLandmarks(_landmarks())
         ..onCamera(widget.initialCameraPosition);
     }
   }
@@ -125,6 +127,9 @@ class _MapLibreMapViewState extends State<MapLibreMapView> {
         widget.revealRadiusMeters != oldWidget.revealRadiusMeters ||
         widget.pointRadiusMeters != oldWidget.pointRadiusMeters) {
       unawaited(_rebuildMask());
+    }
+    if (!setEquals(widget.markers, oldWidget.markers)) {
+      _sceneryController?.setLandmarks(_landmarks());
     }
     if (widget.myLocationEnabled != oldWidget.myLocationEnabled) {
       _updateLocationStream();
@@ -248,6 +253,22 @@ class _MapLibreMapViewState extends State<MapLibreMapView> {
     _sceneryController?.onCamera(position);
     widget.onCameraMove?.call(position);
   }
+
+  /// One 3D model per saved spot, in world Mercator units.
+  Iterable<SceneryInstance> _landmarks() => [
+    for (final marker in widget.markers)
+      if (marker.landmark case final model?)
+        SceneryInstance(
+          kind: SceneryKind.landmark,
+          u: ExploredMask.mercatorU(marker.position.longitude),
+          v: ExploredMask.mercatorV(marker.position.latitude),
+          latitude: marker.position.latitude,
+          scale: 1,
+          rotation: 0,
+          tint: 1,
+          model: model.meshKey,
+        ),
+  ];
 
   static ml.LatLng _toMl(LatLng point) =>
       ml.LatLng(point.latitude, point.longitude);

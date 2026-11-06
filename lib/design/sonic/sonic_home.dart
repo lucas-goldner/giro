@@ -4,6 +4,7 @@ import 'package:giro/core/cubit/launchable_maps_cubit.dart';
 import 'package:giro/core/cubit/map_settings_cubit.dart';
 import 'package:giro/core/cubit/poi_cubit.dart';
 import 'package:giro/core/cubit/walk_routes_cubit.dart';
+import 'package:giro/core/map/scenery/landmarks.dart';
 import 'package:giro/core/widgets/platform_map_view.dart';
 import 'package:giro/design/shared/walk_stats.dart';
 import 'package:giro/design/sonic/sonic_actions.dart';
@@ -58,6 +59,7 @@ class SonicHome extends StatelessWidget {
                       MapMarker(
                         id: poi.id,
                         position: poi.coordinates,
+                        landmark: LandmarkModel.forName(poi.name),
                         onTap: () => context
                             .read<LaunchableMapsCubit>()
                             .launchMapAtPOI(poi),

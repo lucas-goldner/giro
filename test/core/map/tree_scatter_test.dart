@@ -7,7 +7,8 @@ import 'package:giro/core/map/tile_store.dart';
 
 void main() {
   test('scatters trees inside central Tokyo deterministically', () {
-    final bytes = File('test/fixtures/tokyo_14_14552_6451.pbf').readAsBytesSync();
+    final bytes = File('test/fixtures/tokyo_14_14552_6451.pbf')
+        .readAsBytesSync();
     final tile = MvtTile.decode(bytes);
     const id = TileId(14, 14552, 6451);
     final sw = Stopwatch()..start();
@@ -20,9 +21,18 @@ void main() {
     expect(trees.length, lessThanOrEqualTo(TreeScatter.maxPerTile));
     expect(trees.map((t) => t.u), everyElement(inInclusiveRange(0.0, 1.0)));
     // Inside the tile's bounds: x from 14552/16384 to 14553/16384.
-    expect(trees.map((t) => t.u), everyElement(inInclusiveRange(14552 / 16384, 14553 / 16384)));
-    expect(trees.map((t) => t.latitude), everyElement(inInclusiveRange(35.6, 35.75)));
+    expect(
+      trees.map((t) => t.u),
+      everyElement(inInclusiveRange(14552 / 16384, 14553 / 16384)),
+    );
+    expect(
+      trees.map((t) => t.latitude),
+      everyElement(inInclusiveRange(35.6, 35.75)),
+    );
     expect(trees.map((t) => t.kind).toSet().length, greaterThan(1));
-    expect(again.map((t) => t.toList()).toList(), trees.map((t) => t.toList()).toList());
+    expect(
+      again.map((t) => t.toList()).toList(),
+      trees.map((t) => t.toList()).toList(),
+    );
   });
 }

@@ -27,8 +27,9 @@ class SceneryGpu {
   static const bundleAsset = 'assets/shaderbundles/GiroShaders.shaderbundle';
   static const batchSize = 160;
 
-  /// Scenery is only drawn from this zoom; below it a city has too many
-  /// trees to matter and the toy buildings carry the look.
+  /// Trees are only drawn from this zoom; below it a city has too many
+  /// trees to matter and the toy buildings carry the look. Landmarks are
+  /// always drawn.
   static const minZoom = 13.5;
 
   /// Hard cap per frame, nearest tiles first.
@@ -41,7 +42,7 @@ class SceneryGpu {
   gpu.RenderPipeline? _pipeline;
   gpu.HostBuffer? _uniforms;
   late gpu.UniformSlot _uniformSlot;
-  final _meshBuffers = <SceneryKind, _MeshBuffers>{};
+  final _meshBuffers = <String, _MeshBuffers>{};
   bool _loading = false;
 
   /// Tiles to draw, nearest first. Replaced by the controller.
@@ -69,9 +70,6 @@ class SceneryGpu {
     if (library == null || transform == null || sources.isEmpty) {
       return;
     }
-    if (transform.zoom < minZoom) {
-      return;
-    }
     _ensureResources(frame.gpuContext, library);
     final uniforms = _uniforms!..reset();
     final pass = frame.renderPass
@@ -96,9 +94,10 @@ class SceneryGpu {
     final stride = transform.zoom < 14.5 ? 2 : 1;
 
     var budget = maxInstancesPerFrame;
-    for (final kind in SceneryKind.values) {
-      final buffers = _meshBuffers[kind];
-      if (buffers == null) {
+    final drawTrees = transform.zoom >= minZoom;
+    for (final key in SceneryMesh.keys) {
+      final buffers = _meshBuffers[key];
+      if (buffers == null || (!drawTrees && SceneryMesh.isTree(key))) {
         continue;
       }
       var count = 0;
@@ -121,7 +120,7 @@ class SceneryGpu {
         final list = source.instances;
         for (var i = 0; i < list.length; i += stride) {
           final inst = list[i];
-          if (inst.kind != kind) {
+          if (inst.meshKey != key) {
             continue;
           }
           if (budget <= 0) {
@@ -169,15 +168,15 @@ class SceneryGpu {
     // Several batches per frame; each block holds a handful of them.
     _uniforms = context.createHostBuffer(blockLengthInBytes: 64 * 1024);
     _meshBuffers.clear();
-    for (final kind in SceneryKind.values) {
-      final mesh = SceneryMesh.of(kind);
+    for (final key in SceneryMesh.keys) {
+      final mesh = SceneryMesh.of(key);
       final vertices = context.createDeviceBufferWithCopy(
         ByteData.sublistView(mesh.vertices),
       );
       final indices = context.createDeviceBufferWithCopy(
         ByteData.sublistView(mesh.indices),
       );
-      _meshBuffers[kind] = _MeshBuffers(
+      _meshBuffers[key] = _MeshBuffers(
         vertices: gpu.BufferView(
           vertices,
           offsetInBytes: 0,
