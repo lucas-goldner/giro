@@ -71,14 +71,35 @@ void main() {
     }
 
     vec2 screen_uv = gl_FragCoord.xy * fog.screen.xy;
+    // Tilt-shift: the top and bottom of the frame go soft, like a model
+    // photographed up close. Nine taps, radius grows towards the edges.
+    float band = max(abs(v_clip.y) - 0.35, 0.0) / 0.65;
+    float radius = band * band * 3.5;
     vec4 map = texture(map_texture, screen_uv);
+    if (radius > 0.3) {
+        vec2 px = fog.screen.xy * radius;
+        vec4 sum = map * 2.0;
+        sum += texture(map_texture, screen_uv + vec2(px.x, 0.0));
+        sum += texture(map_texture, screen_uv - vec2(px.x, 0.0));
+        sum += texture(map_texture, screen_uv + vec2(0.0, px.y));
+        sum += texture(map_texture, screen_uv - vec2(0.0, px.y));
+        sum += texture(map_texture, screen_uv + px * 0.7);
+        sum += texture(map_texture, screen_uv - px * 0.7);
+        sum += texture(map_texture, screen_uv + vec2(px.x, -px.y) * 0.7);
+        sum += texture(map_texture, screen_uv + vec2(-px.x, px.y) * 0.7);
+        map = sum / 10.0;
+    }
     // The map texture is premultiplied; un-premultiply for the luminance.
     vec3 rgb = map.a > 0.0 ? map.rgb / map.a : map.rgb;
     float luma = dot(rgb, vec3(0.2126, 0.7152, 0.0722));
+    // Explored ground: a touch more saturation and warmth, toy-camera style.
+    vec3 graded = mix(vec3(luma), rgb, 1.18) * vec3(1.0, 0.985, 0.95);
     // Lines and text are the dark parts of the map; lift everything else to
-    // the fog colour so unexplored ground reads as a pale sketch.
+    // the fog colour so unexplored ground reads as white clay.
     float ink = (1.0 - luma) * fog.params.z;
     vec3 sketch = fog.fog_color.rgb * (1.0 - ink);
-    vec3 result = mix(mix(rgb, sketch, strength), rgb, explored);
-    frag_color = vec4(result, 1.0);
+    vec3 result = mix(mix(graded, sketch, strength), graded, explored);
+    // A soft vignette keeps the eye in the middle of the model.
+    float vignette = 1.0 - 0.12 * smoothstep(0.55, 1.25, length(v_clip));
+    frag_color = vec4(result * vignette, 1.0);
 }

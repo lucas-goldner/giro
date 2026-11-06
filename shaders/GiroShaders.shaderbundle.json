@@ -6,5 +6,9 @@
   "FogFragment": {
     "type": "fragment",
     "file": "fog.frag"
+  },
+  "ToyBuildingFragment": {
+    "type": "fragment",
+    "file": "toy_building.frag"
   }
 }

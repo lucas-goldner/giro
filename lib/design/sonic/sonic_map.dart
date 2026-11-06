@@ -43,4 +43,8 @@ abstract final class SonicMap {
   };
 
   static const LatLng tokyo = LatLng(35.682839, 139.759455);
+
+  /// The toy city is meant to be seen from above at an angle, like a model
+  /// on a table.
+  static const double tilt = 55;
 }
