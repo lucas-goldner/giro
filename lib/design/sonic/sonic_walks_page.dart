@@ -5,6 +5,7 @@ import 'package:giro/core/cubit/walk_routes_cubit.dart';
 import 'package:giro/core/extensions.dart';
 import 'package:giro/core/model/walk_route.dart';
 import 'package:giro/core/router.dart';
+import 'package:giro/design/shared/place_line.dart';
 import 'package:giro/design/shared/route_preview.dart';
 import 'package:giro/design/shared/walk_stats.dart';
 import 'package:giro/design/sonic/sonic_actions.dart';
@@ -205,6 +206,7 @@ class _StageCard extends StatelessWidget {
                             color: SonicTheme.pale,
                           ),
                         ),
+                        PlaceLine(points: route.coordinates),
                       ],
                     ),
                   ),

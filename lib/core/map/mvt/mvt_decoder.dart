@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:math' as math;
 import 'dart:typed_data';
 
@@ -10,7 +11,9 @@ class MvtTile {
 
   final Map<String, MvtLayer> layers;
 
-  static MvtTile decode(Uint8List bytes) {
+  /// Decodes [bytes]; with [only], layers not named there are skipped
+  /// without decoding their features.
+  static MvtTile decode(Uint8List bytes, {Set<String>? only}) {
     final reader = _Reader(bytes);
     final layers = <String, MvtLayer>{};
     while (!reader.atEnd) {
@@ -18,13 +21,30 @@ class MvtTile {
       final field = tag >> 3;
       final wire = tag & 7;
       if (field == 3 && wire == 2) {
-        final layer = _decodeLayer(reader.bytesField());
+        final layerBytes = reader.bytesField();
+        if (only != null && !only.contains(_layerName(layerBytes))) {
+          continue;
+        }
+        final layer = _decodeLayer(layerBytes);
         layers[layer.name] = layer;
       } else {
         reader.skip(wire);
       }
     }
     return MvtTile(layers);
+  }
+
+  /// The layer's name without decoding anything else.
+  static String _layerName(Uint8List bytes) {
+    final reader = _Reader(bytes);
+    while (!reader.atEnd) {
+      final tag = reader.varint();
+      if (tag >> 3 == 1 && tag & 7 == 2) {
+        return reader.string();
+      }
+      reader.skip(tag & 7);
+    }
+    return '';
   }
 
   static MvtLayer _decodeLayer(Uint8List bytes) {
@@ -326,7 +346,7 @@ class _Reader {
     return view;
   }
 
-  String string() => String.fromCharCodes(bytesField());
+  String string() => utf8.decode(bytesField(), allowMalformed: true);
 
   double float32() {
     final value = _data.getFloat32(_pos, Endian.little);

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:giro/core/cubit/walk_routes_cubit.dart';
 import 'package:giro/core/extensions.dart';
 import 'package:giro/core/model/walk_workout.dart';
+import 'package:giro/design/shared/place_line.dart';
 import 'package:giro/design/shared/route_preview.dart';
 import 'package:giro/design/sonic/sonic_theme.dart';
 import 'package:giro/map/cubit/healthkit_cubit.dart';
@@ -386,6 +387,8 @@ class _WorkoutCard extends StatelessWidget {
                             '${imported ? ' · STAGE CLEARED' : ''}',
                             style: SonicTheme.body,
                           ),
+                          if (workout.routes.isNotEmpty)
+                            PlaceLine(points: workout.routes),
                         ],
                       ),
                     ),

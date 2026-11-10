@@ -14,6 +14,16 @@ enum LandmarkModel {
   /// Key of the mesh in `SceneryMesh.of`.
   String get meshKey => 'landmark.$name';
 
+  /// Metres around the spot where OpenStreetMap building parts are hidden
+  /// so the model replaces them (the Skytree in OSM is a 6 m pole 634 m
+  /// tall plus two deck rings; drawn with windows it looks broken).
+  double get clearRadius => switch (this) {
+    tokyoTower => 90,
+    skytree => 70,
+    dome => 140,
+    torii || pagoda || beacon => 0,
+  };
+
   static LandmarkModel forName(String name) {
     final n = name.toLowerCase();
     if (n.contains('tokyo tower') || n.contains('東京タワー')) {
