@@ -110,6 +110,16 @@ limit enforced. `NSAllowsLocalNetworking` in `Info.plist` lets the map talk
 to the loopback server. On the web the map loads from OpenFreeMap directly
 and `MockTileStore` simulates the download.
 
+## Where a walk happened
+
+Every walk in Stages and in the Health import list carries a place line
+such as "Marunouchi, Chiyoda". It comes from the map's own vector tiles
+(`PlaceNamer`): the neighbourhood or quarter nearest the walk's midpoint
+from the zoom-14 tile's `place` layer, and the ward or city from the
+zoom-11 tile above it, both read through the offline tile cache. No
+geocoding service, nothing leaves the phone, and a downloaded area names
+its walks without a network. Where no tile is stored the line stays empty.
+
 ## Import everything
 
 Besides picking from the 25 most recent walks, the Health item box can
@@ -179,7 +189,11 @@ tiles:
   taisha, 神社…), a five-storey pagoda for temples (temple, -ji, -dera,
   寺…), a white dome for domes, and a gold beacon on a navy plinth for
   everything else. Landmarks are drawn at every zoom and never dropped by
-  the per-frame budget; unexplored ones are white clay too.
+  the per-frame budget; unexplored ones are white clay too. Around the
+  towers and domes the OpenStreetMap building parts are hidden
+  (`LandmarkModel.clearRadius`, `ToyBuildings.isVisible`): OSM maps the
+  Skytree as a 6 m pole 634 m tall with two deck rings, which drawn with
+  windows looked like a broken aerial, so the model stands alone there.
 
 ## Fog of war
 

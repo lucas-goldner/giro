@@ -81,6 +81,7 @@ class _MapLibreMapViewState extends State<MapLibreMapView> {
     unawaited(_fog.ensureLoaded());
     unawaited(_buildings.ensureLoaded());
     unawaited(_scenery.ensureLoaded());
+    _buildings.setLandmarks(_clearings());
     unawaited(_rebuildMask());
     _updateLocationStream();
     // The idle callback is the real signal; this is the safety net.
@@ -130,6 +131,7 @@ class _MapLibreMapViewState extends State<MapLibreMapView> {
     }
     if (!setEquals(widget.markers, oldWidget.markers)) {
       _sceneryController?.setLandmarks(_landmarks());
+      _buildings.setLandmarks(_clearings());
     }
     if (widget.myLocationEnabled != oldWidget.myLocationEnabled) {
       _updateLocationStream();
@@ -268,6 +270,13 @@ class _MapLibreMapViewState extends State<MapLibreMapView> {
           tint: 1,
           model: model.meshKey,
         ),
+  ];
+
+  /// Where OSM building parts make way for a landmark model.
+  List<LandmarkClearing> _clearings() => [
+    for (final marker in widget.markers)
+      if (marker.landmark case final model? when model.clearRadius > 0)
+        LandmarkClearing(position: marker.position, radius: model.clearRadius),
   ];
 
   static ml.LatLng _toMl(LatLng point) =>

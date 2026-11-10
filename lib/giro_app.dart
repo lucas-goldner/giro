@@ -4,6 +4,7 @@ import 'package:giro/core/cubit/launchable_maps_cubit.dart';
 import 'package:giro/core/cubit/map_settings_cubit.dart';
 import 'package:giro/core/cubit/poi_cubit.dart';
 import 'package:giro/core/cubit/walk_routes_cubit.dart';
+import 'package:giro/core/map/place_namer.dart';
 import 'package:giro/core/map/tile_store.dart';
 import 'package:giro/core/model/app_init_deps.dart';
 import 'package:giro/core/repository/launchable_maps_repo.dart';
@@ -65,6 +66,9 @@ class _GiroAppState extends State<GiroApp> {
               value: deps.mapSettingsRepo,
             ),
             RepositoryProvider<TileStore>.value(value: deps.tileStore),
+            RepositoryProvider<PlaceNamer>(
+              create: (_) => PlaceNamer(deps.tileStore),
+            ),
           ],
           child: MultiBlocProvider(
             providers: [

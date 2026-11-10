@@ -149,100 +149,216 @@ class SceneryMesh {
   static const _roofTile = (0.26, 0.31, 0.34);
   static const (double, double, double) _gold = (1, 0.77, 0);
 
-  /// 333 m, four splayed legs simplified to tapered tiers in orange and
-  /// white bands, two observatories and a spire.
+  /// 333 m: four splayed lattice legs in orange with white cross braces,
+  /// the main observatory at 120 m, the top deck at 250 m and a spire.
   static void _tokyoTower(_MeshBuilder b) {
-    for (var i = 0; i < 4; i++) {
-      final bottom = i * 30.0;
-      final top = bottom + 30;
-      b.frustum(
-        bottomRadius: 44 - i * 8.5,
-        topRadius: 44 - (i + 1) * 8.5,
-        bottom: bottom,
-        top: top,
-        sides: 4,
-        color: i.isEven ? _orange : _white,
-        angleOffset: math.pi / 4,
-      );
+    void legs(
+      double bottom,
+      double top,
+      double spreadBottom,
+      double spreadTop,
+    ) {
+      for (final (sx, sy) in const [(1, 1), (1, -1), (-1, 1), (-1, -1)]) {
+        b.slantedPrism(
+          bottomX: sx * spreadBottom,
+          bottomY: sy * spreadBottom,
+          topX: sx * spreadTop,
+          topY: sy * spreadTop,
+          bottomRadius: 3.2,
+          topRadius: 2.2,
+          bottom: bottom,
+          top: top,
+          sides: 4,
+          color: _orange,
+        );
+      }
     }
+
+    void braces(double z, double spread, (double, double, double) color) {
+      b
+        ..box(halfX: spread, halfY: 1, bottom: z, top: z + 1.8, color: color)
+        ..box(halfX: 1, halfY: spread, bottom: z, top: z + 1.8, color: color)
+        // Diagonal feel: thinner rails between the braces.
+        ..box(
+          halfX: spread,
+          halfY: spread,
+          bottom: z + 0.9,
+          top: z + 1,
+          color: color,
+        );
+    }
+
+    // Lower lattice: legs from 40 m out at the ground to 12 m at the deck.
+    legs(0, 120, 40, 12);
+    for (var i = 1; i <= 4; i++) {
+      final z = i * 24.0;
+      final spread = 40 - (40 - 12) * z / 120;
+      braces(z, spread, i.isEven ? _white : _orange);
+    }
+    // Main observatory (two floors) and the upper lattice.
     b
+      ..box(halfX: 17, halfY: 17, bottom: 118, top: 126, color: _white)
+      ..box(halfX: 15, halfY: 15, bottom: 126, top: 134, color: _orange)
+      ..box(halfX: 17, halfY: 17, bottom: 134, top: 142, color: _white);
+    legs(142, 250, 11, 4);
+    for (var i = 1; i <= 4; i++) {
+      final z = 142 + i * 22.0;
+      final spread = 11 - (11 - 4) * (z - 142) / 108;
+      braces(z, spread, i.isEven ? _white : _orange);
+    }
+    // Top deck and spire in orange and white bands.
+    b
+      ..box(halfX: 7.5, halfY: 7.5, bottom: 248, top: 262, color: _white)
       ..frustum(
-        bottomRadius: 16,
-        topRadius: 16,
-        bottom: 120,
-        top: 150,
-        sides: 4,
-        color: _white,
-        angleOffset: math.pi / 4,
-      )
-      ..frustum(
-        bottomRadius: 10,
-        topRadius: 4,
-        bottom: 150,
-        top: 250,
-        sides: 4,
-        color: _orange,
-        angleOffset: math.pi / 4,
-      )
-      ..frustum(
-        bottomRadius: 7,
-        topRadius: 7,
-        bottom: 250,
-        top: 262,
-        sides: 4,
-        color: _white,
-        angleOffset: math.pi / 4,
-      )
-      ..frustum(
-        bottomRadius: 2,
-        topRadius: 0.6,
+        bottomRadius: 2.4,
+        topRadius: 1.8,
         bottom: 262,
-        top: 333,
-        sides: 4,
+        top: 290,
+        sides: 6,
         color: _orange,
-        angleOffset: math.pi / 4,
+      )
+      ..frustum(
+        bottomRadius: 1.8,
+        topRadius: 1.2,
+        bottom: 290,
+        top: 315,
+        sides: 6,
+        color: _white,
+      )
+      ..frustum(
+        bottomRadius: 1.2,
+        topRadius: 0.4,
+        bottom: 315,
+        top: 333,
+        sides: 6,
+        color: _orange,
       );
   }
 
-  /// 634 m: a tapered pale-blue shaft, two observation decks, antenna.
+  /// 634 m: a tripod of lattice legs rising into a round shaft, the Tembo
+  /// deck at 350 m with its dark glass band, the galleria at 450 m, and the
+  /// gain tower.
   static void _skytree(_MeshBuilder b) {
-    b
-      ..frustum(
-        bottomRadius: 22,
-        topRadius: 9,
+    const steelDark = (0.70, 0.78, 0.88);
+    for (var i = 0; i < 3; i++) {
+      final a = i / 3 * math.pi * 2 + math.pi / 2;
+      b.slantedPrism(
+        bottomX: math.cos(a) * 36,
+        bottomY: math.sin(a) * 36,
+        topX: math.cos(a) * 9,
+        topY: math.sin(a) * 9,
+        bottomRadius: 5,
+        topRadius: 3,
         bottom: 0,
-        top: 340,
-        sides: 8,
+        top: 300,
+        sides: 5,
         color: _steel,
-      )
+      );
+    }
+    // Central shaft with lattice-like banding.
+    for (var i = 0; i < 6; i++) {
+      final bottom = i * 50.0;
+      b.frustum(
+        bottomRadius: 13 - i * 0.6,
+        topRadius: 13 - (i + 1) * 0.6,
+        bottom: bottom,
+        top: bottom + 50,
+        sides: 8,
+        color: i.isEven ? _steel : steelDark,
+      );
+    }
+    // Horizontal rings tying the legs to the shaft.
+    for (final z in const [75.0, 150.0, 225.0]) {
+      final r = 36 - (36 - 9) * z / 300;
+      b.frustum(
+        bottomRadius: r + 2,
+        topRadius: r + 2,
+        bottom: z,
+        top: z + 2.5,
+        sides: 9,
+        color: steelDark,
+      );
+    }
+    b
+      // Tembo Deck: wide white ring with a dark glass band.
       ..frustum(
-        bottomRadius: 24,
-        topRadius: 24,
-        bottom: 340,
-        top: 360,
-        sides: 10,
+        bottomRadius: 20,
+        topRadius: 30,
+        bottom: 335,
+        top: 342,
+        sides: 12,
         color: _white,
       )
       ..frustum(
-        bottomRadius: 8,
-        topRadius: 6,
-        bottom: 360,
-        top: 445,
+        bottomRadius: 30,
+        topRadius: 30,
+        bottom: 342,
+        top: 350,
+        sides: 12,
+        color: (0.30, 0.42, 0.56),
+      )
+      ..frustum(
+        bottomRadius: 30,
+        topRadius: 28,
+        bottom: 350,
+        top: 356,
+        sides: 12,
+        color: _white,
+      )
+      ..frustum(
+        bottomRadius: 9,
+        topRadius: 7,
+        bottom: 356,
+        top: 440,
         sides: 8,
         color: _steel,
       )
+      // Tembo Galleria: slimmer ring.
       ..frustum(
-        bottomRadius: 13,
+        bottomRadius: 12,
+        topRadius: 15,
+        bottom: 440,
+        top: 446,
+        sides: 12,
+        color: _white,
+      )
+      ..frustum(
+        bottomRadius: 15,
+        topRadius: 15,
+        bottom: 446,
+        top: 452,
+        sides: 12,
+        color: (0.30, 0.42, 0.56),
+      )
+      ..frustum(
+        bottomRadius: 15,
         topRadius: 13,
-        bottom: 445,
-        top: 458,
-        sides: 10,
+        bottom: 452,
+        top: 457,
+        sides: 12,
         color: _white,
       )
+      // Gain tower and antenna.
       ..frustum(
-        bottomRadius: 4,
-        topRadius: 1.2,
-        bottom: 458,
+        bottomRadius: 6,
+        topRadius: 3.5,
+        bottom: 457,
+        top: 560,
+        sides: 6,
+        color: _steel,
+      )
+      ..frustum(
+        bottomRadius: 3.5,
+        topRadius: 1.5,
+        bottom: 560,
+        top: 610,
+        sides: 6,
+        color: steelDark,
+      )
+      ..frustum(
+        bottomRadius: 1.5,
+        topRadius: 0.5,
+        bottom: 610,
         top: 634,
         sides: 6,
         color: _white,
@@ -468,6 +584,48 @@ class _MeshBuilder {
       halfY,
       bottom,
     ), color);
+  }
+
+  /// A tapered tube whose top centre differs from its bottom centre.
+  void slantedPrism({
+    required double bottomX,
+    required double bottomY,
+    required double topX,
+    required double topY,
+    required double bottomRadius,
+    required double topRadius,
+    required double bottom,
+    required double top,
+    required int sides,
+    required (double, double, double) color,
+  }) {
+    for (var i = 0; i < sides; i++) {
+      final a0 = i / sides * math.pi * 2;
+      final a1 = (i + 1) / sides * math.pi * 2;
+      final p0 = (
+        bottomX + math.cos(a0) * bottomRadius,
+        bottomY + math.sin(a0) * bottomRadius,
+        bottom,
+      );
+      final p1 = (
+        bottomX + math.cos(a1) * bottomRadius,
+        bottomY + math.sin(a1) * bottomRadius,
+        bottom,
+      );
+      final p2 = (
+        topX + math.cos(a1) * topRadius,
+        topY + math.sin(a1) * topRadius,
+        top,
+      );
+      final p3 = (
+        topX + math.cos(a0) * topRadius,
+        topY + math.sin(a0) * topRadius,
+        top,
+      );
+      _triangle(p0, p1, p2, color);
+      _triangle(p0, p2, p3, color);
+      _triangle((topX, topY, top), p3, p2, color);
+    }
   }
 
   /// A tapered tube with a bottom and a top cap; a cylinder when both
