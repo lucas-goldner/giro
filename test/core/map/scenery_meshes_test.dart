@@ -1,4 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:giro/core/map/scenery/landmarks.dart';
+import 'package:giro/core/map/scenery/scenery_gpu.dart';
 import 'package:giro/core/map/scenery/scenery_meshes.dart';
 import 'package:giro/core/map/scenery/tree_scatter.dart';
 
@@ -31,6 +33,11 @@ void main() {
       expect(mesh.vertexCount, lessThan(3000));
     });
   }
+
+  test('landmark models are counted for the uniform block', () {
+    expect(SceneryGpu.landmarkModelCount, LandmarkModel.values.length);
+    expect(SceneryMesh.keys.first, startsWith('landmark.'));
+  });
 
   test('meshes are cached', () {
     expect(
