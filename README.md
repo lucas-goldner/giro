@@ -253,6 +253,21 @@ in `ios/Runner/Info.plist`, and run `flutter gen-l10n`. The locale test in
 `test/l10n/` fails if a file is missing a key. In the web preview,
 `?lang=ja` forces a language.
 
+## App Store kit
+
+`docs/store/index.html` is everything for App Store Connect in the nine
+languages: name, subtitle, keywords, promotional text, description and
+What's New with copy buttons and character counts, plus the App
+Information, Age Rating, App Privacy and App Review answers and the
+screenshot upload order. `python3 docs/store/build_kit.py` rebuilds it from
+the texts in that script. `node tool/store_kit.mjs` shoots the web preview
+in every language at the iPhone 6.9" size and frames each shot under a
+headline from `docs/store/headlines.json`, Sonic style, into
+`build/store_kit/shots/<lang>/iphone/`. Japanese, Chinese and Korean
+headlines want Noto Sans: `npm pack @fontsource/noto-sans-jp
+@fontsource/noto-sans-kr @fontsource/noto-sans-sc`, unpack into
+`build/store_kit/fontsrc/`.
+
 ## Web preview
 
 The app is iOS-first, but `lib/main_web.dart` runs it in a browser with the

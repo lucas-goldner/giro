@@ -1,0 +1,527 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Giro Store Kit</title>
+<style>
+:root{--bg:#EEF2FF;--card:#FFFFFF;--ink:#0A1D58;--muted:#51608F;--line:#0A1D58;--soft:#D6DEFA;--accent:#FFC400;--accent-ink:#0A1D58;--blue:#1B5BFF;--ok:#2E9E5B;--bad:#EA3A3A;--code:#F4F6FF;--shadow:4px 4px 0 var(--line)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:64px}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI","Hiragino Sans","Noto Sans JP","Noto Sans KR","Noto Sans SC",sans-serif;
+  background-image:repeating-linear-gradient(-32deg,rgba(27,91,255,.06) 0 14px,transparent 14px 32px)}
+.wrap{max-width:1080px;margin:0 auto;padding:0 16px 80px}
+header{padding:40px 0 20px}
+h1{font-size:clamp(28px,5vw,44px);line-height:1.1;margin:0 0 8px;letter-spacing:-.02em;font-style:italic;font-weight:900}
+h1 mark{background:var(--accent);color:var(--accent-ink);padding:0 10px;border:3px solid var(--line);box-shadow:var(--shadow);transform:skewX(-8deg);display:inline-block}
+.sub{color:var(--muted);margin:14px 0 0;max-width:640px}
+nav{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:3px solid var(--line);display:flex;gap:6px;overflow-x:auto;padding:10px 0;scrollbar-width:none}
+nav a{flex:none;color:var(--ink);text-decoration:none;font-weight:700;font-size:13px;padding:5px 10px;border:2px solid var(--line);border-radius:999px;background:var(--card)}
+nav a:hover{background:var(--accent)}
+section{margin-top:36px;background:var(--card);border:3px solid var(--line);border-radius:14px;box-shadow:var(--shadow);padding:22px}
+h2{margin:0 0 6px;font-size:22px;display:flex;align-items:center;gap:10px}
+.num{font-size:13px;background:var(--accent);color:var(--accent-ink);border:2px solid var(--line);border-radius:8px;padding:1px 7px}
+h3{margin:26px 0 8px;font-size:17px} h4{margin:18px 0 8px;font-size:14px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.lead{color:var(--muted);margin:0 0 14px}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.field{border:2px solid var(--soft);border-radius:12px;padding:10px 12px}
+.fhead{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.flabel{font-weight:700;font-size:13px;flex:1}
+.count{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+.count.over{color:#fff;background:var(--bad);border-radius:6px;padding:0 6px;font-weight:700}
+.copy{font:inherit;cursor:pointer;border:2px solid var(--line);background:var(--accent);color:var(--accent-ink);font-weight:700;font-size:12px;border-radius:8px;padding:3px 10px;box-shadow:2px 2px 0 var(--line)}
+.copy:active{transform:translate(2px,2px);box-shadow:none} .copy.done{background:var(--ok);color:#fff}
+.val{margin:0;white-space:pre-wrap;word-wrap:break-word;background:var(--code);border:2px solid var(--line);border-radius:10px;padding:10px 12px;font:inherit;font-size:14px}
+.val.tall{max-height:300px;overflow:auto}
+.tablewrap{overflow-x:auto;margin-top:14px} table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{text-align:left;padding:8px 10px;border-bottom:2px solid var(--soft);vertical-align:top}
+th{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em} td:first-child{font-weight:700;width:34%}
+.todo{margin:0;padding-left:20px} .todo li{margin:6px 0} code{background:var(--code);padding:1px 5px;border-radius:5px}
+.note{color:var(--muted);font-size:13px;margin-top:12px}
+.gallery{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
+figure{margin:0} figure img{width:100%;display:block;border:2px solid var(--line);border-radius:10px;background:var(--soft)}
+figcaption{font-size:12px;color:var(--ink);margin-top:4px;font-weight:700} figcaption .en{color:var(--muted);font-weight:400}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(80px);background:var(--ink);color:#fff;padding:8px 16px;border-radius:999px;font-weight:700;font-size:13px;transition:transform .2s;pointer-events:none}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.langbar{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+.langbar button{font:inherit;font-weight:700;font-size:13px;cursor:pointer;border:2px solid var(--line);border-radius:999px;background:var(--card);color:var(--ink);padding:5px 12px;box-shadow:2px 2px 0 var(--line)}
+.langbar button[aria-pressed="true"]{background:var(--accent)}
+body[data-lang="en"] [data-lang]:not([data-lang="en"]),body[data-lang="ja"] [data-lang]:not([data-lang="ja"]),body[data-lang="zh"] [data-lang]:not([data-lang="zh"]),body[data-lang="ko"] [data-lang]:not([data-lang="ko"]),body[data-lang="de"] [data-lang]:not([data-lang="de"]),body[data-lang="fr"] [data-lang]:not([data-lang="fr"]),body[data-lang="es"] [data-lang]:not([data-lang="es"]),body[data-lang="it"] [data-lang]:not([data-lang="it"]),body[data-lang="pt"] [data-lang]:not([data-lang="pt"]){display:none}
+body:not([data-lang="all"]) .pair{grid-template-columns:1fr}
+@media (max-width:720px){.pair{grid-template-columns:1fr}section{padding:16px}td:first-child{width:40%}}
+</style>
+</head>
+<body data-lang="all">
+<div class="wrap">
+<header>
+<h1><mark>GIRO</mark> Store Kit</h1>
+<p class="sub">Everything for App Store Connect in nine languages, in the order you fill it in. Pick a language, hit Copy, paste, done. Character counts are checked against Apple's limits; a red count is over.</p>
+<div class="langbar" role="group" aria-label="Language"><button data-set="all">All</button><button data-set="en">English</button><button data-set="ja">日本語</button><button data-set="zh">简体中文</button><button data-set="ko">한국어</button><button data-set="de">Deutsch</button><button data-set="fr">Français</button><button data-set="es">Español</button><button data-set="it">Italiano</button><button data-set="pt">Português</button></div>
+</header>
+<nav><a href="#todo">Fill these in first</a><a href="#info">App Information</a><a href="#age">Age Rating</a><a href="#version">Version page texts</a><a href="#shots">Screenshots</a><a href="#privacy">App Privacy</a><a href="#review">App Review</a></nav>
+
+<section id="todo"><h2><span class="num">01</span>Fill these in first</h2><ul class="todo">
+<li><b>Localizations</b>: App Information › language menu (top right) › Add: 日本語, 简体中文, 한국어, Deutsch, Français, Español (México / España), Italiano, Português (Brasil / Portugal). English (U.S.) is the primary. Spanish and Portuguese each get the same texts twice (Mexico and Spain; Brazil and Portugal).</li>
+<li><b>Privacy Policy URL</b> is required per localization and Giro has none published yet. Suggested home, next to Japanana's: <code>https://apps-privacies-terms-lg.vercel.app/giro/privacy.html</code>. One paragraph is enough: walks, spots and settings stay on the device; HealthKit workouts are read only to import walks and never leave the phone; location is used only while the app is open; map tiles are fetched from OpenFreeMap (which sees your IP address like any website); no accounts, no analytics, no ads.</li>
+<li><b>Support URL</b>: <code>https://github.com/lucas-goldner/giro</code> (or the privacy site).</li>
+<li><b>HealthKit</b>: the app uses the HealthKit entitlement, so App Review checks the purpose string and that Health data is not used for advertising. The App Review notes below say what it reads.</li>
+<li><b>Export compliance</b>: "Does your app use encryption?" → only HTTPS, exempt. Add <code>ITSAppUsesNonExemptEncryption = NO</code> to Info.plist to skip the question on every build.</li>
+<li><b>Screenshots</b>: upload the 6.9" set for every language (section 05); it covers every iPhone. Giro is iPhone-only, so no iPad set.</li>
+<li><b>Build</b>: pick the latest Codemagic build (the build number comes from TestFlight + 1). Version string <b>1.1.0</b>.</li>
+</ul></section>
+
+<section id="info"><h2><span class="num">02</span>App Information</h2><p class="lead">App Store Connect › your app › App Information. Switch the language menu (top right) for each localization.</p>
+<div class="pair">
+<div class="field" data-lang="en"><div class="fhead"><span class="flabel">Name · English (U.S.)</span><span class="count">30/30</span><button class="copy" data-target="f1">Copy</button></div><pre id="f1" class="val">Giro: Walk &amp; Uncover Your City</pre></div>
+<div class="field" data-lang="ja"><div class="fhead"><span class="flabel">Name · 日本語</span><span class="count">15/30</span><button class="copy" data-target="f2">Copy</button></div><pre id="f2" class="val">Giro：歩いて街を塗りつぶす</pre></div>
+<div class="field" data-lang="zh"><div class="fhead"><span class="flabel">Name · 简体中文</span><span class="count">11/30</span><button class="copy" data-target="f3">Copy</button></div><pre id="f3" class="val">Giro：走遍你的城市</pre></div>
+<div class="field" data-lang="ko"><div class="fhead"><span class="flabel">Name · 한국어</span><span class="count">17/30</span><button class="copy" data-target="f4">Copy</button></div><pre id="f4" class="val">Giro: 걸으며 도시를 밝히다</pre></div>
+<div class="field" data-lang="de"><div class="fhead"><span class="flabel">Name · Deutsch</span><span class="count">26/30</span><button class="copy" data-target="f5">Copy</button></div><pre id="f5" class="val">Giro: Deck deine Stadt auf</pre></div>
+<div class="field" data-lang="fr"><div class="fhead"><span class="flabel">Name · Français</span><span class="count">30/30</span><button class="copy" data-target="f6">Copy</button></div><pre id="f6" class="val">Giro : Dévoile ta ville à pied</pre></div>
+<div class="field" data-lang="es"><div class="fhead"><span class="flabel">Name · Español (México / España)</span><span class="count">30/30</span><button class="copy" data-target="f7">Copy</button></div><pre id="f7" class="val">Giro: Descubre tu ciudad a pie</pre></div>
+<div class="field" data-lang="it"><div class="fhead"><span class="flabel">Name · Italiano</span><span class="count">29/30</span><button class="copy" data-target="f8">Copy</button></div><pre id="f8" class="val">Giro: Scopri la città a piedi</pre></div>
+<div class="field" data-lang="pt"><div class="fhead"><span class="flabel">Name · Português (Brasil / Portugal)</span><span class="count">30/30</span><button class="copy" data-target="f9">Copy</button></div><pre id="f9" class="val">Giro: Descubra sua cidade a pé</pre></div>
+</div>
+<div class="pair">
+<div class="field" data-lang="en"><div class="fhead"><span class="flabel">Subtitle · English (U.S.)</span><span class="count">25/30</span><button class="copy" data-target="f10">Copy</button></div><pre id="f10" class="val">Fog of war for your walks</pre></div>
+<div class="field" data-lang="ja"><div class="fhead"><span class="flabel">Subtitle · 日本語</span><span class="count">12/30</span><button class="copy" data-target="f11">Copy</button></div><pre id="f11" class="val">歩いた道だけ色がつく地図</pre></div>
+<div class="field" data-lang="zh"><div class="fhead"><span class="flabel">Subtitle · 简体中文</span><span class="count">11/30</span><button class="copy" data-target="f12">Copy</button></div><pre id="f12" class="val">走过的路才会上色的地图</pre></div>
+<div class="field" data-lang="ko"><div class="fhead"><span class="flabel">Subtitle · 한국어</span><span class="count">13/30</span><button class="copy" data-target="f13">Copy</button></div><pre id="f13" class="val">걸은 길만 색칠되는 지도</pre></div>
+<div class="field" data-lang="de"><div class="fhead"><span class="flabel">Subtitle · Deutsch</span><span class="count">21/30</span><button class="copy" data-target="f14">Copy</button></div><pre id="f14" class="val">Lauf deine Stadt frei</pre></div>
+<div class="field" data-lang="fr"><div class="fhead"><span class="flabel">Subtitle · Français</span><span class="count">28/30</span><button class="copy" data-target="f15">Copy</button></div><pre id="f15" class="val">Dévoile la carte en marchant</pre></div>
+<div class="field" data-lang="es"><div class="fhead"><span class="flabel">Subtitle · Español (México / España)</span><span class="count">27/30</span><button class="copy" data-target="f16">Copy</button></div><pre id="f16" class="val">El mapa se pinta al caminar</pre></div>
+<div class="field" data-lang="it"><div class="fhead"><span class="flabel">Subtitle · Italiano</span><span class="count">29/30</span><button class="copy" data-target="f17">Copy</button></div><pre id="f17" class="val">La mappa si colora camminando</pre></div>
+<div class="field" data-lang="pt"><div class="fhead"><span class="flabel">Subtitle · Português (Brasil / Portugal)</span><span class="count">27/30</span><button class="copy" data-target="f18">Copy</button></div><pre id="f18" class="val">O mapa se pinta ao caminhar</pre></div>
+</div>
+<div class="tablewrap"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Primary category</td><td>Health &amp; Fitness</td></tr><tr><td>Secondary category</td><td>Navigation <span class="note">(optional; Travel also fits)</span></td></tr><tr><td>Copyright</td><td>2026 Lucas Goldner</td></tr><tr><td>Bundle ID</td><td><code>com.lucas-goldner.giro</code></td></tr><tr><td>SKU</td><td><code>giro-ios</code> <span class="note">(any unique string, only for you)</span></td></tr><tr><td>Localizations</td><td>English (U.S.) primary, plus 日本語, 简体中文, 한국어, Deutsch, Français, Español (México / España), Italiano, Português (Brasil / Portugal)</td></tr><tr><td>Content rights</td><td>No, it does not contain, show or access third-party content <span class="note">(OpenStreetMap data is openly licensed; the attribution is on the map)</span></td></tr><tr><td>Age rating</td><td>4+ (section 03)</td></tr></tbody></table></div>
+</section>
+
+<section id="age"><h2><span class="num">03</span>Age Rating</h2>
+<div class="tablewrap"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Every content question (violence, horror, mature themes, gambling, medical, etc.)</td><td>None</td></tr><tr><td>Unrestricted web access</td><td>No <span class="note">(no browser; the map opens in Apple or Google Maps)</span></td></tr><tr><td>User-generated content, messaging or chat</td><td>No</td></tr><tr><td>Advertising</td><td>No</td></tr><tr><td>Parental controls / age assurance</td><td>No</td></tr><tr><td>Result</td><td><b>4+</b></td></tr></tbody></table></div>
+</section>
+
+<section id="version"><h2><span class="num">04</span>Version page texts</h2><p class="lead">App Store Connect › iOS App › 1.1.0. Pick a language with the buttons above, switch App Store Connect to the same language and paste.</p>
+<div class="pair">
+<div class="field" data-lang="en"><div class="fhead"><span class="flabel">Promotional text · English (U.S.)</span><span class="count">146/170</span><button class="copy" data-target="f19">Copy</button></div><pre id="f19" class="val">New: the toy city. 3D buildings, trees and landmarks, white clay until you walk them. Offline maps, import every walk from Health, nine languages.</pre></div>
+<div class="field" data-lang="ja"><div class="fhead"><span class="flabel">Promotional text · 日本語</span><span class="count">68/170</span><button class="copy" data-target="f20">Copy</button></div><pre id="f20" class="val">新登場：トイシティ。3Dの建物、木、ランドマークが歩くまで白い模型のまま。オフライン地図、ヘルスケアからの一括インポート、9言語に対応。</pre></div>
+<div class="field" data-lang="zh"><div class="fhead"><span class="flabel">Promotional text · 简体中文</span><span class="count">58/170</span><button class="copy" data-target="f21">Copy</button></div><pre id="f21" class="val">新功能：玩具城市。3D 建筑、树木和地标在你走过之前都是白色模型。离线地图、一键导入健康中的全部散步、支持九种语言。</pre></div>
+<div class="field" data-lang="ko"><div class="fhead"><span class="flabel">Promotional text · 한국어</span><span class="count">79/170</span><button class="copy" data-target="f22">Copy</button></div><pre id="f22" class="val">새 기능: 장난감 도시. 3D 건물, 나무, 랜드마크가 걷기 전까지는 하얀 모형. 오프라인 지도, 건강 앱의 모든 산책 가져오기, 9개 언어.</pre></div>
+<div class="field" data-lang="de"><div class="fhead"><span class="flabel">Promotional text · Deutsch</span><span class="count">147/170</span><button class="copy" data-target="f23">Copy</button></div><pre id="f23" class="val">Neu: die Spielzeugstadt. 3D-Gebäude, Bäume und Wahrzeichen bleiben weißer Ton, bis du dort warst. Offline-Karten, Import aus Health, neun Sprachen.</pre></div>
+<div class="field" data-lang="fr"><div class="fhead"><span class="flabel">Promotional text · Français</span><span class="count">164/170</span><button class="copy" data-target="f24">Copy</button></div><pre id="f24" class="val">Nouveau : la ville miniature. Immeubles 3D, arbres et monuments restent en argile blanche jusqu’à ton passage. Cartes hors ligne, import depuis Santé, neuf langues.</pre></div>
+<div class="field" data-lang="es"><div class="fhead"><span class="flabel">Promotional text · Español (México / España)</span><span class="count">159/170</span><button class="copy" data-target="f25">Copy</button></div><pre id="f25" class="val">Nuevo: la ciudad de juguete. Edificios 3D, árboles y monumentos en arcilla blanca hasta que pases. Mapas sin conexión, importa todo desde Salud, nueve idiomas.</pre></div>
+<div class="field" data-lang="it"><div class="fhead"><span class="flabel">Promotional text · Italiano</span><span class="count">156/170</span><button class="copy" data-target="f26">Copy</button></div><pre id="f26" class="val">Novità: la città giocattolo. Edifici 3D, alberi e monumenti restano argilla bianca finché non ci passi. Mappe offline, importa tutto da Salute, nove lingue.</pre></div>
+<div class="field" data-lang="pt"><div class="fhead"><span class="flabel">Promotional text · Português (Brasil / Portugal)</span><span class="count">149/170</span><button class="copy" data-target="f27">Copy</button></div><pre id="f27" class="val">Novo: a cidade de brinquedo. Prédios 3D, árvores e marcos ficam em argila branca até você passar. Mapas offline, importe tudo do Saúde, nove idiomas.</pre></div>
+</div>
+<div class="pair">
+<div class="field" data-lang="en"><div class="fhead"><span class="flabel">Description · English (U.S.)</span><span class="count">1188/4000</span><button class="copy" data-target="f28">Copy</button></div><pre id="f28" class="val tall">Walk, and the map comes to life.
+
+Giro is a walking game for your city. Every street you walk is painted onto a 3D toy-town map. Everything you have not walked yet stays white clay. The more you explore, the more of the city appears.
+
+EVERY WALK IS A STAGE
+Record a walk with GO!, or import the ones your watch already saved. Each walk gets a rank from S to C for how much new ground it covered.
+
+A CITY MADE OF TOYS
+Pastel buildings with lit windows, trees in the parks and along the streets, and landmarks you will recognise: Tokyo Tower, the Skytree, torii at shrines, pagodas at temples. All of it white until you walk past.
+
+SPOTS
+Press and hold the map to mark a place. Walks that pass it collect it.
+
+WORKS OFFLINE
+Download your city once. The map is instant and works without a signal, and every walk is named after where it happened, straight from the offline map.
+
+MADE FOR WALKERS
+• Import every walk from Apple Health in one go
+• Live timer, pace and a ring that fills with new ground
+• Sliders for trail width and reveal radius
+• In nine languages
+• No account, no ads, no tracking. Your walks stay on your phone.
+
+Map data © OpenStreetMap contributors, tiles by OpenFreeMap.</pre></div>
+<div class="field" data-lang="ja"><div class="fhead"><span class="flabel">Description · 日本語</span><span class="count">562/4000</span><button class="copy" data-target="f29">Copy</button></div><pre id="f29" class="val tall">歩けば、地図が色づく。
+
+Giroは、あなたの街を舞台にした散歩ゲームです。歩いた道が3Dのおもちゃのような街に塗られ、まだ歩いていない場所は白い模型のまま。探索するほど、街が姿を現します。
+
+散歩はすべてステージ
+GO!で散歩を記録するか、ウォッチに保存済みの散歩をインポート。新しい道をどれだけ歩いたかで、SからCのランクがつきます。
+
+おもちゃの街
+窓に明かりのともるパステルカラーの建物、公園や通りの木々、そして東京タワー、スカイツリー、神社の鳥居、お寺の五重塔といったランドマーク。すべて、歩いて通るまでは白いままです。
+
+スポット
+地図を長押しして場所を登録。近くを通った散歩がスポットを集めます。
+
+オフラインで動作
+街を一度ダウンロードすれば、地図は即座に表示され、電波がなくても使えます。散歩には歩いた場所の名前が、オフライン地図からつけられます。
+
+歩く人のために
+・ヘルスケアからすべての散歩を一括インポート
+・ライブのタイマー、ペース、新しい道で満ちていくリング
+・軌跡の太さと探索範囲のスライダー
+・9言語に対応
+・アカウント不要、広告なし、トラッキングなし。散歩の記録は端末の中だけに。
+
+地図データ © OpenStreetMap contributors、タイル提供 OpenFreeMap。</pre></div>
+<div class="field" data-lang="zh"><div class="fhead"><span class="flabel">Description · 简体中文</span><span class="count">449/4000</span><button class="copy" data-target="f30">Copy</button></div><pre id="f30" class="val tall">走起来，地图就活了。
+
+Giro 是属于你城市的散步游戏。你走过的每条街都会被涂到一张 3D 玩具小镇地图上，还没走过的地方则保持白色模型。探索得越多，城市显现得越多。
+
+每次散步都是一关
+用 GO! 记录散步，或导入手表已保存的散步。每次散步都按走了多少新路线，评定 S 到 C 级。
+
+玩具做的城市
+亮着窗灯的粉彩建筑、公园和街道旁的树木，以及一眼就能认出的地标：东京塔、晴空塔、神社的鸟居、寺庙的佛塔。走过之前，它们都是白色的。
+
+地点
+长按地图标记一个地方。经过的散步会把它收集起来。
+
+离线可用
+下载一次你的城市，地图即刻显示，没有信号也能用。每次散步都会从离线地图中得到它发生地点的名字。
+
+为走路的人而做
+• 一次导入 Apple 健康中的所有散步
+• 实时计时、配速，以及被新路线填满的圆环
+• 轨迹宽度与探索半径的滑块
+• 支持九种语言
+• 无账号、无广告、无追踪。你的散步只留在你的手机上。
+
+地图数据 © OpenStreetMap 贡献者，图块来自 OpenFreeMap。</pre></div>
+<div class="field" data-lang="ko"><div class="fhead"><span class="flabel">Description · 한국어</span><span class="count">638/4000</span><button class="copy" data-target="f31">Copy</button></div><pre id="f31" class="val tall">걸으면 지도가 살아납니다.
+
+Giro는 내 도시를 무대로 하는 산책 게임입니다. 걸은 거리마다 3D 장난감 마을 지도에 색이 칠해지고, 아직 걷지 않은 곳은 하얀 모형으로 남습니다. 탐험할수록 도시가 더 드러납니다.
+
+모든 산책이 스테이지
+GO!로 산책을 기록하거나, 워치에 이미 저장된 산책을 가져오세요. 새로운 길을 얼마나 걸었는지에 따라 S부터 C까지 랭크가 매겨집니다.
+
+장난감으로 만든 도시
+창에 불이 켜진 파스텔 건물, 공원과 거리의 나무, 그리고 한눈에 알아볼 랜드마크: 도쿄 타워, 스카이트리, 신사의 도리이, 절의 탑. 걸어서 지나가기 전까지는 모두 하얗습니다.
+
+스팟
+지도를 길게 눌러 장소를 표시하세요. 지나가는 산책이 스팟을 모읍니다.
+
+오프라인에서도
+도시를 한 번만 다운로드하세요. 지도가 바로 뜨고 신호 없이도 작동하며, 모든 산책에는 오프라인 지도에서 가져온 장소 이름이 붙습니다.
+
+걷는 사람을 위해
+• Apple 건강의 모든 산책을 한 번에 가져오기
+• 실시간 타이머, 페이스, 새 길로 차오르는 링
+• 경로 두께와 탐험 반경 슬라이더
+• 9개 언어 지원
+• 계정 없음, 광고 없음, 추적 없음. 산책 기록은 내 휴대폰에만.
+
+지도 데이터 © OpenStreetMap 기여자, 타일 제공 OpenFreeMap.</pre></div>
+<div class="field" data-lang="de"><div class="fhead"><span class="flabel">Description · Deutsch</span><span class="count">1387/4000</span><button class="copy" data-target="f32">Copy</button></div><pre id="f32" class="val tall">Geh los, und die Karte erwacht.
+
+Giro ist ein Spaziergang-Spiel für deine Stadt. Jede Straße, die du gehst, wird auf eine 3D-Spielzeugstadt gemalt. Alles, wo du noch nicht warst, bleibt weißer Ton. Je mehr du erkundest, desto mehr Stadt erscheint.
+
+JEDER SPAZIERGANG IST EINE STAGE
+Nimm einen Spaziergang mit GO! auf oder importiere die, die deine Uhr schon gespeichert hat. Jeder bekommt einen Rang von S bis C dafür, wie viel neues Terrain er abgedeckt hat.
+
+EINE STADT AUS SPIELZEUG
+Pastellfarbene Häuser mit erleuchteten Fenstern, Bäume in Parks und an Straßen, und Wahrzeichen, die du erkennst: Tokyo Tower, Skytree, Torii an Schreinen, Pagoden an Tempeln. Alles weiß, bis du vorbeigehst.
+
+SPOTS
+Halte die Karte gedrückt, um einen Ort zu markieren. Spaziergänge, die daran vorbeiführen, sammeln ihn ein.
+
+FUNKTIONIERT OFFLINE
+Lade deine Stadt einmal herunter. Die Karte ist sofort da und funktioniert ohne Empfang, und jeder Spaziergang trägt den Namen des Orts, an dem er stattfand, direkt aus der Offline-Karte.
+
+FÜR LEUTE, DIE GEHEN
+• Jeden Spaziergang aus Apple Health auf einmal importieren
+• Live-Timer, Tempo und ein Ring, der sich mit neuem Terrain füllt
+• Regler für Spurbreite und Aufdeck-Radius
+• In neun Sprachen
+• Kein Konto, keine Werbung, kein Tracking. Deine Spaziergänge bleiben auf deinem Telefon.
+
+Kartendaten © OpenStreetMap-Mitwirkende, Kacheln von OpenFreeMap.</pre></div>
+<div class="field" data-lang="fr"><div class="fhead"><span class="flabel">Description · Français</span><span class="count">1422/4000</span><button class="copy" data-target="f33">Copy</button></div><pre id="f33" class="val tall">Marche, et la carte prend vie.
+
+Giro est un jeu de marche pour ta ville. Chaque rue que tu parcours est peinte sur une carte en 3D, façon ville miniature. Tout ce que tu n’as pas encore marché reste en argile blanche. Plus tu explores, plus la ville apparaît.
+
+CHAQUE MARCHE EST UN STAGE
+Enregistre une marche avec GO!, ou importe celles que ta montre a déjà sauvegardées. Chaque marche reçoit un rang de S à C selon le terrain inédit qu’elle a couvert.
+
+UNE VILLE EN JOUETS
+Des immeubles pastel aux fenêtres allumées, des arbres dans les parcs et le long des rues, et des monuments que tu reconnaîtras : la tour de Tokyo, la Skytree, les torii des sanctuaires, les pagodes des temples. Tout en blanc jusqu’à ton passage.
+
+SPOTS
+Appuie longuement sur la carte pour marquer un lieu. Les marches qui passent à côté le collectent.
+
+FONCTIONNE HORS LIGNE
+Télécharge ta ville une fois. La carte est instantanée, fonctionne sans réseau, et chaque marche porte le nom de l’endroit où elle a eu lieu, tiré de la carte hors ligne.
+
+FAIT POUR LES MARCHEURS
+• Importe toutes tes marches depuis Apple Santé d’un coup
+• Chrono en direct, allure et un anneau qui se remplit de terrain inédit
+• Réglages pour l’épaisseur du tracé et le rayon de découverte
+• En neuf langues
+• Pas de compte, pas de pub, pas de pistage. Tes marches restent sur ton téléphone.
+
+Données cartographiques © contributeurs OpenStreetMap, tuiles par OpenFreeMap.</pre></div>
+<div class="field" data-lang="es"><div class="fhead"><span class="flabel">Description · Español (México / España)</span><span class="count">1302/4000</span><button class="copy" data-target="f34">Copy</button></div><pre id="f34" class="val tall">Camina y el mapa cobra vida.
+
+Giro es un juego de caminar para tu ciudad. Cada calle que recorres se pinta en un mapa 3D de ciudad de juguete. Todo lo que aún no has caminado sigue en arcilla blanca. Cuanto más exploras, más ciudad aparece.
+
+CADA PASEO ES UNA FASE
+Graba un paseo con GO! o importa los que tu reloj ya guardó. Cada paseo recibe un rango de S a C según cuánto terreno nuevo cubrió.
+
+UNA CIUDAD DE JUGUETE
+Edificios pastel con ventanas encendidas, árboles en los parques y las calles, y monumentos que reconocerás: la Torre de Tokio, la Skytree, torii en los santuarios, pagodas en los templos. Todo en blanco hasta que pasas por delante.
+
+SPOTS
+Mantén pulsado el mapa para marcar un lugar. Los paseos que pasan por ahí lo recogen.
+
+FUNCIONA SIN CONEXIÓN
+Descarga tu ciudad una vez. El mapa es instantáneo y funciona sin cobertura, y cada paseo lleva el nombre del lugar donde ocurrió, sacado del mapa sin conexión.
+
+HECHO PARA CAMINANTES
+• Importa todos tus paseos de Apple Salud de una vez
+• Cronómetro en vivo, ritmo y un anillo que se llena de terreno nuevo
+• Ajustes de grosor del trazo y radio de descubrimiento
+• En nueve idiomas
+• Sin cuenta, sin anuncios, sin rastreo. Tus paseos se quedan en tu teléfono.
+
+Datos del mapa © colaboradores de OpenStreetMap, teselas de OpenFreeMap.</pre></div>
+<div class="field" data-lang="it"><div class="fhead"><span class="flabel">Description · Italiano</span><span class="count">1401/4000</span><button class="copy" data-target="f35">Copy</button></div><pre id="f35" class="val tall">Cammina, e la mappa prende vita.
+
+Giro è un gioco di camminate per la tua città. Ogni strada che percorri viene dipinta su una mappa 3D a forma di città giocattolo. Tutto ciò che non hai ancora camminato resta argilla bianca. Più esplori, più città appare.
+
+OGNI PASSEGGIATA È UNO STAGE
+Registra una passeggiata con GO! o importa quelle che il tuo orologio ha già salvato. Ogni passeggiata riceve un rango da S a C per quanto terreno nuovo ha coperto.
+
+UNA CITTÀ DI GIOCATTOLI
+Palazzi pastello con le finestre accese, alberi nei parchi e lungo le strade, e monumenti che riconoscerai: la Tokyo Tower, lo Skytree, i torii dei santuari, le pagode dei templi. Tutto bianco finché non ci passi davanti.
+
+SPOT
+Tieni premuta la mappa per segnare un luogo. Le passeggiate che ci passano accanto lo raccolgono.
+
+FUNZIONA OFFLINE
+Scarica la tua città una volta sola. La mappa è istantanea, funziona senza segnale, e ogni passeggiata porta il nome del luogo in cui è avvenuta, preso dalla mappa offline.
+
+FATTO PER CHI CAMMINA
+• Importa tutte le passeggiate da Apple Salute in un colpo solo
+• Timer dal vivo, passo e un anello che si riempie di terreno nuovo
+• Regolazioni per spessore della traccia e raggio di scoperta
+• In nove lingue
+• Nessun account, nessuna pubblicità, nessun tracciamento. Le tue passeggiate restano sul tuo telefono.
+
+Dati della mappa © collaboratori OpenStreetMap, tile di OpenFreeMap.</pre></div>
+<div class="field" data-lang="pt"><div class="fhead"><span class="flabel">Description · Português (Brasil / Portugal)</span><span class="count">1319/4000</span><button class="copy" data-target="f36">Copy</button></div><pre id="f36" class="val tall">Caminhe, e o mapa ganha vida.
+
+Giro é um jogo de caminhada para a sua cidade. Cada rua que você percorre é pintada em um mapa 3D de cidade de brinquedo. Tudo o que você ainda não caminhou fica em argila branca. Quanto mais você explora, mais cidade aparece.
+
+CADA CAMINHADA É UMA FASE
+Grave uma caminhada com GO! ou importe as que seu relógio já salvou. Cada caminhada recebe um rank de S a C conforme quanto terreno novo cobriu.
+
+UMA CIDADE DE BRINQUEDO
+Prédios em tons pastel com janelas acesas, árvores nos parques e ao longo das ruas, e marcos que você vai reconhecer: a Torre de Tóquio, a Skytree, torii nos santuários, pagodes nos templos. Tudo branco até você passar por ali.
+
+SPOTS
+Toque e segure no mapa para marcar um lugar. As caminhadas que passam por ele o coletam.
+
+FUNCIONA OFFLINE
+Baixe sua cidade uma vez. O mapa é instantâneo, funciona sem sinal, e cada caminhada recebe o nome do lugar onde aconteceu, direto do mapa offline.
+
+FEITO PARA QUEM CAMINHA
+• Importe todas as caminhadas do Apple Saúde de uma vez
+• Cronômetro ao vivo, ritmo e um anel que se enche de terreno novo
+• Ajustes de espessura da trilha e raio de descoberta
+• Em nove idiomas
+• Sem conta, sem anúncios, sem rastreamento. Suas caminhadas ficam no seu telefone.
+
+Dados do mapa © colaboradores do OpenStreetMap, tiles do OpenFreeMap.</pre></div>
+</div>
+<div class="pair">
+<div class="field" data-lang="en"><div class="fhead"><span class="flabel">Keywords · English (U.S.)</span><span class="count">92/100 · 92 bytes</span><button class="copy" data-target="f37">Copy</button></div><pre id="f37" class="val">walk,walking,explore,fog of war,map,tokyo,steps,pedometer,hike,stroll,gps,tracker,route,game</pre></div>
+<div class="field" data-lang="ja"><div class="fhead"><span class="flabel">Keywords · 日本語</span><span class="count">33/100 · 77 bytes</span><button class="copy" data-target="f38">Copy</button></div><pre id="f38" class="val">散歩,ウォーキング,探索,地図,東京,歩数,街歩き,ゲーム,GPS</pre></div>
+<div class="field" data-lang="zh"><div class="fhead"><span class="flabel">Keywords · 简体中文</span><span class="count">27/100 · 59 bytes</span><button class="copy" data-target="f39">Copy</button></div><pre id="f39" class="val">散步,步行,探索,地图,东京,步数,记录,游戏,GPS</pre></div>
+<div class="field" data-lang="ko"><div class="fhead"><span class="flabel">Keywords · 한국어</span><span class="count">27/100 · 59 bytes</span><button class="copy" data-target="f40">Copy</button></div><pre id="f40" class="val">산책,걷기,탐험,지도,도쿄,걸음,기록,게임,GPS</pre></div>
+<div class="field" data-lang="de"><div class="fhead"><span class="flabel">Keywords · Deutsch</span><span class="count">92/100 · 92 bytes</span><button class="copy" data-target="f41">Copy</button></div><pre id="f41" class="val">spaziergang,gehen,laufen,erkunden,karte,tokio,schritte,wandern,gps,tracker,route,spiel,stadt</pre></div>
+<div class="field" data-lang="fr"><div class="fhead"><span class="flabel">Keywords · Français</span><span class="count">87/100 · 89 bytes</span><button class="copy" data-target="f42">Copy</button></div><pre id="f42" class="val">marche,marcher,explorer,carte,tokyo,pas,podomètre,balade,randonnée,gps,trajet,jeu,ville</pre></div>
+<div class="field" data-lang="es"><div class="fhead"><span class="flabel">Keywords · Español (México / España)</span><span class="count">88/100 · 89 bytes</span><button class="copy" data-target="f43">Copy</button></div><pre id="f43" class="val">caminar,paseo,explorar,mapa,tokio,pasos,podómetro,senderismo,gps,ruta,juego,ciudad,andar</pre></div>
+<div class="field" data-lang="it"><div class="fhead"><span class="flabel">Keywords · Italiano</span><span class="count">94/100 · 95 bytes</span><button class="copy" data-target="f44">Copy</button></div><pre id="f44" class="val">camminare,passeggiata,esplorare,mappa,tokyo,passi,contapassi,trekking,gps,percorso,gioco,città</pre></div>
+<div class="field" data-lang="pt"><div class="fhead"><span class="flabel">Keywords · Português (Brasil / Portugal)</span><span class="count">90/100 · 92 bytes</span><button class="copy" data-target="f45">Copy</button></div><pre id="f45" class="val">caminhar,caminhada,explorar,mapa,tóquio,passos,pedômetro,trilha,gps,rota,jogo,cidade,andar</pre></div>
+</div>
+<div class="pair">
+<div class="field" data-lang="en"><div class="fhead"><span class="flabel">What&#x27;s New in This Version · English (U.S.)</span><span class="count">549/4000</span><button class="copy" data-target="f46">Copy</button></div><pre id="f46" class="val tall">Version 1.1.0
+• The toy city: 3D pastel buildings with lit windows, trees in parks and along streets, and landmark models at your spots. White clay until you walk there.
+• Offline maps: download your city once, the map is instant and works without a signal.
+• Every walk shows where it happened, named from the offline map.
+• Import every walk from Apple Health in one go.
+• Sliders for trail width and reveal radius.
+• Demo data to preview a fully explored Tokyo.
+• Now in Japanese, Chinese, Korean, German, French, Spanish, Italian and Portuguese.</pre></div>
+<div class="field" data-lang="ja"><div class="fhead"><span class="flabel">What&#x27;s New in This Version · 日本語</span><span class="count">265/4000</span><button class="copy" data-target="f47">Copy</button></div><pre id="f47" class="val">バージョン1.1.0
+・トイシティ：窓に明かりのともる3Dのパステル建物、公園や通りの木々、スポットのランドマーク模型。歩くまでは白い模型のまま。
+・オフライン地図：街を一度ダウンロードすれば、地図は即座に表示され電波なしでも使えます。
+・散歩に歩いた場所の名前が、オフライン地図からつきます。
+・ヘルスケアからすべての散歩を一括インポート。
+・軌跡の太さと探索範囲のスライダー。
+・ほぼ探索し尽くした東京をプレビューできるデモデータ。
+・日本語、中国語、韓国語、ドイツ語、フランス語、スペイン語、イタリア語、ポルトガル語に対応。</pre></div>
+<div class="field" data-lang="zh"><div class="fhead"><span class="flabel">What&#x27;s New in This Version · 简体中文</span><span class="count">215/4000</span><button class="copy" data-target="f48">Copy</button></div><pre id="f48" class="val">版本 1.1.0
+• 玩具城市：亮着窗灯的 3D 粉彩建筑、公园和街道旁的树木，以及地点处的地标模型。走过之前都是白色模型。
+• 离线地图：下载一次你的城市，地图即刻显示，没有信号也能用。
+• 每次散步都会从离线地图得到它发生地点的名字。
+• 一次导入 Apple 健康中的所有散步。
+• 轨迹宽度与探索半径的滑块。
+• 演示数据：预览几乎完全探索的东京。
+• 现已支持日语、中文、韩语、德语、法语、西班牙语、意大利语和葡萄牙语。</pre></div>
+<div class="field" data-lang="ko"><div class="fhead"><span class="flabel">What&#x27;s New in This Version · 한국어</span><span class="count">296/4000</span><button class="copy" data-target="f49">Copy</button></div><pre id="f49" class="val">버전 1.1.0
+• 장난감 도시: 창에 불이 켜진 3D 파스텔 건물, 공원과 거리의 나무, 스팟의 랜드마크 모형. 걷기 전까지는 하얀 모형.
+• 오프라인 지도: 도시를 한 번만 다운로드하면 지도가 바로 뜨고 신호 없이도 작동합니다.
+• 모든 산책에 오프라인 지도에서 가져온 장소 이름이 붙습니다.
+• Apple 건강의 모든 산책을 한 번에 가져오기.
+• 경로 두께와 탐험 반경 슬라이더.
+• 거의 다 탐험한 도쿄를 미리 보는 데모 데이터.
+• 일본어, 중국어, 한국어, 독일어, 프랑스어, 스페인어, 이탈리아어, 포르투갈어 지원.</pre></div>
+<div class="field" data-lang="de"><div class="fhead"><span class="flabel">What&#x27;s New in This Version · Deutsch</span><span class="count">651/4000</span><button class="copy" data-target="f50">Copy</button></div><pre id="f50" class="val tall">Version 1.1.0
+• Die Spielzeugstadt: pastellfarbene 3D-Häuser mit erleuchteten Fenstern, Bäume in Parks und an Straßen und Wahrzeichen-Modelle an deinen Spots. Weißer Ton, bis du dort warst.
+• Offline-Karten: lade deine Stadt einmal, die Karte ist sofort da und funktioniert ohne Empfang.
+• Jeder Spaziergang zeigt, wo er stattfand, benannt aus der Offline-Karte.
+• Jeden Spaziergang aus Apple Health auf einmal importieren.
+• Regler für Spurbreite und Aufdeck-Radius.
+• Demo-Daten für eine Vorschau auf ein fast vollständig erkundetes Tokio.
+• Jetzt auf Japanisch, Chinesisch, Koreanisch, Deutsch, Französisch, Spanisch, Italienisch und Portugiesisch.</pre></div>
+<div class="field" data-lang="fr"><div class="fhead"><span class="flabel">What&#x27;s New in This Version · Français</span><span class="count">666/4000</span><button class="copy" data-target="f51">Copy</button></div><pre id="f51" class="val tall">Version 1.1.0
+• La ville miniature : immeubles 3D pastel aux fenêtres allumées, arbres dans les parcs et le long des rues, et modèles de monuments à tes spots. En argile blanche jusqu’à ton passage.
+• Cartes hors ligne : télécharge ta ville une fois, la carte est instantanée et fonctionne sans réseau.
+• Chaque marche indique où elle a eu lieu, d’après la carte hors ligne.
+• Importe toutes tes marches depuis Apple Santé d’un coup.
+• Réglages pour l’épaisseur du tracé et le rayon de découverte.
+• Données de démo pour prévisualiser un Tokyo presque entièrement exploré.
+• Désormais en japonais, chinois, coréen, allemand, français, espagnol, italien et portugais.</pre></div>
+<div class="field" data-lang="es"><div class="fhead"><span class="flabel">What&#x27;s New in This Version · Español (México / España)</span><span class="count">616/4000</span><button class="copy" data-target="f52">Copy</button></div><pre id="f52" class="val tall">Versión 1.1.0
+• La ciudad de juguete: edificios 3D pastel con ventanas encendidas, árboles en parques y calles, y modelos de monumentos en tus spots. Arcilla blanca hasta que pasas.
+• Mapas sin conexión: descarga tu ciudad una vez, el mapa es instantáneo y funciona sin cobertura.
+• Cada paseo muestra dónde ocurrió, con el nombre sacado del mapa sin conexión.
+• Importa todos tus paseos de Apple Salud de una vez.
+• Ajustes de grosor del trazo y radio de descubrimiento.
+• Datos de demo para ver un Tokio casi totalmente explorado.
+• Ahora en japonés, chino, coreano, alemán, francés, español, italiano y portugués.</pre></div>
+<div class="field" data-lang="it"><div class="fhead"><span class="flabel">What&#x27;s New in This Version · Italiano</span><span class="count">654/4000</span><button class="copy" data-target="f53">Copy</button></div><pre id="f53" class="val tall">Versione 1.1.0
+• La città giocattolo: palazzi 3D pastello con finestre accese, alberi nei parchi e lungo le strade, e modelli di monumenti ai tuoi spot. Argilla bianca finché non ci passi.
+• Mappe offline: scarica la tua città una volta, la mappa è istantanea e funziona senza segnale.
+• Ogni passeggiata mostra dove è avvenuta, con il nome preso dalla mappa offline.
+• Importa tutte le passeggiate da Apple Salute in un colpo solo.
+• Regolazioni per spessore della traccia e raggio di scoperta.
+• Dati demo per un’anteprima di una Tokyo quasi del tutto esplorata.
+• Ora in giapponese, cinese, coreano, tedesco, francese, spagnolo, italiano e portoghese.</pre></div>
+<div class="field" data-lang="pt"><div class="fhead"><span class="flabel">What&#x27;s New in This Version · Português (Brasil / Portugal)</span><span class="count">593/4000</span><button class="copy" data-target="f54">Copy</button></div><pre id="f54" class="val tall">Versão 1.1.0
+• A cidade de brinquedo: prédios 3D em tons pastel com janelas acesas, árvores em parques e ruas, e modelos de marcos nos seus spots. Argila branca até você passar.
+• Mapas offline: baixe sua cidade uma vez, o mapa é instantâneo e funciona sem sinal.
+• Cada caminhada mostra onde aconteceu, com o nome vindo do mapa offline.
+• Importe todas as caminhadas do Apple Saúde de uma vez.
+• Ajustes de espessura da trilha e raio de descoberta.
+• Dados de demo para ver uma Tóquio quase toda explorada.
+• Agora em japonês, chinês, coreano, alemão, francês, espanhol, italiano e português.</pre></div>
+</div>
+<p class="note">Promotional text can be changed any time without a review. Keywords: no spaces after commas; words already in the name and subtitle are left out because Apple indexes those anyway. The Japanese, Chinese and Korean keyword lines stay under 100 bytes as well as 100 characters.</p>
+</section>
+
+<section id="shots"><h2><span class="num">05</span>Screenshots</h2><p class="lead">Upload in this order for every localization. iPhone 6.9" · 1290 × 2796; App Store Connect scales it down for every other iPhone. Made by <code>node tool/store_kit.mjs</code> from the web preview in each language (so the map is MapLibre GL JS; the phone renders the same scenes with the GPU toy city, 3D buildings and trees).</p>
+<div data-lang="en"><h4>English (U.S.)</h4><div class="gallery">
+<figure><a href="shots/en/iphone/01_city.png" target="_blank" rel="noopener"><img loading="lazy" src="shots/en/iphone/01_city.png" alt="UNCOVER YOUR CITY"></a><figcaption>01 · UNCOVER YOUR CITY<br><span class="en">Uncover your city</span></figcaption></figure>
+<figure><a href="shots/en/iphone/02_stages.png" target="_blank" rel="noopener"><img loading="lazy" src="shots/en/iphone/02_stages.png" alt="EVERY WALK IS A STAGE"></a><figcaption>02 · EVERY WALK IS A STAGE<br><span class="en">Every walk is a stage</span></figcaption></figure>
+<figure><a href="shots/en/iphone/03_clear.png" target="_blank" rel="noopener"><img loading="lazy" src="shots/en/iphone/03_clear.png" alt="STAGE CLEAR!"></a><figcaption>03 · STAGE CLEAR!<br><span class="en">Stage clear!</span></figcaption></figure>
+<figure><a href="shots/en/iphone/04_spots.png" target="_blank" rel="noopener"><img loading="lazy" src="shots/en/iphone/04_spots.png" alt="MARK YOUR SPOTS"></a><figcaption>04 · MARK YOUR SPOTS<br><span class="en">Mark your spots</span></figcaption></figure>
+<figure><a href="shots/en/iphone/05_record.png" target="_blank" rel="noopener"><img loading="lazy" src="shots/en/iphone/05_record.png" alt="GO! RECORD A WALK"></a><figcaption>05 · GO! RECORD A WALK<br><span class="en">GO! Record a walk</span></figcaption></figure>
+<figure><a href="shots/en/iphone/06_offline.png" target="_blank" rel="noopener"><img loading="lazy" src="shots/en/iphone/06_offline.png" alt="YOUR CITY, OFFLINE"></a><figcaption>06 · YOUR CITY, OFFLINE<br><span class="en">Your city, offline</span></figcaption></figure>
+</div></div>
+<div data-lang="ja"><h4>日本語</h4><div class="gallery">
+<figure><a href="shots/ja/iphone/01_city.png" target="_blank" rel="noopener"><img loading="lazy" src="shots/ja/iphone/01_city.png" alt="街を 塗りつぶせ"></a><figcaption>01 · 街を 塗りつぶせ<br><span class="en">Uncover your city</span></figcaption></figure>
+<figure><a href="shots/ja/iphone/02_stages.png" target="_blank" rel="noopener"><img loading="lazy" src="shots/ja/iphone/02_stages.png" alt="散歩はすべて ステージ"></a><figcaption>02 · 散歩はすべて ステージ<br><span class="en">Every walk is a stage</span></figcaption></figure>
+<figure><a href="shots/ja/iphone/03_clear.png" target="_blank" rel="noopener"><img loading="lazy" src="shots/ja/iphone/03_clear.png" alt="ステージ クリア!"></a><figcaption>03 · ステージ クリア!<br><span class="en">Stage clear!</span></figcaption></figure>
+<figure><a href="shots/ja/iphone/04_spots.png" target="_blank" rel="noopener"><img loading="lazy" src="shots/ja/iphone/04_spots.png" alt="お気に入りを スポットに"></a><figcaption>04 · お気に入りを スポットに<br><span class="en">Mark your spots</span></figcaption></figure>
+<figure><a href="shots/ja/iphone/05_record.png" target="_blank" rel="noopener"><img loading="lazy" src="shots/ja/iphone/05_record.png" alt="GO! 散歩を記録"></a><figcaption>05 · GO! 散歩を記録<br><span class="en">GO! Record a walk</span></figcaption></figure>
+<figure><a href="shots/ja/iphone/06_offline.png" target="_blank" rel="noopener"><img loading="lazy" src="shots/ja/iphone/06_offline.png" alt="街まるごと オフライン"></a><figcaption>06 · 街まるごと オフライン<br><span class="en">Your city, offline</span></figcaption></figure>
+</div></div>
+<div data-lang="zh"><h4>简体中文</h4><div class="gallery">
+<figure><a href="shots/zh/iphone/01_city.png" target="_blank" rel="noopener"><img loading="lazy" src="shots/zh/iphone/01_city.png" alt="走出 你的城市"></a><figcaption>01 · 走出 你的城市<br><span class="en">Uncover your city</span></figcaption></figure>
+<figure><a href="shots/zh/iphone/02_stages.png" target="_blank" rel="noopener"><img loading="lazy" src="shots/zh/iphone/02_stages.png" alt="每次散步 都是一关"></a><figcaption>02 · 每次散步 都是一关<br><span class="en">Every walk is a stage</span></figcaption></figure>
+<figure><a href="shots/zh/iphone/03_clear.png" target="_blank" rel="noopener"><img loading="lazy" src="shots/zh/iphone/03_clear.png" alt="关卡 通过!"></a><figcaption>03 · 关卡 通过!<br><span class="en">Stage clear!</span></figcaption></figure>
+<figure><a href="shots/zh/iphone/04_spots.png" target="_blank" rel="noopener"><img loading="lazy" src="shots/zh/iphone/04_spots.png" alt="标记 你的地点"></a><figcaption>04 · 标记 你的地点<br><span class="en">Mark your spots</span></figcaption></figure>
+<figure><a href="shots/zh/iphone/05_record.png" target="_blank" rel="noopener"><img loading="lazy" src="shots/zh/iphone/05_record.png" alt="GO! 记录散步"></a><figcaption>05 · GO! 记录散步<br><span class="en">GO! Record a walk</span></figcaption></figure>
+<figure><a href="shots/zh/iphone/06_offline.png" target="_blank" rel="noopener"><img loading="lazy" src="shots/zh/iphone/06_offline.png" alt="整座城市 离线可用"></a><figcaption>06 · 整座城市 离线可用<br><span class="en">Your city, offline</span></figcaption></figure>
+</div></div>
+<div data-lang="ko"><h4>한국어</h4><div class="gallery">
+<figure><a href="shots/ko/iphone/01_city.png" target="_blank" rel="noopener"><img loading="lazy" src="shots/ko/iphone/01_city.png" alt="도시를 밝혀라"></a><figcaption>01 · 도시를 밝혀라<br><span class="en">Uncover your city</span></figcaption></figure>
+<figure><a href="shots/ko/iphone/02_stages.png" target="_blank" rel="noopener"><img loading="lazy" src="shots/ko/iphone/02_stages.png" alt="모든 산책이 스테이지"></a><figcaption>02 · 모든 산책이 스테이지<br><span class="en">Every walk is a stage</span></figcaption></figure>
+<figure><a href="shots/ko/iphone/03_clear.png" target="_blank" rel="noopener"><img loading="lazy" src="shots/ko/iphone/03_clear.png" alt="스테이지 클리어!"></a><figcaption>03 · 스테이지 클리어!<br><span class="en">Stage clear!</span></figcaption></figure>
+<figure><a href="shots/ko/iphone/04_spots.png" target="_blank" rel="noopener"><img loading="lazy" src="shots/ko/iphone/04_spots.png" alt="나만의 스팟 표시"></a><figcaption>04 · 나만의 스팟 표시<br><span class="en">Mark your spots</span></figcaption></figure>
+<figure><a href="shots/ko/iphone/05_record.png" target="_blank" rel="noopener"><img loading="lazy" src="shots/ko/iphone/05_record.png" alt="GO! 산책 기록"></a><figcaption>05 · GO! 산책 기록<br><span class="en">GO! Record a walk</span></figcaption></figure>
+<figure><a href="shots/ko/iphone/06_offline.png" target="_blank" rel="noopener"><img loading="lazy" src="shots/ko/iphone/06_offline.png" alt="도시 전체를 오프라인으로"></a><figcaption>06 · 도시 전체를 오프라인으로<br><span class="en">Your city, offline</span></figcaption></figure>
+</div></div>
+<div data-lang="de"><h4>Deutsch</h4><div class="gallery">
+<figure><a href="shots/de/iphone/01_city.png" target="_blank" rel="noopener"><img loading="lazy" src="shots/de/iphone/01_city.png" alt="DECK DEINE STADT AUF"></a><figcaption>01 · DECK DEINE STADT AUF<br><span class="en">Uncover your city</span></figcaption></figure>
+<figure><a href="shots/de/iphone/02_stages.png" target="_blank" rel="noopener"><img loading="lazy" src="shots/de/iphone/02_stages.png" alt="JEDER WEG IST EINE STAGE"></a><figcaption>02 · JEDER WEG IST EINE STAGE<br><span class="en">Every walk is a stage</span></figcaption></figure>
+<figure><a href="shots/de/iphone/03_clear.png" target="_blank" rel="noopener"><img loading="lazy" src="shots/de/iphone/03_clear.png" alt="STAGE CLEAR!"></a><figcaption>03 · STAGE CLEAR!<br><span class="en">Stage clear!</span></figcaption></figure>
+<figure><a href="shots/de/iphone/04_spots.png" target="_blank" rel="noopener"><img loading="lazy" src="shots/de/iphone/04_spots.png" alt="MARKIERE DEINE SPOTS"></a><figcaption>04 · MARKIERE DEINE SPOTS<br><span class="en">Mark your spots</span></figcaption></figure>
+<figure><a href="shots/de/iphone/05_record.png" target="_blank" rel="noopener"><img loading="lazy" src="shots/de/iphone/05_record.png" alt="GO! WEG AUFNEHMEN"></a><figcaption>05 · GO! WEG AUFNEHMEN<br><span class="en">GO! Record a walk</span></figcaption></figure>
+<figure><a href="shots/de/iphone/06_offline.png" target="_blank" rel="noopener"><img loading="lazy" src="shots/de/iphone/06_offline.png" alt="DEINE STADT, OFFLINE"></a><figcaption>06 · DEINE STADT, OFFLINE<br><span class="en">Your city, offline</span></figcaption></figure>
+</div></div>
+<div data-lang="fr"><h4>Français</h4><div class="gallery">
+<figure><a href="shots/fr/iphone/01_city.png" target="_blank" rel="noopener"><img loading="lazy" src="shots/fr/iphone/01_city.png" alt="DÉVOILE TA VILLE"></a><figcaption>01 · DÉVOILE TA VILLE<br><span class="en">Uncover your city</span></figcaption></figure>
+<figure><a href="shots/fr/iphone/02_stages.png" target="_blank" rel="noopener"><img loading="lazy" src="shots/fr/iphone/02_stages.png" alt="CHAQUE MARCHE EST UN STAGE"></a><figcaption>02 · CHAQUE MARCHE EST UN STAGE<br><span class="en">Every walk is a stage</span></figcaption></figure>
+<figure><a href="shots/fr/iphone/03_clear.png" target="_blank" rel="noopener"><img loading="lazy" src="shots/fr/iphone/03_clear.png" alt="STAGE TERMINÉ !"></a><figcaption>03 · STAGE TERMINÉ !<br><span class="en">Stage clear!</span></figcaption></figure>
+<figure><a href="shots/fr/iphone/04_spots.png" target="_blank" rel="noopener"><img loading="lazy" src="shots/fr/iphone/04_spots.png" alt="MARQUE TES SPOTS"></a><figcaption>04 · MARQUE TES SPOTS<br><span class="en">Mark your spots</span></figcaption></figure>
+<figure><a href="shots/fr/iphone/05_record.png" target="_blank" rel="noopener"><img loading="lazy" src="shots/fr/iphone/05_record.png" alt="GO! ENREGISTRE"></a><figcaption>05 · GO! ENREGISTRE<br><span class="en">GO! Record a walk</span></figcaption></figure>
+<figure><a href="shots/fr/iphone/06_offline.png" target="_blank" rel="noopener"><img loading="lazy" src="shots/fr/iphone/06_offline.png" alt="TA VILLE, HORS LIGNE"></a><figcaption>06 · TA VILLE, HORS LIGNE<br><span class="en">Your city, offline</span></figcaption></figure>
+</div></div>
+<div data-lang="es"><h4>Español (México / España)</h4><div class="gallery">
+<figure><a href="shots/es/iphone/01_city.png" target="_blank" rel="noopener"><img loading="lazy" src="shots/es/iphone/01_city.png" alt="DESCUBRE TU CIUDAD"></a><figcaption>01 · DESCUBRE TU CIUDAD<br><span class="en">Uncover your city</span></figcaption></figure>
+<figure><a href="shots/es/iphone/02_stages.png" target="_blank" rel="noopener"><img loading="lazy" src="shots/es/iphone/02_stages.png" alt="CADA PASEO ES UNA FASE"></a><figcaption>02 · CADA PASEO ES UNA FASE<br><span class="en">Every walk is a stage</span></figcaption></figure>
+<figure><a href="shots/es/iphone/03_clear.png" target="_blank" rel="noopener"><img loading="lazy" src="shots/es/iphone/03_clear.png" alt="¡FASE SUPERADA!"></a><figcaption>03 · ¡FASE SUPERADA!<br><span class="en">Stage clear!</span></figcaption></figure>
+<figure><a href="shots/es/iphone/04_spots.png" target="_blank" rel="noopener"><img loading="lazy" src="shots/es/iphone/04_spots.png" alt="MARCA TUS SPOTS"></a><figcaption>04 · MARCA TUS SPOTS<br><span class="en">Mark your spots</span></figcaption></figure>
+<figure><a href="shots/es/iphone/05_record.png" target="_blank" rel="noopener"><img loading="lazy" src="shots/es/iphone/05_record.png" alt="GO! GRABA UN PASEO"></a><figcaption>05 · GO! GRABA UN PASEO<br><span class="en">GO! Record a walk</span></figcaption></figure>
+<figure><a href="shots/es/iphone/06_offline.png" target="_blank" rel="noopener"><img loading="lazy" src="shots/es/iphone/06_offline.png" alt="TU CIUDAD, SIN CONEXIÓN"></a><figcaption>06 · TU CIUDAD, SIN CONEXIÓN<br><span class="en">Your city, offline</span></figcaption></figure>
+</div></div>
+<div data-lang="it"><h4>Italiano</h4><div class="gallery">
+<figure><a href="shots/it/iphone/01_city.png" target="_blank" rel="noopener"><img loading="lazy" src="shots/it/iphone/01_city.png" alt="SCOPRI LA TUA CITTÀ"></a><figcaption>01 · SCOPRI LA TUA CITTÀ<br><span class="en">Uncover your city</span></figcaption></figure>
+<figure><a href="shots/it/iphone/02_stages.png" target="_blank" rel="noopener"><img loading="lazy" src="shots/it/iphone/02_stages.png" alt="OGNI PASSEGGIATA È UNO STAGE"></a><figcaption>02 · OGNI PASSEGGIATA È UNO STAGE<br><span class="en">Every walk is a stage</span></figcaption></figure>
+<figure><a href="shots/it/iphone/03_clear.png" target="_blank" rel="noopener"><img loading="lazy" src="shots/it/iphone/03_clear.png" alt="STAGE COMPLETATO!"></a><figcaption>03 · STAGE COMPLETATO!<br><span class="en">Stage clear!</span></figcaption></figure>
+<figure><a href="shots/it/iphone/04_spots.png" target="_blank" rel="noopener"><img loading="lazy" src="shots/it/iphone/04_spots.png" alt="SEGNA I TUOI SPOT"></a><figcaption>04 · SEGNA I TUOI SPOT<br><span class="en">Mark your spots</span></figcaption></figure>
+<figure><a href="shots/it/iphone/05_record.png" target="_blank" rel="noopener"><img loading="lazy" src="shots/it/iphone/05_record.png" alt="GO! REGISTRA"></a><figcaption>05 · GO! REGISTRA<br><span class="en">GO! Record a walk</span></figcaption></figure>
+<figure><a href="shots/it/iphone/06_offline.png" target="_blank" rel="noopener"><img loading="lazy" src="shots/it/iphone/06_offline.png" alt="LA TUA CITTÀ, OFFLINE"></a><figcaption>06 · LA TUA CITTÀ, OFFLINE<br><span class="en">Your city, offline</span></figcaption></figure>
+</div></div>
+<div data-lang="pt"><h4>Português (Brasil / Portugal)</h4><div class="gallery">
+<figure><a href="shots/pt/iphone/01_city.png" target="_blank" rel="noopener"><img loading="lazy" src="shots/pt/iphone/01_city.png" alt="DESCUBRA SUA CIDADE"></a><figcaption>01 · DESCUBRA SUA CIDADE<br><span class="en">Uncover your city</span></figcaption></figure>
+<figure><a href="shots/pt/iphone/02_stages.png" target="_blank" rel="noopener"><img loading="lazy" src="shots/pt/iphone/02_stages.png" alt="CADA CAMINHADA É UMA FASE"></a><figcaption>02 · CADA CAMINHADA É UMA FASE<br><span class="en">Every walk is a stage</span></figcaption></figure>
+<figure><a href="shots/pt/iphone/03_clear.png" target="_blank" rel="noopener"><img loading="lazy" src="shots/pt/iphone/03_clear.png" alt="FASE CONCLUÍDA!"></a><figcaption>03 · FASE CONCLUÍDA!<br><span class="en">Stage clear!</span></figcaption></figure>
+<figure><a href="shots/pt/iphone/04_spots.png" target="_blank" rel="noopener"><img loading="lazy" src="shots/pt/iphone/04_spots.png" alt="MARQUE SEUS SPOTS"></a><figcaption>04 · MARQUE SEUS SPOTS<br><span class="en">Mark your spots</span></figcaption></figure>
+<figure><a href="shots/pt/iphone/05_record.png" target="_blank" rel="noopener"><img loading="lazy" src="shots/pt/iphone/05_record.png" alt="GO! GRAVE UMA CAMINHADA"></a><figcaption>05 · GO! GRAVE UMA CAMINHADA<br><span class="en">GO! Record a walk</span></figcaption></figure>
+<figure><a href="shots/pt/iphone/06_offline.png" target="_blank" rel="noopener"><img loading="lazy" src="shots/pt/iphone/06_offline.png" alt="SUA CIDADE, OFFLINE"></a><figcaption>06 · SUA CIDADE, OFFLINE<br><span class="en">Your city, offline</span></figcaption></figure>
+</div></div>
+<p class="note">Spanish: upload the same set to Spanish (Mexico) and Spanish (Spain); Portuguese to Brazil and Portugal.</p>
+</section>
+
+<section id="privacy"><h2><span class="num">06</span>App Privacy</h2><p class="lead">App Store Connect › App Privacy › Get started.</p>
+<div class="tablewrap"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Do you or your third-party partners collect data from this app?</td><td><b>No, we do not collect data from this app</b> → label "Data Not Collected"</td></tr><tr><td>Why that is right</td><td>Walks, spots and settings are stored on the device (MMKV). HealthKit workouts are read to import walks and never leave the phone. Location is used only while recording. There is no account, no analytics SDK, no ads, no crash reporter. Map tiles come from OpenFreeMap over HTTPS; its servers see the IP address like any web request, which Apple does not count as collection by the developer.</td></tr><tr><td>Privacy Policy URL</td><td>Same URL as in section 01, in every localization</td></tr></tbody></table></div>
+</section>
+
+<section id="review"><h2><span class="num">07</span>App Review Information</h2><p class="lead">App Store Connect › iOS App › 1.1.0 › App Review Information.</p>
+<div class="tablewrap"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td>Sign-in required</td><td>No. There is no account.</td></tr><tr><td>Contact</td><td>Your name, phone and email (the reviewer calls only if something is unclear).</td></tr><tr><td>Notes</td><td><pre class="val" id="rn">Giro is a walking game: streets you walk are painted onto a 3D map, the rest stays white.
+
+HealthKit: the app reads walking workouts and their routes only to import past walks as "stages" (Import › Load workouts / Import everything). Nothing is written to Health and no Health data leaves the device.
+
+Location: used only while recording a walk (GO!), when-in-use authorization.
+
+To see the app with data on a review device without walking: open Options (the slider icon on the home screen) › Demo data › "Fill Tokyo". This loads generated walks and spots across Tokyo; "Remove demo data" takes them away again. "Download map area" stores the map tiles for offline use (free OpenFreeMap tiles, no account).</pre><button class="copy" data-target="rn" style="margin-top:8px">Copy notes</button></td></tr><tr><td>Attachment</td><td>Optional: a 20-second screen recording of GO! › walk › Stop › Stage clear, if the reviewer cannot walk.</td></tr></tbody></table></div>
+</section>
+</div>
+<div class="toast" id="toast">Copied</div>
+<script>
+const toast=document.getElementById('toast');let t;
+document.querySelectorAll('.copy').forEach(b=>b.addEventListener('click',async()=>{
+  const el=document.getElementById(b.dataset.target);
+  await navigator.clipboard.writeText(el.textContent);
+  b.classList.add('done');b.textContent='Copied';setTimeout(()=>{b.classList.remove('done');b.textContent=b.dataset.target==='rn'?'Copy notes':'Copy'},1200);
+  toast.classList.add('show');clearTimeout(t);t=setTimeout(()=>toast.classList.remove('show'),1200);
+}));
+const bar=document.querySelector('.langbar');
+function setLang(code){document.body.dataset.lang=code;bar.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x.dataset.set===code));try{localStorage.setItem('giro-kit-lang',code)}catch(e){}}
+bar.addEventListener('click',e=>{if(e.target.dataset.set)setLang(e.target.dataset.set)});
+let saved='all';try{saved=localStorage.getItem('giro-kit-lang')||'all'}catch(e){}
+setLang(saved);
+</script>
+</body>
+</html>
