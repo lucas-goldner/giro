@@ -1,0 +1,423 @@
+{
+  "@@locale": "de",
+  "back": "◀  ZURÜCK",
+  "cancel": "Abbrechen",
+  "kmUnit": "KM",
+  "kmUnitLower": "km",
+  "perKmUnit": "/km",
+  "zoneChip": "Zone 1 · Tokio",
+  "optionsSemantics": "Optionen",
+  "loadingMap": "KARTE LÄDT",
+  "loadingMapSemantics": "Karte lädt",
+  "spotMarkerSemantics": "Spot",
+  "distanceKm": "{km} km",
+  "@distanceKm": {
+    "placeholders": {
+      "km": {
+        "type": "String"
+      }
+    }
+  },
+  "distanceM": "{m} m",
+  "@distanceM": {
+    "placeholders": {
+      "m": {
+        "type": "int"
+      }
+    }
+  },
+  "durationHoursMinutes": "{hours}h {minutes}min",
+  "@durationHoursMinutes": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      },
+      "minutes": {
+        "type": "String"
+      }
+    }
+  },
+  "durationMinutes": "{minutes}min",
+  "@durationMinutes": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "walksCount": "{count, plural, =1{1 Spaziergang} other{{count} Spaziergänge}}",
+  "@walksCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "spotsCount": "{count, plural, =1{1 Spot} other{{count} Spots}}",
+  "@spotsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "placesCount": "{count, plural, =1{1 Ort} other{{count} Orte}}",
+  "@placesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dotSeparated": "{a} · {b} · {c}",
+  "@dotSeparated": {
+    "description": "Three facts joined by middle dots",
+    "placeholders": {
+      "a": {
+        "type": "String"
+      },
+      "b": {
+        "type": "String"
+      },
+      "c": {
+        "type": "String"
+      }
+    }
+  },
+  "dotSeparatedTwo": "{a} · {b}",
+  "@dotSeparatedTwo": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      },
+      "b": {
+        "type": "String"
+      }
+    }
+  },
+  "homeStageLabel": "STAGE: TOKIO · DIESE WOCHE",
+  "goLabel": "GO!",
+  "goCaption": "Spaziergang aufnehmen",
+  "goSemantics": "Aufnehmen",
+  "importLabel": "Import",
+  "importCaption": "Health",
+  "spotsLabel": "Spots",
+  "spotsSemantics": "Orte",
+  "stagesLabel": "Stages",
+  "stagesCaption": "Alle Spaziergänge",
+  "stageSelect": "STAGE-AUSWAHL",
+  "stagesTitle": "TOKIO · {count} STAGES",
+  "@stagesTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "stageCardTitle": "STAGE {day}",
+  "@stageCardTitle": {
+    "placeholders": {
+      "day": {
+        "type": "int"
+      }
+    }
+  },
+  "stageCardMeta": "{date} · {distance} · {duration} · {spots}",
+  "@stageCardMeta": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "distance": {
+        "type": "String"
+      },
+      "duration": {
+        "type": "String"
+      },
+      "spots": {
+        "type": "String"
+      }
+    }
+  },
+  "stageSemantics": "Stage {date}, {distance}, Rang {rank}",
+  "@stageSemantics": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "distance": {
+        "type": "String"
+      },
+      "rank": {
+        "type": "String"
+      }
+    }
+  },
+  "stageClear": "STAGE CLEAR!",
+  "timeLabel": "Zeit",
+  "paceLabel": "Tempo",
+  "paceValue": "{pace} /KM",
+  "@paceValue": {
+    "placeholders": {
+      "pace": {
+        "type": "String"
+      }
+    }
+  },
+  "newGroundLabel": "Neues Terrain",
+  "newGroundValue": "+{km} km · {percent}%",
+  "@newGroundValue": {
+    "placeholders": {
+      "km": {
+        "type": "String"
+      },
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "noSpotsOnStage": "KEINE SPOTS AUF DIESER STAGE",
+  "spotsHeader": "SPOTS",
+  "holdToMarkOne": "Karte gedrückt halten, um einen zu markieren.",
+  "backToStageSelect": "Zurück zur Stage-Auswahl",
+  "spotCollection": "SPOT-SAMMLUNG",
+  "spotsTitle": "{count} SPOTS",
+  "@spotsTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "spotsHint": "Karte gedrückt halten, um einen Spot zu markieren. Zum Entfernen wegwischen.",
+  "spotSemantics": "Spot {name}",
+  "@spotSemantics": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "spotMeta": "Markiert am {date} · besucht von {count, plural, =1{1 Spaziergang} other{{count} Spaziergängen}}",
+  "@spotMeta": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "markASpot": "SPOT MARKIEREN",
+  "markASpotBody": "Gib diesem Ort einen Namen. Spots gelten als besucht, wenn ein Spaziergang daran vorbeiführt.",
+  "spotNameHint": "Name des Spots",
+  "markIt": "Markieren!",
+  "addSemantics": "Hinzufügen",
+  "itemBoxHealth": "ITEM BOX · HEALTH",
+  "importWalks": "SPAZIERGÄNGE IMPORTIEREN",
+  "importIntro": "Spaziergänge von deiner Uhr werden zu Stages. Nur Routen unterstützter Uhren haben eine Karte.",
+  "healthDenied": "HEALTH-ZUGRIFF VERWEIGERT",
+  "healthDeniedBody": "Erlaube Giro in der Health-App, Trainings zu lesen, und komm dann zurück.",
+  "itemBoxClosed": "ITEM BOX GESCHLOSSEN",
+  "itemBoxClosedBody": "Lade deine letzten Spaziergänge und wähle die aus, die eine Stage wert sind, oder importiere alle je aufgezeichneten auf einmal.",
+  "loadWorkouts": "Trainings laden",
+  "loadWorkoutsCaption": "Die 25 neuesten",
+  "importEverything": "Alles importieren",
+  "importEverythingCaption": "Jeder Spaziergang in Health",
+  "importing": "IMPORT LÄUFT",
+  "importingBody": "{fetched} Spaziergänge aus Health gelesen, bisher {added} neue Stages.",
+  "@importingBody": {
+    "placeholders": {
+      "fetched": {
+        "type": "int"
+      },
+      "added": {
+        "type": "int"
+      }
+    }
+  },
+  "nothingHere": "NICHTS HIER",
+  "noWalksInHealth": "Keine Spaziergänge in Health gefunden.",
+  "importedLabel": "Importiert",
+  "newStagesCount": "{count, plural, =1{1 neue Stage} other{{count} neue Stages}}",
+  "@newStagesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "pickWalks": "Spaziergänge wählen",
+  "saveWalksCount": "{count, plural, =1{1 Spaziergang speichern} other{{count} Spaziergänge speichern}}",
+  "@saveWalksCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "tapToSelect": "Tippe auf ein Training, um es auszuwählen",
+  "addAsStages": "Als Stages hinzufügen",
+  "saveWalksSemantics": "Spaziergänge speichern",
+  "stageCleared": "STAGE GESCHAFFT",
+  "workoutSemantics": "Training vom {date}",
+  "@workoutSemantics": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "workoutImportedSemantics": "{date}, bereits eine Stage",
+  "@workoutImportedSemantics": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "actRecording": "AKT 2 · AUFNAHME",
+  "actClear": "AKT 2 · CLEAR",
+  "actReady": "AKT 2 · BEREIT",
+  "liveLabel": "LIVE",
+  "resultLabel": "ERGEBNIS",
+  "pressGoToStart": "GO DRÜCKEN ZUM START",
+  "metresNewUnit": "m neu",
+  "startRecording": "Aufnahme starten",
+  "stopLabel": "Stopp",
+  "finishStage": "Stage beenden",
+  "stopRecording": "Aufnahme stoppen",
+  "stageClearButton": "Stage clear!",
+  "viewResult": "Ergebnis ansehen",
+  "viewFinishedRecording": "Fertige Aufnahme ansehen",
+  "percentNewGround": "{percent} Prozent neues Terrain",
+  "@percentNewGround": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsLabel": "EINSTELLUNGEN",
+  "optionsTitle": "OPTIONEN",
+  "optionsIntro": "Stelle ein, wie deine Spaziergänge auf der Karte erscheinen. Änderungen gelten sofort überall.",
+  "trailWidth": "SPURBREITE",
+  "trailWidthCaption": "Wie dick jeder Spaziergang gezeichnet wird.",
+  "trailWidthSemantics": "Spurbreite",
+  "pxValue": "{value} px",
+  "@pxValue": {
+    "placeholders": {
+      "value": {
+        "type": "int"
+      }
+    }
+  },
+  "revealRadius": "AUFDECK-RADIUS",
+  "revealRadiusCaption": "Wie weit um einen Spaziergang der Nebel verschwindet. Größer heißt, die Stadt füllt sich schneller.",
+  "revealRadiusSemantics": "Aufdeck-Radius",
+  "mValue": "{value} m",
+  "@mValue": {
+    "placeholders": {
+      "value": {
+        "type": "int"
+      }
+    }
+  },
+  "resetToDefaults": "Auf Standard zurücksetzen",
+  "mapDataLabel": "KARTENDATEN",
+  "mapDataBody": "Lade deine Stadt einmal herunter, damit die Karte sofort da ist und ohne Verbindung funktioniert.",
+  "downloadMapArea": "Kartenbereich laden",
+  "offlineTiles": "Offline-Kacheln",
+  "demoData": "DEMO-DATEN",
+  "demoDataBody": "Vorschau auf ein fast vollständig erkundetes Tokio: {walks} generierte Spaziergänge in allen 23 Bezirken und {spots} berühmte Spots. Echte Spaziergänge bleiben unberührt.",
+  "@demoDataBody": {
+    "placeholders": {
+      "walks": {
+        "type": "int"
+      },
+      "spots": {
+        "type": "int"
+      }
+    }
+  },
+  "demoDataLoaded": "{count} Demo-Spaziergänge geladen. Entferne sie, um zu deinen eigenen Stages zurückzukehren.",
+  "@demoDataLoaded": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "fillTokyo": "Tokio füllen",
+  "fillTokyoCaption": "Generierte Spaziergänge und Spots",
+  "removeDemoData": "Demo-Daten entfernen",
+  "removeDemoDataCaption": "Echte Spaziergänge bleiben",
+  "skip": "ÜBERSPRINGEN",
+  "frameYourCity": "Deine Stadt einrahmen",
+  "mapDataOffline": "KARTENDATEN · OFFLINE",
+  "downloadArea": "BEREICH LADEN",
+  "downloadIntroFirstRun": "Speichere die Stadt, in der du gehst, damit die Karte sofort da ist und ohne Empfang funktioniert. Das geht später auch in den Optionen.",
+  "downloadIntro": "Kacheln im goldenen Rahmen werden auf diesem Telefon gespeichert.",
+  "downloadCancelCaption": "{done} / {total} Kacheln · {bytes}",
+  "@downloadCancelCaption": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      },
+      "bytes": {
+        "type": "String"
+      }
+    }
+  },
+  "tilesUnit": "Kacheln",
+  "downloadUnit": "Download",
+  "storedUnit": "gespeichert",
+  "doneLabel": "Fertig",
+  "areaStored": "Bereich gespeichert",
+  "tooBig": "Zu groß",
+  "zoomInALittle": "Etwas hineinzoomen",
+  "downloadAnotherArea": "Weiteren Bereich laden",
+  "downloadLabel": "Herunterladen",
+  "frameSmallerArea": "Kleineren Bereich einrahmen",
+  "zoomRangeCaption": "Zoom 0 bis 14 im Rahmen",
+  "downloadAreaSemantics": "Bereich laden",
+  "areasStored": "{count, plural, =1{1 Bereich gespeichert} other{{count} Bereiche gespeichert}}",
+  "@areasStored": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "clearMapData": "Kartendaten löschen",
+  "freesBytes": "Gibt {bytes} frei",
+  "@freesBytes": {
+    "placeholders": {
+      "bytes": {
+        "type": "String"
+      }
+    }
+  },
+  "downloading": "LÄDT HERUNTER",
+  "downloadProgressSemantics": "Download-Fortschritt",
+  "percentValue": "{percent} Prozent",
+  "@percentValue": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "areaName": "Bereich {number}",
+  "@areaName": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  }
+}

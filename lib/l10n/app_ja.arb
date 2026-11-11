@@ -1,0 +1,423 @@
+{
+  "@@locale": "ja",
+  "back": "◀  戻る",
+  "cancel": "キャンセル",
+  "kmUnit": "KM",
+  "kmUnitLower": "km",
+  "perKmUnit": "/km",
+  "zoneChip": "ゾーン1 · 東京",
+  "optionsSemantics": "オプション",
+  "loadingMap": "地図を読み込み中",
+  "loadingMapSemantics": "地図を読み込み中",
+  "spotMarkerSemantics": "スポット",
+  "distanceKm": "{km} km",
+  "@distanceKm": {
+    "placeholders": {
+      "km": {
+        "type": "String"
+      }
+    }
+  },
+  "distanceM": "{m} m",
+  "@distanceM": {
+    "placeholders": {
+      "m": {
+        "type": "int"
+      }
+    }
+  },
+  "durationHoursMinutes": "{hours}時間{minutes}分",
+  "@durationHoursMinutes": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      },
+      "minutes": {
+        "type": "String"
+      }
+    }
+  },
+  "durationMinutes": "{minutes}分",
+  "@durationMinutes": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "walksCount": "{count, plural, other{{count}回の散歩}}",
+  "@walksCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "spotsCount": "{count, plural, other{スポット{count}件}}",
+  "@spotsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "placesCount": "{count, plural, other{{count}か所}}",
+  "@placesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dotSeparated": "{a} · {b} · {c}",
+  "@dotSeparated": {
+    "description": "Three facts joined by middle dots",
+    "placeholders": {
+      "a": {
+        "type": "String"
+      },
+      "b": {
+        "type": "String"
+      },
+      "c": {
+        "type": "String"
+      }
+    }
+  },
+  "dotSeparatedTwo": "{a} · {b}",
+  "@dotSeparatedTwo": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      },
+      "b": {
+        "type": "String"
+      }
+    }
+  },
+  "homeStageLabel": "ステージ: 東京 · 今週",
+  "goLabel": "GO!",
+  "goCaption": "散歩を記録",
+  "goSemantics": "記録",
+  "importLabel": "インポート",
+  "importCaption": "ヘルスケア",
+  "spotsLabel": "スポット",
+  "spotsSemantics": "場所",
+  "stagesLabel": "ステージ",
+  "stagesCaption": "すべての散歩",
+  "stageSelect": "ステージセレクト",
+  "stagesTitle": "東京 · {count}ステージ",
+  "@stagesTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "stageCardTitle": "ステージ {day}",
+  "@stageCardTitle": {
+    "placeholders": {
+      "day": {
+        "type": "int"
+      }
+    }
+  },
+  "stageCardMeta": "{date} · {distance} · {duration} · {spots}",
+  "@stageCardMeta": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "distance": {
+        "type": "String"
+      },
+      "duration": {
+        "type": "String"
+      },
+      "spots": {
+        "type": "String"
+      }
+    }
+  },
+  "stageSemantics": "ステージ {date}、{distance}、ランク{rank}",
+  "@stageSemantics": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "distance": {
+        "type": "String"
+      },
+      "rank": {
+        "type": "String"
+      }
+    }
+  },
+  "stageClear": "ステージクリア!",
+  "timeLabel": "時間",
+  "paceLabel": "ペース",
+  "paceValue": "{pace} /KM",
+  "@paceValue": {
+    "placeholders": {
+      "pace": {
+        "type": "String"
+      }
+    }
+  },
+  "newGroundLabel": "新しい道",
+  "newGroundValue": "+{km} km · {percent}%",
+  "@newGroundValue": {
+    "placeholders": {
+      "km": {
+        "type": "String"
+      },
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "noSpotsOnStage": "このステージにスポットはありません",
+  "spotsHeader": "スポット",
+  "holdToMarkOne": "地図を長押しして登録できます。",
+  "backToStageSelect": "ステージセレクトへ戻る",
+  "spotCollection": "スポットコレクション",
+  "spotsTitle": "スポット {count}件",
+  "@spotsTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "spotsHint": "地図を長押しでスポットを登録。スワイプで削除できます。",
+  "spotSemantics": "スポット {name}",
+  "@spotSemantics": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "spotMeta": "{date}に登録 · {count, plural, other{{count}回の散歩}}で訪問",
+  "@spotMeta": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "markASpot": "スポットを登録",
+  "markASpotBody": "この場所に名前をつけましょう。近くを通った散歩がスポットを訪問したことになります。",
+  "spotNameHint": "スポット名",
+  "markIt": "登録!",
+  "addSemantics": "追加",
+  "itemBoxHealth": "アイテムボックス · ヘルスケア",
+  "importWalks": "散歩をインポート",
+  "importIntro": "ウォッチで記録した散歩がステージになります。対応ウォッチのルートのみ地図付きです。",
+  "healthDenied": "ヘルスケアへのアクセスが拒否されました",
+  "healthDeniedBody": "ヘルスケアアプリでGiroにワークアウトの読み取りを許可してから戻ってきてください。",
+  "itemBoxClosed": "アイテムボックスは閉じています",
+  "itemBoxClosedBody": "最近の散歩を読み込んでステージにしたいものを選ぶか、記録したすべての散歩を一度にインポートします。",
+  "loadWorkouts": "ワークアウトを読み込む",
+  "loadWorkoutsCaption": "最新の25件",
+  "importEverything": "すべてインポート",
+  "importEverythingCaption": "ヘルスケアの全散歩",
+  "importing": "インポート中",
+  "importingBody": "ヘルスケアから{fetched}件を読み込み、新しいステージは{added}件。",
+  "@importingBody": {
+    "placeholders": {
+      "fetched": {
+        "type": "int"
+      },
+      "added": {
+        "type": "int"
+      }
+    }
+  },
+  "nothingHere": "何もありません",
+  "noWalksInHealth": "ヘルスケアに散歩が見つかりません。",
+  "importedLabel": "インポート済み",
+  "newStagesCount": "{count, plural, other{新しいステージ{count}件}}",
+  "@newStagesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "pickWalks": "散歩を選ぶ",
+  "saveWalksCount": "{count, plural, other{{count}件を保存}}",
+  "@saveWalksCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "tapToSelect": "タップして選択",
+  "addAsStages": "ステージとして追加",
+  "saveWalksSemantics": "散歩を保存",
+  "stageCleared": "ステージクリア済み",
+  "workoutSemantics": "{date}のワークアウト",
+  "@workoutSemantics": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "workoutImportedSemantics": "{date}、ステージ登録済み",
+  "@workoutImportedSemantics": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "actRecording": "ACT 2 · 記録中",
+  "actClear": "ACT 2 · クリア",
+  "actReady": "ACT 2 · 準備完了",
+  "liveLabel": "ライブ",
+  "resultLabel": "リザルト",
+  "pressGoToStart": "GOを押してスタート",
+  "metresNewUnit": "m 新規",
+  "startRecording": "記録を開始",
+  "stopLabel": "ストップ",
+  "finishStage": "ステージ終了",
+  "stopRecording": "記録を停止",
+  "stageClearButton": "ステージクリア!",
+  "viewResult": "結果を見る",
+  "viewFinishedRecording": "記録結果を見る",
+  "percentNewGround": "新しい道 {percent}パーセント",
+  "@percentNewGround": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsLabel": "設定",
+  "optionsTitle": "オプション",
+  "optionsIntro": "地図での散歩の見え方を調整します。変更はすぐにすべてに反映されます。",
+  "trailWidth": "軌跡の太さ",
+  "trailWidthCaption": "散歩の線の太さ。",
+  "trailWidthSemantics": "軌跡の太さ",
+  "pxValue": "{value} px",
+  "@pxValue": {
+    "placeholders": {
+      "value": {
+        "type": "int"
+      }
+    }
+  },
+  "revealRadius": "探索範囲",
+  "revealRadiusCaption": "散歩の周りでどこまで霧が晴れるか。大きいほど街が早く埋まります。",
+  "revealRadiusSemantics": "探索範囲",
+  "mValue": "{value} m",
+  "@mValue": {
+    "placeholders": {
+      "value": {
+        "type": "int"
+      }
+    }
+  },
+  "resetToDefaults": "初期設定に戻す",
+  "mapDataLabel": "地図データ",
+  "mapDataBody": "街を一度ダウンロードすれば、地図は即座に表示されオフラインでも使えます。",
+  "downloadMapArea": "地図エリアをダウンロード",
+  "offlineTiles": "オフラインタイル",
+  "demoData": "デモデータ",
+  "demoDataBody": "ほぼ探索し尽くした東京をプレビュー: 23区すべてに{walks}件の生成散歩と{spots}件の有名スポット。実際の散歩はそのままです。",
+  "@demoDataBody": {
+    "placeholders": {
+      "walks": {
+        "type": "int"
+      },
+      "spots": {
+        "type": "int"
+      }
+    }
+  },
+  "demoDataLoaded": "デモ散歩{count}件を読み込み中。削除すると自分のステージに戻ります。",
+  "@demoDataLoaded": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "fillTokyo": "東京を埋める",
+  "fillTokyoCaption": "生成した散歩とスポット",
+  "removeDemoData": "デモデータを削除",
+  "removeDemoDataCaption": "実際の散歩は残ります",
+  "skip": "スキップ",
+  "frameYourCity": "街を枠に収める",
+  "mapDataOffline": "地図データ · オフライン",
+  "downloadArea": "エリアをダウンロード",
+  "downloadIntroFirstRun": "歩く街を保存すると、地図が即座に表示され電波がなくても使えます。あとでオプションからも設定できます。",
+  "downloadIntro": "金色の枠内のタイルがこの端末に保存されます。",
+  "downloadCancelCaption": "{done} / {total} タイル · {bytes}",
+  "@downloadCancelCaption": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      },
+      "bytes": {
+        "type": "String"
+      }
+    }
+  },
+  "tilesUnit": "タイル",
+  "downloadUnit": "ダウンロード",
+  "storedUnit": "保存済み",
+  "doneLabel": "完了",
+  "areaStored": "エリアを保存しました",
+  "tooBig": "大きすぎます",
+  "zoomInALittle": "少しズームイン",
+  "downloadAnotherArea": "別のエリアをダウンロード",
+  "downloadLabel": "ダウンロード",
+  "frameSmallerArea": "もっと狭い範囲にしてください",
+  "zoomRangeCaption": "枠内のズーム0〜14",
+  "downloadAreaSemantics": "エリアをダウンロード",
+  "areasStored": "{count, plural, other{{count}エリアを保存済み}}",
+  "@areasStored": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "clearMapData": "地図データを削除",
+  "freesBytes": "{bytes}を解放",
+  "@freesBytes": {
+    "placeholders": {
+      "bytes": {
+        "type": "String"
+      }
+    }
+  },
+  "downloading": "ダウンロード中",
+  "downloadProgressSemantics": "ダウンロードの進行状況",
+  "percentValue": "{percent}パーセント",
+  "@percentValue": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "areaName": "エリア {number}",
+  "@areaName": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  }
+}

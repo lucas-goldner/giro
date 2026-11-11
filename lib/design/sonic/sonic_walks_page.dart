@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:giro/core/cubit/poi_cubit.dart';
 import 'package:giro/core/cubit/walk_routes_cubit.dart';
 import 'package:giro/core/extensions.dart';
+import 'package:giro/core/l10n.dart';
 import 'package:giro/core/model/walk_route.dart';
 import 'package:giro/core/router.dart';
 import 'package:giro/design/shared/place_line.dart';
@@ -23,7 +24,7 @@ class SonicWalksPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final routes = context.watch<WalkRoutesCubit>().state.sortedRoutes;
     final pois = context.watch<PoiCubit>().state.pois;
-    final km = SonicTheme.kilometres(routes.totalDistanceMeters);
+    final l10n = context.l10n;
     // One spatial index for every rank; the cards only look up their own.
     final explored = ExploredIndex.cached(routes);
 
@@ -46,7 +47,7 @@ class SonicWalksPage extends StatelessWidget {
                       children: [
                         SonicHudChip(
                           onTap: context.navigator.pop,
-                          child: const Text('◀  BACK'),
+                          child: Text(l10n.back),
                         ),
                         const SizedBox(width: 12),
                         Expanded(
@@ -54,7 +55,7 @@ class SonicWalksPage extends StatelessWidget {
                             fit: BoxFit.scaleDown,
                             alignment: Alignment.centerRight,
                             child: Text(
-                              'STAGE SELECT',
+                              l10n.stageSelect,
                               style: SonicTheme.label.copyWith(
                                 color: SonicTheme.gold,
                               ),
@@ -68,15 +69,17 @@ class SonicWalksPage extends StatelessWidget {
                       fit: BoxFit.scaleDown,
                       alignment: Alignment.centerLeft,
                       child: SonicHudText(
-                        'TOKYO · ${routes.length} STAGES',
+                        l10n.stagesTitle(routes.length),
                         size: 34,
                       ),
                     ),
                     const SizedBox(height: 6),
                     Text(
-                      '$km km · '
-                      '${formatDuration(routes.totalDuration)} · '
-                      '${pois.length} spots',
+                      l10n.dotSeparated(
+                        context.distance(routes.totalDistanceMeters),
+                        context.walkDuration(routes.totalDuration),
+                        l10n.spotsCount(pois.length),
+                      ),
                       style: SonicTheme.body,
                     ),
                   ],
@@ -111,9 +114,9 @@ class SonicWalksPage extends StatelessWidget {
       floatingActionButton: SizedBox(
         width: 130,
         child: SonicButton(
-          label: 'GO!',
-          caption: 'Record a walk',
-          semanticsLabel: 'Record',
+          label: l10n.goLabel,
+          caption: l10n.goCaption,
+          semanticsLabel: l10n.goSemantics,
           color: SonicTheme.red,
           shadow: SonicTheme.redDeep,
           fontSize: 26,
@@ -138,13 +141,18 @@ class _StageCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final date = route.startDate.toLocalizedString(context);
-    final meta =
-        '$date · ${route.distanceLabel} · ${route.durationLabel} · '
-        '$spots spot${spots == 1 ? '' : 's'}';
+    final distance = context.distance(route.distanceMeters);
+    final meta = l10n.stageCardMeta(
+      date,
+      distance,
+      context.walkDuration(route.duration),
+      l10n.spotsCount(spots),
+    );
     return Semantics(
       button: true,
-      label: 'Stage $date, ${route.distanceLabel}, rank $rank',
+      label: l10n.stageSemantics(date, distance, rank),
       child: ExcludeSemantics(
         child: Material(
           color: Colors.transparent,
@@ -188,7 +196,7 @@ class _StageCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'STAGE ${route.startDate.day}',
+                          l10n.stageCardTitle(route.startDate.day),
                           style: const TextStyle(
                             fontFamily: SonicTheme.font,
                             fontWeight: FontWeight.w800,

@@ -13,10 +13,6 @@ extension WalkRouteStats on WalkRoute {
     return total;
   }
 
-  String get distanceLabel => formatDistance(distanceMeters);
-
-  String get durationLabel => formatDuration(duration);
-
   /// Metres from [point] to the nearest sampled coordinate of the walk.
   double distanceTo(LatLng point) => coordinates
       .map((coordinate) => _haversine(coordinate, point))
@@ -29,18 +25,6 @@ extension WalkRoutesStats on Iterable<WalkRoute> {
 
   Duration get totalDuration =>
       fold(Duration.zero, (sum, route) => sum + route.duration);
-}
-
-String formatDistance(double meters) => meters >= 1000
-    ? '${(meters / 1000).toStringAsFixed(1)} km'
-    : '${meters.round()} m';
-
-String formatDuration(Duration duration) {
-  final hours = duration.inHours;
-  final minutes = duration.inMinutes.remainder(60);
-  return hours > 0
-      ? '${hours}h ${minutes.toString().padLeft(2, '0')}m'
-      : '${minutes}m';
 }
 
 double _haversine(LatLng a, LatLng b) {

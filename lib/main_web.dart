@@ -13,8 +13,9 @@ import 'package:giro/web_mocks/web_mock_deps.dart';
 /// MMKV -> in-memory repositories, HealthKit -> canned workouts,
 /// geolocator -> a simulated walk. The map is the real Google Maps
 /// JavaScript map (see `web/index.html`); append `?map=mock` to use the
-/// canvas-drawn mock instead, and `?style=material` for Material page
-/// transitions.
+/// canvas-drawn mock instead, `?style=material` for Material page
+/// transitions, and `?lang=ja` (or any supported code) to preview a
+/// language regardless of the browser's.
 void main() {
   FlavorConfig(flavor: Flavor.dev, name: 'Giro Web');
   PlatformStyle.forceCupertino =
@@ -29,5 +30,11 @@ void main() {
     // Keeps the semantics tree on so browser automation
     // (tool/web_screenshots.mjs) can find buttons by their labels.
     ..ensureSemantics();
-  runApp(const GiroApp(loadDeps: loadWebMockDeps));
+  final lang = Uri.base.queryParameters['lang'];
+  runApp(
+    GiroApp(
+      loadDeps: loadWebMockDeps,
+      locale: lang == null || lang.isEmpty ? null : Locale(lang),
+    ),
+  );
 }

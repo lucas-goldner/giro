@@ -46,3 +46,4 @@ app.*.map.json
 
 # Compiled by hook/build.dart from shaders/.
 /assets/shaderbundles/*.shaderbundle
+untranslated.json

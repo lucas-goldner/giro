@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:giro/core/cubit/map_settings_cubit.dart';
 import 'package:giro/core/cubit/walk_routes_cubit.dart';
 import 'package:giro/core/extensions.dart';
+import 'package:giro/core/l10n.dart';
 import 'package:giro/core/model/walk_route.dart';
 import 'package:giro/core/repository/walk_routes_repo.dart';
 import 'package:giro/core/router.dart';
@@ -96,6 +97,7 @@ class _SonicRecordState extends State<_SonicRecord> {
             : explored.isNotEmpty
             ? explored.first.coordinates.last
             : SonicMap.tokyo;
+        final l10n = context.l10n;
 
         return Scaffold(
           backgroundColor: SonicTheme.navy,
@@ -141,10 +143,10 @@ class _SonicRecordState extends State<_SonicRecord> {
                                 children: [
                                   Text(
                                     state.isRecording
-                                        ? 'ACT 2 · RECORDING'
+                                        ? l10n.actRecording
                                         : state.isFinished
-                                        ? 'ACT 2 · CLEAR'
-                                        : 'ACT 2 · READY',
+                                        ? l10n.actClear
+                                        : l10n.actReady,
                                     style: SonicTheme.label.copyWith(
                                       color: SonicTheme.white,
                                       shadows: const [
@@ -174,7 +176,7 @@ class _SonicRecordState extends State<_SonicRecord> {
                           padding: const EdgeInsets.only(top: 118),
                           child: SonicHudChip(
                             onTap: context.navigator.pop,
-                            child: const Text('◀  BACK'),
+                            child: Text(l10n.back),
                           ),
                         ),
                       ),
@@ -188,10 +190,10 @@ class _SonicRecordState extends State<_SonicRecord> {
                   children: [
                     Text(
                       state.isRecording
-                          ? 'LIVE'
+                          ? l10n.liveLabel
                           : state.isFinished
-                          ? 'RESULT'
-                          : 'PRESS GO TO START',
+                          ? l10n.resultLabel
+                          : l10n.pressGoToStart,
                       style: SonicTheme.label,
                     ),
                     const SizedBox(height: 10),
@@ -199,19 +201,22 @@ class _SonicRecordState extends State<_SonicRecord> {
                       children: [
                         Expanded(
                           child: SonicStat(
-                            value: SonicTheme.kilometres(live.distanceMeters),
-                            label: 'km',
+                            value: context.km(live.distanceMeters),
+                            label: l10n.kmUnitLower,
                           ),
                         ),
                         const SizedBox(width: 8),
                         Expanded(
-                          child: SonicStat(value: _pace(live), label: '/km'),
+                          child: SonicStat(
+                            value: _pace(live),
+                            label: l10n.perKmUnit,
+                          ),
                         ),
                         const SizedBox(width: 8),
                         Expanded(
                           child: SonicStat(
                             value: '+${newMeters.round()}',
-                            label: 'm new',
+                            label: l10n.metresNewUnit,
                           ),
                         ),
                       ],
@@ -221,9 +226,9 @@ class _SonicRecordState extends State<_SonicRecord> {
                       width: double.infinity,
                       child: switch (state) {
                         RecordWalkInitial() => SonicButton(
-                          label: 'GO!',
-                          caption: 'Start recording',
-                          semanticsLabel: 'Start recording',
+                          label: l10n.goLabel,
+                          caption: l10n.startRecording,
+                          semanticsLabel: l10n.startRecording,
                           color: SonicTheme.red,
                           shadow: SonicTheme.redDeep,
                           fontSize: 26,
@@ -231,9 +236,9 @@ class _SonicRecordState extends State<_SonicRecord> {
                           onTap: context.read<RecordWalkCubit>().startRecording,
                         ),
                         RecordWalkRecording() => SonicButton(
-                          label: 'Stop',
-                          caption: 'Finish stage',
-                          semanticsLabel: 'Stop recording',
+                          label: l10n.stopLabel,
+                          caption: l10n.finishStage,
+                          semanticsLabel: l10n.stopRecording,
                           color: SonicTheme.red,
                           shadow: SonicTheme.redDeep,
                           fontSize: 24,
@@ -243,9 +248,9 @@ class _SonicRecordState extends State<_SonicRecord> {
                               .finishRecording,
                         ),
                         RecordWalkFinishedRecording() => SonicButton(
-                          label: 'Stage clear!',
-                          caption: 'View result',
-                          semanticsLabel: 'View finished recording',
+                          label: l10n.stageClearButton,
+                          caption: l10n.viewResult,
+                          semanticsLabel: l10n.viewFinishedRecording,
                           color: SonicTheme.gold,
                           shadow: SonicTheme.goldDeep,
                           fontSize: 22,
@@ -286,7 +291,7 @@ class _NewGroundGauge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Semantics(
-    label: '${(share * 100).round()} percent new ground',
+    label: context.l10n.percentNewGround((share * 100).round()),
     child: Container(
       width: 72,
       height: 72,

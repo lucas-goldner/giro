@@ -1,0 +1,423 @@
+{
+  "@@locale": "fr",
+  "back": "◀  RETOUR",
+  "cancel": "Annuler",
+  "kmUnit": "KM",
+  "kmUnitLower": "km",
+  "perKmUnit": "/km",
+  "zoneChip": "Zone 1 · Tokyo",
+  "optionsSemantics": "Options",
+  "loadingMap": "CHARGEMENT DE LA CARTE",
+  "loadingMapSemantics": "Chargement de la carte",
+  "spotMarkerSemantics": "Spot",
+  "distanceKm": "{km} km",
+  "@distanceKm": {
+    "placeholders": {
+      "km": {
+        "type": "String"
+      }
+    }
+  },
+  "distanceM": "{m} m",
+  "@distanceM": {
+    "placeholders": {
+      "m": {
+        "type": "int"
+      }
+    }
+  },
+  "durationHoursMinutes": "{hours}h {minutes}min",
+  "@durationHoursMinutes": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      },
+      "minutes": {
+        "type": "String"
+      }
+    }
+  },
+  "durationMinutes": "{minutes}min",
+  "@durationMinutes": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "walksCount": "{count, plural, =1{1 marche} other{{count} marches}}",
+  "@walksCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "spotsCount": "{count, plural, =1{1 spot} other{{count} spots}}",
+  "@spotsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "placesCount": "{count, plural, =1{1 lieu} other{{count} lieux}}",
+  "@placesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dotSeparated": "{a} · {b} · {c}",
+  "@dotSeparated": {
+    "description": "Three facts joined by middle dots",
+    "placeholders": {
+      "a": {
+        "type": "String"
+      },
+      "b": {
+        "type": "String"
+      },
+      "c": {
+        "type": "String"
+      }
+    }
+  },
+  "dotSeparatedTwo": "{a} · {b}",
+  "@dotSeparatedTwo": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      },
+      "b": {
+        "type": "String"
+      }
+    }
+  },
+  "homeStageLabel": "STAGE : TOKYO · CETTE SEMAINE",
+  "goLabel": "GO!",
+  "goCaption": "Enregistrer une marche",
+  "goSemantics": "Enregistrer",
+  "importLabel": "Importer",
+  "importCaption": "Santé",
+  "spotsLabel": "Spots",
+  "spotsSemantics": "Lieux",
+  "stagesLabel": "Stages",
+  "stagesCaption": "Toutes les marches",
+  "stageSelect": "CHOIX DU STAGE",
+  "stagesTitle": "TOKYO · {count} STAGES",
+  "@stagesTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "stageCardTitle": "STAGE {day}",
+  "@stageCardTitle": {
+    "placeholders": {
+      "day": {
+        "type": "int"
+      }
+    }
+  },
+  "stageCardMeta": "{date} · {distance} · {duration} · {spots}",
+  "@stageCardMeta": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "distance": {
+        "type": "String"
+      },
+      "duration": {
+        "type": "String"
+      },
+      "spots": {
+        "type": "String"
+      }
+    }
+  },
+  "stageSemantics": "Stage {date}, {distance}, rang {rank}",
+  "@stageSemantics": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "distance": {
+        "type": "String"
+      },
+      "rank": {
+        "type": "String"
+      }
+    }
+  },
+  "stageClear": "STAGE TERMINÉ !",
+  "timeLabel": "Temps",
+  "paceLabel": "Allure",
+  "paceValue": "{pace} /KM",
+  "@paceValue": {
+    "placeholders": {
+      "pace": {
+        "type": "String"
+      }
+    }
+  },
+  "newGroundLabel": "Terrain inédit",
+  "newGroundValue": "+{km} km · {percent} %",
+  "@newGroundValue": {
+    "placeholders": {
+      "km": {
+        "type": "String"
+      },
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "noSpotsOnStage": "AUCUN SPOT SUR CE STAGE",
+  "spotsHeader": "SPOTS",
+  "holdToMarkOne": "Appuyez longuement sur la carte pour en marquer un.",
+  "backToStageSelect": "Retour au choix du stage",
+  "spotCollection": "COLLECTION DE SPOTS",
+  "spotsTitle": "{count} SPOTS",
+  "@spotsTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "spotsHint": "Appuyez longuement sur la carte pour marquer un spot. Balayez-en un pour le retirer.",
+  "spotSemantics": "Spot {name}",
+  "@spotSemantics": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "spotMeta": "Marqué le {date} · visité par {count, plural, =1{1 marche} other{{count} marches}}",
+  "@spotMeta": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "markASpot": "MARQUER UN SPOT",
+  "markASpotBody": "Nommez ce lieu. Les spots sont visités par les marches qui passent à côté.",
+  "spotNameHint": "Nom du spot",
+  "markIt": "Marquer !",
+  "addSemantics": "Ajouter",
+  "itemBoxHealth": "ITEM BOX · SANTÉ",
+  "importWalks": "IMPORTER DES MARCHES",
+  "importIntro": "Les marches enregistrées par votre montre deviennent des stages. Seuls les parcours des montres compatibles ont une carte.",
+  "healthDenied": "ACCÈS À SANTÉ REFUSÉ",
+  "healthDeniedBody": "Autorisez Giro à lire les entraînements dans l’app Santé, puis revenez.",
+  "itemBoxClosed": "ITEM BOX FERMÉE",
+  "itemBoxClosedBody": "Chargez vos marches récentes pour choisir celles qui méritent un stage, ou importez toutes les marches jamais enregistrées d’un coup.",
+  "loadWorkouts": "Charger les entraînements",
+  "loadWorkoutsCaption": "Les 25 plus récents",
+  "importEverything": "Tout importer",
+  "importEverythingCaption": "Chaque marche dans Santé",
+  "importing": "IMPORTATION",
+  "importingBody": "{fetched} marches lues depuis Santé, {added} nouveaux stages pour l’instant.",
+  "@importingBody": {
+    "placeholders": {
+      "fetched": {
+        "type": "int"
+      },
+      "added": {
+        "type": "int"
+      }
+    }
+  },
+  "nothingHere": "RIEN ICI",
+  "noWalksInHealth": "Aucune marche trouvée dans Santé.",
+  "importedLabel": "Importé",
+  "newStagesCount": "{count, plural, =1{1 nouveau stage} other{{count} nouveaux stages}}",
+  "@newStagesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "pickWalks": "Choisir des marches",
+  "saveWalksCount": "{count, plural, =1{Enregistrer 1 marche} other{Enregistrer {count} marches}}",
+  "@saveWalksCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "tapToSelect": "Touchez un entraînement pour le sélectionner",
+  "addAsStages": "Ajouter comme stages",
+  "saveWalksSemantics": "Enregistrer les marches",
+  "stageCleared": "STAGE TERMINÉ",
+  "workoutSemantics": "Entraînement du {date}",
+  "@workoutSemantics": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "workoutImportedSemantics": "{date}, déjà un stage",
+  "@workoutImportedSemantics": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "actRecording": "ACTE 2 · ENREGISTREMENT",
+  "actClear": "ACTE 2 · TERMINÉ",
+  "actReady": "ACTE 2 · PRÊT",
+  "liveLabel": "EN DIRECT",
+  "resultLabel": "RÉSULTAT",
+  "pressGoToStart": "APPUYEZ SUR GO POUR COMMENCER",
+  "metresNewUnit": "m inédits",
+  "startRecording": "Démarrer l’enregistrement",
+  "stopLabel": "Stop",
+  "finishStage": "Terminer le stage",
+  "stopRecording": "Arrêter l’enregistrement",
+  "stageClearButton": "Stage terminé !",
+  "viewResult": "Voir le résultat",
+  "viewFinishedRecording": "Voir l’enregistrement terminé",
+  "percentNewGround": "{percent} pour cent de terrain inédit",
+  "@percentNewGround": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsLabel": "RÉGLAGES",
+  "optionsTitle": "OPTIONS",
+  "optionsIntro": "Réglez l’affichage de vos marches sur la carte. Les changements s’appliquent partout immédiatement.",
+  "trailWidth": "ÉPAISSEUR DU TRACÉ",
+  "trailWidthCaption": "Épaisseur de chaque marche dessinée.",
+  "trailWidthSemantics": "Épaisseur du tracé",
+  "pxValue": "{value} px",
+  "@pxValue": {
+    "placeholders": {
+      "value": {
+        "type": "int"
+      }
+    }
+  },
+  "revealRadius": "RAYON DE DÉCOUVERTE",
+  "revealRadiusCaption": "Jusqu’où le brouillard se lève autour d’une marche. Plus grand, la ville se remplit plus vite.",
+  "revealRadiusSemantics": "Rayon de découverte",
+  "mValue": "{value} m",
+  "@mValue": {
+    "placeholders": {
+      "value": {
+        "type": "int"
+      }
+    }
+  },
+  "resetToDefaults": "Rétablir les valeurs par défaut",
+  "mapDataLabel": "DONNÉES CARTO",
+  "mapDataBody": "Téléchargez votre ville une fois pour que la carte soit instantanée et fonctionne sans connexion.",
+  "downloadMapArea": "Télécharger une zone",
+  "offlineTiles": "Tuiles hors ligne",
+  "demoData": "DONNÉES DE DÉMO",
+  "demoDataBody": "Aperçu d’un Tokyo presque entièrement exploré : {walks} marches générées dans les 23 arrondissements et {spots} spots célèbres. Les vraies marches restent intactes.",
+  "@demoDataBody": {
+    "placeholders": {
+      "walks": {
+        "type": "int"
+      },
+      "spots": {
+        "type": "int"
+      }
+    }
+  },
+  "demoDataLoaded": "{count} marches de démo chargées. Retirez-les pour retrouver vos propres stages.",
+  "@demoDataLoaded": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "fillTokyo": "Remplir Tokyo",
+  "fillTokyoCaption": "Marches et spots générés",
+  "removeDemoData": "Retirer les données de démo",
+  "removeDemoDataCaption": "Conserve vos vraies marches",
+  "skip": "PASSER",
+  "frameYourCity": "Cadrez votre ville",
+  "mapDataOffline": "DONNÉES CARTO · HORS LIGNE",
+  "downloadArea": "TÉLÉCHARGER LA ZONE",
+  "downloadIntroFirstRun": "Stockez la ville où vous marchez pour que la carte soit instantanée et fonctionne sans réseau. Vous pourrez le faire plus tard dans les options.",
+  "downloadIntro": "Les tuiles dans le cadre doré sont stockées sur ce téléphone.",
+  "downloadCancelCaption": "{done} / {total} tuiles · {bytes}",
+  "@downloadCancelCaption": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      },
+      "bytes": {
+        "type": "String"
+      }
+    }
+  },
+  "tilesUnit": "tuiles",
+  "downloadUnit": "téléchargement",
+  "storedUnit": "stocké",
+  "doneLabel": "Terminé",
+  "areaStored": "Zone stockée",
+  "tooBig": "Trop grand",
+  "zoomInALittle": "Zoomez un peu",
+  "downloadAnotherArea": "Télécharger une autre zone",
+  "downloadLabel": "Télécharger",
+  "frameSmallerArea": "Cadrez une zone plus petite",
+  "zoomRangeCaption": "Zoom 0 à 14 dans le cadre",
+  "downloadAreaSemantics": "Télécharger la zone",
+  "areasStored": "{count, plural, =1{1 zone stockée} other{{count} zones stockées}}",
+  "@areasStored": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "clearMapData": "Effacer les données carto",
+  "freesBytes": "Libère {bytes}",
+  "@freesBytes": {
+    "placeholders": {
+      "bytes": {
+        "type": "String"
+      }
+    }
+  },
+  "downloading": "TÉLÉCHARGEMENT",
+  "downloadProgressSemantics": "Progression du téléchargement",
+  "percentValue": "{percent} pour cent",
+  "@percentValue": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "areaName": "Zone {number}",
+  "@areaName": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  }
+}

@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:giro/core/cubit/map_settings_cubit.dart';
 import 'package:giro/core/cubit/walk_routes_cubit.dart';
 import 'package:giro/core/extensions.dart';
+import 'package:giro/core/l10n.dart';
 import 'package:giro/core/map/explored_mask.dart';
 import 'package:giro/core/map/tile_store.dart';
 import 'package:giro/core/model/geo.dart';
@@ -87,7 +88,7 @@ class _SonicMapDownloadPageState extends State<SonicMapDownloadPage> {
       () => _progress = const DownloadProgress(done: 0, total: 1, bytes: 0),
     );
     _download = store
-        .download(bounds, name: 'Area ${store.regions.length + 1}')
+        .download(bounds, name: context.l10n.areaName(store.regions.length + 1))
         .listen(
           (progress) => setState(() => _progress = progress),
           onDone: () async {
@@ -141,6 +142,7 @@ class _SonicMapDownloadPageState extends State<SonicMapDownloadPage> {
     final progress = _progress;
     final downloading = _download != null;
     final finished = progress != null && progress.finished && !downloading;
+    final l10n = context.l10n;
 
     return Scaffold(
       backgroundColor: SonicTheme.navy,
@@ -190,15 +192,17 @@ class _SonicMapDownloadPageState extends State<SonicMapDownloadPage> {
                         children: [
                           SonicHudChip(
                             onTap: _leave,
-                            child: Text(widget.firstRun ? 'SKIP' : '◀  BACK'),
+                            child: Text(
+                              widget.firstRun ? l10n.skip : l10n.back,
+                            ),
                           ),
                           const SizedBox(width: 12),
-                          const Expanded(
+                          Expanded(
                             child: Align(
                               alignment: Alignment.centerRight,
                               child: FittedBox(
                                 fit: BoxFit.scaleDown,
-                                child: SonicChip('Frame your city'),
+                                child: SonicChip(l10n.frameYourCity),
                               ),
                             ),
                           ),
@@ -214,16 +218,14 @@ class _SonicMapDownloadPageState extends State<SonicMapDownloadPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text('MAP DATA · OFFLINE', style: SonicTheme.label),
+                Text(l10n.mapDataOffline, style: SonicTheme.label),
                 const SizedBox(height: 4),
-                const SonicHudText('DOWNLOAD AREA', size: 34),
+                SonicHudText(l10n.downloadArea, size: 34),
                 const SizedBox(height: 6),
                 Text(
                   widget.firstRun
-                      ? 'Store the city you walk in so the map is instant '
-                            'and works without a signal. You can do this later '
-                            'in Options.'
-                      : 'Tiles inside the gold frame are stored on this phone.',
+                      ? l10n.downloadIntroFirstRun
+                      : l10n.downloadIntro,
                   style: SonicTheme.body,
                 ),
                 const SizedBox(height: 12),
@@ -231,10 +233,12 @@ class _SonicMapDownloadPageState extends State<SonicMapDownloadPage> {
                   _ProgressBar(progress: progress),
                   const SizedBox(height: 10),
                   SonicButton(
-                    label: 'Cancel',
-                    caption:
-                        '${progress.done} / ${progress.total} tiles · '
-                        '${formatBytes(progress.bytes)}',
+                    label: l10n.cancel,
+                    caption: l10n.downloadCancelCaption(
+                      progress.done,
+                      progress.total,
+                      formatBytes(progress.bytes),
+                    ),
                     color: SonicTheme.red,
                     shadow: SonicTheme.redDeep,
                     height: 54,
@@ -246,7 +250,7 @@ class _SonicMapDownloadPageState extends State<SonicMapDownloadPage> {
                       Expanded(
                         child: SonicStat(
                           value: estimate == null ? '–' : '${estimate.tiles}',
-                          label: 'tiles',
+                          label: l10n.tilesUnit,
                         ),
                       ),
                       const SizedBox(width: 8),
@@ -255,42 +259,44 @@ class _SonicMapDownloadPageState extends State<SonicMapDownloadPage> {
                           value: estimate == null
                               ? '–'
                               : '~${formatBytes(estimate.bytes)}',
-                          label: 'download',
+                          label: l10n.downloadUnit,
                         ),
                       ),
                       const SizedBox(width: 8),
                       Expanded(
                         child: SonicStat(
                           value: formatBytes(_cachedBytes),
-                          label: 'stored',
+                          label: l10n.storedUnit,
                         ),
                       ),
                     ],
                   ),
                   const SizedBox(height: 10),
                   if (finished)
-                    const Padding(
-                      padding: EdgeInsets.only(bottom: 10),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 10),
                       child: SonicRow(
-                        label: 'Done',
-                        value: 'Area stored',
+                        label: l10n.doneLabel,
+                        value: l10n.areaStored,
                         gold: true,
                       ),
                     ),
                   if (estimate != null && estimate.tooLarge)
-                    const Padding(
-                      padding: EdgeInsets.only(bottom: 10),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 10),
                       child: SonicRow(
-                        label: 'Too big',
-                        value: 'Zoom in a little',
+                        label: l10n.tooBig,
+                        value: l10n.zoomInALittle,
                       ),
                     ),
                   SonicButton(
-                    label: finished ? 'Download another area' : 'Download',
+                    label: finished
+                        ? l10n.downloadAnotherArea
+                        : l10n.downloadLabel,
                     caption: estimate == null || estimate.tooLarge
-                        ? 'Frame a smaller area'
-                        : 'Zoom 0 to 14 inside the frame',
-                    semanticsLabel: 'Download area',
+                        ? l10n.frameSmallerArea
+                        : l10n.zoomRangeCaption,
+                    semanticsLabel: l10n.downloadAreaSemantics,
                     color: estimate == null || estimate.tooLarge
                         ? SonicTheme.blue
                         : SonicTheme.gold,
@@ -305,14 +311,13 @@ class _SonicMapDownloadPageState extends State<SonicMapDownloadPage> {
                   if (store.regions.isNotEmpty) ...[
                     const SizedBox(height: 10),
                     Text(
-                      '${store.regions.length} area'
-                      '${store.regions.length == 1 ? '' : 's'} stored',
+                      l10n.areasStored(store.regions.length),
                       style: SonicTheme.body,
                     ),
                     const SizedBox(height: 6),
                     SonicButton(
-                      label: 'Clear map data',
-                      caption: 'Frees ${formatBytes(_cachedBytes)}',
+                      label: l10n.clearMapData,
+                      caption: l10n.freesBytes(formatBytes(_cachedBytes)),
                       height: 46,
                       fontSize: 15,
                       onTap: _clear,
@@ -339,7 +344,9 @@ class _ProgressBar extends StatelessWidget {
     children: [
       Row(
         children: [
-          const Expanded(child: Text('DOWNLOADING', style: SonicTheme.label)),
+          Expanded(
+            child: Text(context.l10n.downloading, style: SonicTheme.label),
+          ),
           Text('${(progress.fraction * 100).round()}%', style: SonicTheme.stat),
         ],
       ),
@@ -349,8 +356,8 @@ class _ProgressBar extends StatelessWidget {
         child: SizedBox(
           height: 14,
           child: Semantics(
-            label: 'Download progress',
-            value: '${(progress.fraction * 100).round()} percent',
+            label: context.l10n.downloadProgressSemantics,
+            value: context.l10n.percentValue((progress.fraction * 100).round()),
             child: LinearProgressIndicator(
               value: progress.fraction,
               backgroundColor: SonicTheme.navyDeep,

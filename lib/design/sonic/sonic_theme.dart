@@ -43,8 +43,6 @@ abstract final class SonicTheme {
     height: 1,
   );
 
-  static String kilometres(double meters) => (meters / 1000).toStringAsFixed(1);
-
   static ThemeData get themeData => ThemeData(
     brightness: Brightness.dark,
     scaffoldBackgroundColor: navy,

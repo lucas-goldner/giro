@@ -38,6 +38,10 @@ explorations (Zenly × Apple and the Sonic concept itself) live in
 |---|---|---|
 | ![Demo home](docs/design/screenshots/11_demo_tokyo_home.png) | ![Demo city](docs/design/screenshots/12_demo_tokyo_city.png) | ![Demo stages](docs/design/screenshots/13_demo_tokyo_stages.png) |
 
+| Home in Japanese | Home in German |
+|---|---|
+| ![Home ja](docs/design/screenshots/17_home_ja.png) | ![Home de](docs/design/screenshots/18_home_de.png) |
+
 The PNGs are half-size copies of `tool/web_screenshots.mjs` output.
 
 ## Map
@@ -223,6 +227,31 @@ SDK's `impellerc` into `assets/shaderbundles/` at build time.
 Walk lines are only the full chosen width at street zoom (16+); they thin
 out from there and fade away below zoom 13.5, so at city scale an explored
 district reads as coloured city on white clay rather than a tangle of lines.
+
+## Languages
+
+Giro speaks English, Japanese, Chinese (Simplified), Korean, German,
+French, Spanish, Italian and Portuguese, following the device language
+(English when the device speaks something else; on iOS the per-app
+language setting works too, thanks to `CFBundleLocalizations`). Every
+string, every VoiceOver label and every unit lives in `lib/l10n/app_*.arb`;
+`flutter gen-l10n` builds `lib/generated/app_localizations.dart` from them
+(`flutter pub get` does it automatically). Screens read them through
+`context.l10n`, and `context.km`, `context.distance` and
+`context.walkDuration` format numbers the local way ("1868,0" in German,
+"2時間09分" in Japanese). Counts use ICU plurals, dates come from `intl`.
+
+The game vocabulary (stages, spots, ranks, GO!) is kept where it reads well
+and adapted where it does not: German and French keep "Stage", Spanish and
+Portuguese say "fase", Japanese ステージ and スポット, Chinese 关卡 and 地点.
+The Barlow Condensed HUD font has no CJK glyphs, so Japanese, Chinese and
+Korean fall back to the system font in headings.
+
+To add a language: copy `app_en.arb` to `app_<code>.arb`, translate the
+values (keep the `{placeholders}`), add the code to `CFBundleLocalizations`
+in `ios/Runner/Info.plist`, and run `flutter gen-l10n`. The locale test in
+`test/l10n/` fails if a file is missing a key. In the web preview,
+`?lang=ja` forces a language.
 
 ## Web preview
 

@@ -4,6 +4,7 @@ import 'package:giro/core/cubit/launchable_maps_cubit.dart';
 import 'package:giro/core/cubit/poi_cubit.dart';
 import 'package:giro/core/cubit/walk_routes_cubit.dart';
 import 'package:giro/core/extensions.dart';
+import 'package:giro/core/l10n.dart';
 import 'package:giro/core/model/poi.dart';
 import 'package:giro/design/shared/walk_stats.dart';
 import 'package:giro/design/sonic/sonic_theme.dart';
@@ -19,6 +20,7 @@ class SonicPlacesPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final pois = context.watch<PoiCubit>().state.pois;
     final routes = context.watch<WalkRoutesCubit>().state.routes;
+    final l10n = context.l10n;
 
     return Scaffold(
       backgroundColor: SonicTheme.navy,
@@ -39,7 +41,7 @@ class SonicPlacesPage extends StatelessWidget {
                       children: [
                         SonicHudChip(
                           onTap: context.navigator.pop,
-                          child: const Text('◀  BACK'),
+                          child: Text(l10n.back),
                         ),
                         const SizedBox(width: 12),
                         Expanded(
@@ -47,7 +49,7 @@ class SonicPlacesPage extends StatelessWidget {
                             fit: BoxFit.scaleDown,
                             alignment: Alignment.centerRight,
                             child: Text(
-                              'SPOT COLLECTION',
+                              l10n.spotCollection,
                               style: SonicTheme.label.copyWith(
                                 color: SonicTheme.gold,
                               ),
@@ -57,13 +59,9 @@ class SonicPlacesPage extends StatelessWidget {
                       ],
                     ),
                     const SizedBox(height: 10),
-                    SonicHudText('${pois.length} SPOTS', size: 34),
+                    SonicHudText(l10n.spotsTitle(pois.length), size: 34),
                     const SizedBox(height: 6),
-                    const Text(
-                      'Press and hold the map to mark a spot. Swipe one away '
-                      'to remove it.',
-                      style: SonicTheme.body,
-                    ),
+                    Text(l10n.spotsHint, style: SonicTheme.body),
                   ],
                 ),
               ),
@@ -120,7 +118,7 @@ class _SpotCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Semantics(
     button: true,
-    label: 'Spot ${poi.name}',
+    label: context.l10n.spotSemantics(poi.name),
     child: ExcludeSemantics(
       child: Material(
         color: Colors.transparent,
@@ -173,9 +171,10 @@ class _SpotCard extends StatelessWidget {
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        'Marked ${poi.createdAt.toLocalizedString(context)} · '
-                        'visited by $collectedBy '
-                        'walk${collectedBy == 1 ? '' : 's'}',
+                        context.l10n.spotMeta(
+                          poi.createdAt.toLocalizedString(context),
+                          collectedBy,
+                        ),
                         style: SonicTheme.body,
                       ),
                     ],

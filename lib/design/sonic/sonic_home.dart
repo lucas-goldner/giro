@@ -4,6 +4,7 @@ import 'package:giro/core/cubit/launchable_maps_cubit.dart';
 import 'package:giro/core/cubit/map_settings_cubit.dart';
 import 'package:giro/core/cubit/poi_cubit.dart';
 import 'package:giro/core/cubit/walk_routes_cubit.dart';
+import 'package:giro/core/l10n.dart';
 import 'package:giro/core/map/scenery/landmarks.dart';
 import 'package:giro/core/widgets/platform_map_view.dart';
 import 'package:giro/design/shared/walk_stats.dart';
@@ -33,6 +34,7 @@ class SonicHome extends StatelessWidget {
     final pois = context.watch<PoiCubit>().state.pois;
     final settings = context.watch<MapSettingsCubit>().state;
     final totalMeters = routes.totalDistanceMeters;
+    final l10n = context.l10n;
 
     return Scaffold(
       backgroundColor: SonicTheme.navy,
@@ -94,7 +96,7 @@ class SonicHome extends StatelessWidget {
                           SonicHudChip(
                             onTap: () => SonicActions.options(context),
                             child: Semantics(
-                              label: 'Options',
+                              label: l10n.optionsSemantics,
                               child: const Icon(
                                 Icons.tune_rounded,
                                 size: 18,
@@ -107,10 +109,10 @@ class SonicHome extends StatelessWidget {
                     ),
                   ),
                 ),
-                const Positioned(
+                Positioned(
                   left: 16,
                   bottom: 14,
-                  child: SonicChip('Zone 1 · Tokyo'),
+                  child: SonicChip(l10n.zoneChip),
                 ),
               ],
             ),
@@ -119,7 +121,7 @@ class SonicHome extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text('STAGE: TOKYO · THIS WEEK', style: SonicTheme.label),
+                Text(l10n.homeStageLabel, style: SonicTheme.label),
                 const SizedBox(height: 4),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.end,
@@ -133,16 +135,13 @@ class SonicHome extends StatelessWidget {
                           mainAxisSize: MainAxisSize.min,
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
-                            SonicHudText(
-                              SonicTheme.kilometres(totalMeters),
-                              size: 60,
-                            ),
+                            SonicHudText(context.km(totalMeters), size: 60),
                             const SizedBox(width: 10),
-                            const Padding(
-                              padding: EdgeInsets.only(bottom: 6),
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 6),
                               child: Text(
-                                'KM',
-                                style: TextStyle(
+                                l10n.kmUnit,
+                                style: const TextStyle(
                                   fontFamily: SonicTheme.font,
                                   fontWeight: FontWeight.w800,
                                   fontSize: 20,
@@ -161,9 +160,11 @@ class SonicHome extends StatelessWidget {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  '${routes.length} walks · '
-                  '${formatDuration(routes.totalDuration)} · '
-                  '${pois.length} spots',
+                  l10n.dotSeparated(
+                    l10n.walksCount(routes.length),
+                    context.walkDuration(routes.totalDuration),
+                    l10n.spotsCount(pois.length),
+                  ),
                   style: SonicTheme.body,
                 ),
                 const SizedBox(height: 14),
@@ -172,9 +173,9 @@ class SonicHome extends StatelessWidget {
                     Expanded(
                       flex: 16,
                       child: SonicButton(
-                        label: 'GO!',
-                        caption: 'Record a walk',
-                        semanticsLabel: 'Record',
+                        label: l10n.goLabel,
+                        caption: l10n.goCaption,
+                        semanticsLabel: l10n.goSemantics,
                         color: SonicTheme.red,
                         shadow: SonicTheme.redDeep,
                         fontSize: 26,
@@ -185,8 +186,8 @@ class SonicHome extends StatelessWidget {
                     Expanded(
                       flex: 10,
                       child: SonicButton(
-                        label: 'Import',
-                        caption: 'Health',
+                        label: l10n.importLabel,
+                        caption: l10n.importCaption,
                         onTap: () => SonicActions.import(context),
                       ),
                     ),
@@ -194,9 +195,9 @@ class SonicHome extends StatelessWidget {
                     Expanded(
                       flex: 10,
                       child: SonicButton(
-                        label: 'Spots',
-                        caption: '${pois.length} places',
-                        semanticsLabel: 'Places',
+                        label: l10n.spotsLabel,
+                        caption: l10n.placesCount(pois.length),
+                        semanticsLabel: l10n.spotsSemantics,
                         onTap: () => SonicActions.places(context),
                       ),
                     ),
@@ -204,9 +205,9 @@ class SonicHome extends StatelessWidget {
                     Expanded(
                       flex: 10,
                       child: SonicButton(
-                        label: 'Stages',
-                        caption: 'All walks',
-                        semanticsLabel: 'All walks',
+                        label: l10n.stagesLabel,
+                        caption: l10n.stagesCaption,
+                        semanticsLabel: l10n.stagesCaption,
                         onTap: () => SonicActions.walks(context),
                       ),
                     ),

@@ -214,6 +214,15 @@ async function main() {
     await snap(page, 'record_live');
     await tap(page, 'Stop recording');
     await snap(page, 'record_clear');
+
+    // The home in two other languages (the app follows the device locale;
+    // the web preview takes it from the URL).
+    for (const lang of ['ja', 'de']) {
+      await page.goto(url + (url.includes('?') ? '&' : '?') + 'lang=' + lang, { waitUntil: 'load' });
+      await page.getByRole('button').first().waitFor({ state: 'attached', timeout: 60000 });
+      await page.waitForTimeout(2500);
+      await snap(page, 'home_' + lang);
+    }
   } finally {
     await browser.close();
     server?.close();
