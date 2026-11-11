@@ -5,6 +5,7 @@ import 'package:giro/core/cubit/poi_cubit.dart';
 import 'package:giro/core/cubit/walk_routes_cubit.dart';
 import 'package:giro/core/demo/tokyo_demo_data.dart';
 import 'package:giro/core/extensions.dart';
+import 'package:giro/core/l10n.dart';
 import 'package:giro/core/model/map_settings.dart';
 import 'package:giro/design/sonic/sonic_actions.dart';
 import 'package:giro/design/sonic/sonic_theme.dart';
@@ -17,6 +18,7 @@ class SonicOptionsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final settings = context.watch<MapSettingsCubit>().state;
     final cubit = context.read<MapSettingsCubit>();
+    final l10n = context.l10n;
     return Scaffold(
       backgroundColor: SonicTheme.navy,
       body: SonicPanel(
@@ -31,7 +33,7 @@ class SonicOptionsPage extends StatelessWidget {
                 children: [
                   SonicHudChip(
                     onTap: context.navigator.pop,
-                    child: const Text('◀  BACK'),
+                    child: Text(l10n.back),
                   ),
                   const SizedBox(width: 12),
                   Expanded(
@@ -39,7 +41,7 @@ class SonicOptionsPage extends StatelessWidget {
                       fit: BoxFit.scaleDown,
                       alignment: Alignment.centerRight,
                       child: Text(
-                        'SETTINGS',
+                        l10n.settingsLabel,
                         style: SonicTheme.label.copyWith(
                           color: SonicTheme.gold,
                         ),
@@ -49,45 +51,40 @@ class SonicOptionsPage extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 10),
-              const SonicHudText('OPTIONS', size: 34),
+              SonicHudText(l10n.optionsTitle, size: 34),
               const SizedBox(height: 6),
-              const Text(
-                'Tune how your walks show on the map. Changes apply '
-                'everywhere right away.',
-                style: SonicTheme.body,
-              ),
+              Text(l10n.optionsIntro, style: SonicTheme.body),
               const SizedBox(height: 22),
               _OptionSlider(
-                title: 'TRAIL WIDTH',
-                caption: 'How thick each walk is drawn.',
+                title: l10n.trailWidth,
+                caption: l10n.trailWidthCaption,
                 value: settings.trailWidth,
                 min: MapSettings.minTrailWidth,
                 max: MapSettings.maxTrailWidth,
-                format: (v) => '${v.round()} px',
-                semanticsLabel: 'Trail width',
+                format: (v) => l10n.pxValue(v.round()),
+                semanticsLabel: l10n.trailWidthSemantics,
                 onChanged: cubit.setTrailWidth,
                 preview: _TrailPreview(width: settings.trailWidth),
               ),
               const SizedBox(height: 18),
               _OptionSlider(
-                title: 'REVEAL RADIUS',
-                caption:
-                    'How far around a walk the fog of war is lifted. '
-                    'Bigger means the city fills in faster.',
+                title: l10n.revealRadius,
+                caption: l10n.revealRadiusCaption,
                 value: settings.revealRadiusMeters,
                 min: MapSettings.minRevealRadius,
                 max: MapSettings.maxRevealRadius,
-                format: (v) => '${v.round()} m',
-                semanticsLabel: 'Reveal radius',
+                format: (v) => l10n.mValue(v.round()),
+                semanticsLabel: l10n.revealRadiusSemantics,
                 onChanged: cubit.setRevealRadius,
                 preview: _RevealPreview(radius: settings.revealRadiusMeters),
               ),
               const SizedBox(height: 22),
               SonicButton(
-                label: 'Reset to defaults',
-                caption:
-                    '${MapSettings.defaultTrailWidth.round()} px · '
-                    '${MapSettings.defaultRevealRadius.round()} m',
+                label: l10n.resetToDefaults,
+                caption: l10n.dotSeparatedTwo(
+                  l10n.pxValue(MapSettings.defaultTrailWidth.round()),
+                  l10n.mValue(MapSettings.defaultRevealRadius.round()),
+                ),
                 onTap: () => cubit.update(
                   settings.copyWith(
                     trailWidth: MapSettings.defaultTrailWidth,
@@ -96,17 +93,13 @@ class SonicOptionsPage extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 26),
-              const Text('MAP DATA', style: SonicTheme.label),
+              Text(l10n.mapDataLabel, style: SonicTheme.label),
               const SizedBox(height: 6),
-              const Text(
-                'Download your city once so the map is instant and works '
-                'without a connection.',
-                style: SonicTheme.body,
-              ),
+              Text(l10n.mapDataBody, style: SonicTheme.body),
               const SizedBox(height: 12),
               SonicButton(
-                label: 'Download map area',
-                caption: 'Offline tiles',
+                label: l10n.downloadMapArea,
+                caption: l10n.offlineTiles,
                 color: SonicTheme.gold,
                 shadow: SonicTheme.goldDeep,
                 onTap: () => SonicActions.mapDownload(context),
@@ -314,27 +307,24 @@ class _DemoDataSection extends StatelessWidget {
     final routes = context.watch<WalkRoutesCubit>().state.routes;
     final demoIds = {for (final route in TokyoDemoData.walks()) route.id};
     final loaded = routes.where((route) => demoIds.contains(route.id)).length;
+    final l10n = context.l10n;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('DEMO DATA', style: SonicTheme.label),
+        Text(l10n.demoData, style: SonicTheme.label),
         const SizedBox(height: 6),
         Text(
           loaded == 0
-              ? 'Preview a Tokyo that is almost fully explored: '
-                    '${demoIds.length} generated walks across all 23 wards '
-                    'and ${TokyoDemoData.spots().length} famous spots. '
-                    'Real walks stay untouched.'
-              : '$loaded demo walks loaded. Remove them to get back to '
-                    'your own stages.',
+              ? l10n.demoDataBody(demoIds.length, TokyoDemoData.spots().length)
+              : l10n.demoDataLoaded(loaded),
           style: SonicTheme.body,
         ),
         const SizedBox(height: 12),
         if (loaded == 0)
           SonicButton(
-            label: 'Fill Tokyo',
-            caption: 'Generated walks and spots',
-            semanticsLabel: 'Fill Tokyo',
+            label: l10n.fillTokyo,
+            caption: l10n.fillTokyoCaption,
+            semanticsLabel: l10n.fillTokyo,
             color: SonicTheme.red,
             shadow: SonicTheme.redDeep,
             onTap: () {
@@ -344,9 +334,9 @@ class _DemoDataSection extends StatelessWidget {
           )
         else
           SonicButton(
-            label: 'Remove demo data',
-            caption: 'Keeps your real walks',
-            semanticsLabel: 'Remove demo data',
+            label: l10n.removeDemoData,
+            caption: l10n.removeDemoDataCaption,
+            semanticsLabel: l10n.removeDemoData,
             onTap: () {
               context.read<WalkRoutesCubit>().removeRoutesByIds(demoIds);
               context.read<PoiCubit>().removePOIsByIds({

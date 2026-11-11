@@ -5,6 +5,7 @@ import 'package:giro/core/cubit/map_settings_cubit.dart';
 import 'package:giro/core/cubit/poi_cubit.dart';
 import 'package:giro/core/cubit/walk_routes_cubit.dart';
 import 'package:giro/core/extensions.dart';
+import 'package:giro/core/l10n.dart';
 import 'package:giro/core/map/scenery/landmarks.dart';
 import 'package:giro/core/model/walk_route.dart';
 import 'package:giro/core/widgets/platform_map_view.dart';
@@ -42,6 +43,7 @@ class SonicRouteDetail extends StatelessWidget {
         .toList();
     final newShare = ExploredIndex.cached(all).newGroundShare(route);
     final newMeters = route.distanceMeters * newShare;
+    final l10n = context.l10n;
 
     return Scaffold(
       backgroundColor: SonicTheme.navy,
@@ -86,7 +88,7 @@ class SonicRouteDetail extends StatelessWidget {
                         children: [
                           SonicHudChip(
                             onTap: context.navigator.pop,
-                            child: const Text('◀  BACK'),
+                            child: Text(l10n.back),
                           ),
                           const Spacer(),
                           SonicHudChip(
@@ -113,27 +115,26 @@ class SonicRouteDetail extends StatelessWidget {
               child: ListView(
                 padding: EdgeInsets.zero,
                 children: [
-                  const SonicHudText('STAGE CLEAR!', size: 38),
+                  SonicHudText(l10n.stageClear, size: 38),
                   const SizedBox(height: 6),
                   Text(
-                    '${route.startDate.toLocalizedString(context)} · '
-                    '${route.durationLabel}',
+                    l10n.dotSeparatedTwo(
+                      route.startDate.toLocalizedString(context),
+                      context.walkDuration(route.duration),
+                    ),
                     style: SonicTheme.body,
                   ),
                   const SizedBox(height: 8),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      SonicHudText(
-                        SonicTheme.kilometres(route.distanceMeters),
-                        size: 46,
-                      ),
+                      SonicHudText(context.km(route.distanceMeters), size: 46),
                       const SizedBox(width: 8),
-                      const Padding(
-                        padding: EdgeInsets.only(bottom: 5),
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 5),
                         child: Text(
-                          'KM',
-                          style: TextStyle(
+                          l10n.kmUnit,
+                          style: const TextStyle(
                             fontFamily: SonicTheme.font,
                             fontWeight: FontWeight.w800,
                             fontSize: 18,
@@ -147,29 +148,33 @@ class SonicRouteDetail extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 12),
-                  SonicRow(label: 'Time', value: route.durationLabel),
-                  const SizedBox(height: 6),
-                  SonicRow(label: 'Pace', value: _pace(route)),
+                  SonicRow(
+                    label: l10n.timeLabel,
+                    value: context.walkDuration(route.duration),
+                  ),
                   const SizedBox(height: 6),
                   SonicRow(
-                    label: 'New ground',
-                    value:
-                        '+${SonicTheme.kilometres(newMeters)} km · '
-                        '${(newShare * 100).round()}%',
+                    label: l10n.paceLabel,
+                    value: l10n.paceValue(_pace(route)),
+                  ),
+                  const SizedBox(height: 6),
+                  SonicRow(
+                    label: l10n.newGroundLabel,
+                    value: l10n.newGroundValue(
+                      context.km(newMeters),
+                      (newShare * 100).round(),
+                    ),
                     gold: true,
                   ),
                   const SizedBox(height: 14),
                   Text(
-                    spots.isEmpty ? 'NO SPOTS ON THIS STAGE' : 'SPOTS',
+                    spots.isEmpty ? l10n.noSpotsOnStage : l10n.spotsHeader,
                     style: SonicTheme.label,
                   ),
                   if (spots.isEmpty)
-                    const Padding(
-                      padding: EdgeInsets.only(top: 4),
-                      child: Text(
-                        'Press and hold the map to mark one.',
-                        style: SonicTheme.body,
-                      ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 4),
+                      child: Text(l10n.holdToMarkOne, style: SonicTheme.body),
                     ),
                   for (final poi in spots)
                     InkWell(
@@ -203,9 +208,9 @@ class SonicRouteDetail extends StatelessWidget {
                     ),
                   const SizedBox(height: 16),
                   SonicButton(
-                    label: 'Back to stage select',
-                    caption: 'All walks',
-                    semanticsLabel: 'All walks',
+                    label: l10n.backToStageSelect,
+                    caption: l10n.stagesCaption,
+                    semanticsLabel: l10n.stagesCaption,
                     onTap: context.navigator.pop,
                   ),
                 ],
@@ -225,6 +230,6 @@ class SonicRouteDetail extends StatelessWidget {
         route.duration.inSeconds / (route.distanceMeters / 1000);
     final minutes = (secondsPerKm ~/ 60).clamp(0, 99);
     final seconds = (secondsPerKm % 60).round().toString().padLeft(2, '0');
-    return '$minutes:$seconds /KM';
+    return '$minutes:$seconds';
   }
 }

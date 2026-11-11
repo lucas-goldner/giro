@@ -1,0 +1,423 @@
+{
+  "@@locale": "zh",
+  "back": "◀  返回",
+  "cancel": "取消",
+  "kmUnit": "KM",
+  "kmUnitLower": "km",
+  "perKmUnit": "/km",
+  "zoneChip": "第1区 · 东京",
+  "optionsSemantics": "选项",
+  "loadingMap": "地图加载中",
+  "loadingMapSemantics": "地图加载中",
+  "spotMarkerSemantics": "地点",
+  "distanceKm": "{km} km",
+  "@distanceKm": {
+    "placeholders": {
+      "km": {
+        "type": "String"
+      }
+    }
+  },
+  "distanceM": "{m} m",
+  "@distanceM": {
+    "placeholders": {
+      "m": {
+        "type": "int"
+      }
+    }
+  },
+  "durationHoursMinutes": "{hours}小时{minutes}分",
+  "@durationHoursMinutes": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      },
+      "minutes": {
+        "type": "String"
+      }
+    }
+  },
+  "durationMinutes": "{minutes}分",
+  "@durationMinutes": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "walksCount": "{count, plural, other{{count}次散步}}",
+  "@walksCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "spotsCount": "{count, plural, other{{count}个地点}}",
+  "@spotsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "placesCount": "{count, plural, other{{count}个地方}}",
+  "@placesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dotSeparated": "{a} · {b} · {c}",
+  "@dotSeparated": {
+    "description": "Three facts joined by middle dots",
+    "placeholders": {
+      "a": {
+        "type": "String"
+      },
+      "b": {
+        "type": "String"
+      },
+      "c": {
+        "type": "String"
+      }
+    }
+  },
+  "dotSeparatedTwo": "{a} · {b}",
+  "@dotSeparatedTwo": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      },
+      "b": {
+        "type": "String"
+      }
+    }
+  },
+  "homeStageLabel": "关卡: 东京 · 本周",
+  "goLabel": "GO!",
+  "goCaption": "记录散步",
+  "goSemantics": "记录",
+  "importLabel": "导入",
+  "importCaption": "健康",
+  "spotsLabel": "地点",
+  "spotsSemantics": "地方",
+  "stagesLabel": "关卡",
+  "stagesCaption": "全部散步",
+  "stageSelect": "选择关卡",
+  "stagesTitle": "东京 · {count}个关卡",
+  "@stagesTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "stageCardTitle": "关卡 {day}",
+  "@stageCardTitle": {
+    "placeholders": {
+      "day": {
+        "type": "int"
+      }
+    }
+  },
+  "stageCardMeta": "{date} · {distance} · {duration} · {spots}",
+  "@stageCardMeta": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "distance": {
+        "type": "String"
+      },
+      "duration": {
+        "type": "String"
+      },
+      "spots": {
+        "type": "String"
+      }
+    }
+  },
+  "stageSemantics": "关卡 {date}，{distance}，评级{rank}",
+  "@stageSemantics": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "distance": {
+        "type": "String"
+      },
+      "rank": {
+        "type": "String"
+      }
+    }
+  },
+  "stageClear": "关卡通过!",
+  "timeLabel": "时间",
+  "paceLabel": "配速",
+  "paceValue": "{pace} /KM",
+  "@paceValue": {
+    "placeholders": {
+      "pace": {
+        "type": "String"
+      }
+    }
+  },
+  "newGroundLabel": "新路线",
+  "newGroundValue": "+{km} km · {percent}%",
+  "@newGroundValue": {
+    "placeholders": {
+      "km": {
+        "type": "String"
+      },
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "noSpotsOnStage": "本关卡没有地点",
+  "spotsHeader": "地点",
+  "holdToMarkOne": "长按地图即可标记一个。",
+  "backToStageSelect": "返回选择关卡",
+  "spotCollection": "地点收藏",
+  "spotsTitle": "{count}个地点",
+  "@spotsTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "spotsHint": "长按地图标记地点，滑动即可删除。",
+  "spotSemantics": "地点 {name}",
+  "@spotSemantics": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "spotMeta": "{date}标记 · {count, plural, other{{count}次散步}}到访",
+  "@spotMeta": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "markASpot": "标记地点",
+  "markASpotBody": "给这个地方起个名字。经过它的散步会算作到访。",
+  "spotNameHint": "地点名称",
+  "markIt": "标记!",
+  "addSemantics": "添加",
+  "itemBoxHealth": "道具箱 · 健康",
+  "importWalks": "导入散步",
+  "importIntro": "手表记录的散步会成为关卡。只有受支持的手表路线才带有地图。",
+  "healthDenied": "健康访问被拒绝",
+  "healthDeniedBody": "请在“健康”应用中允许Giro读取体能训练，然后返回。",
+  "itemBoxClosed": "道具箱已关闭",
+  "itemBoxClosedBody": "加载最近的散步并挑选值得成为关卡的，或一次导入全部记录过的散步。",
+  "loadWorkouts": "加载体能训练",
+  "loadWorkoutsCaption": "最近25条",
+  "importEverything": "全部导入",
+  "importEverythingCaption": "健康中的每一次散步",
+  "importing": "导入中",
+  "importingBody": "已从健康读取{fetched}次散步，新增关卡{added}个。",
+  "@importingBody": {
+    "placeholders": {
+      "fetched": {
+        "type": "int"
+      },
+      "added": {
+        "type": "int"
+      }
+    }
+  },
+  "nothingHere": "空空如也",
+  "noWalksInHealth": "健康中没有找到散步。",
+  "importedLabel": "已导入",
+  "newStagesCount": "{count, plural, other{{count}个新关卡}}",
+  "@newStagesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "pickWalks": "挑选散步",
+  "saveWalksCount": "{count, plural, other{保存{count}次散步}}",
+  "@saveWalksCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "tapToSelect": "点按体能训练以选择",
+  "addAsStages": "添加为关卡",
+  "saveWalksSemantics": "保存散步",
+  "stageCleared": "关卡已通过",
+  "workoutSemantics": "{date}的体能训练",
+  "@workoutSemantics": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "workoutImportedSemantics": "{date}，已是关卡",
+  "@workoutImportedSemantics": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "actRecording": "ACT 2 · 记录中",
+  "actClear": "ACT 2 · 通过",
+  "actReady": "ACT 2 · 准备",
+  "liveLabel": "实时",
+  "resultLabel": "结果",
+  "pressGoToStart": "按GO开始",
+  "metresNewUnit": "m 新路",
+  "startRecording": "开始记录",
+  "stopLabel": "停止",
+  "finishStage": "结束关卡",
+  "stopRecording": "停止记录",
+  "stageClearButton": "关卡通过!",
+  "viewResult": "查看结果",
+  "viewFinishedRecording": "查看记录结果",
+  "percentNewGround": "新路线 {percent}%",
+  "@percentNewGround": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsLabel": "设置",
+  "optionsTitle": "选项",
+  "optionsIntro": "调整散步在地图上的显示方式。更改会立即生效。",
+  "trailWidth": "轨迹宽度",
+  "trailWidthCaption": "每次散步线条的粗细。",
+  "trailWidthSemantics": "轨迹宽度",
+  "pxValue": "{value} px",
+  "@pxValue": {
+    "placeholders": {
+      "value": {
+        "type": "int"
+      }
+    }
+  },
+  "revealRadius": "探索半径",
+  "revealRadiusCaption": "散步周围多大范围的迷雾会散去。越大城市填满得越快。",
+  "revealRadiusSemantics": "探索半径",
+  "mValue": "{value} m",
+  "@mValue": {
+    "placeholders": {
+      "value": {
+        "type": "int"
+      }
+    }
+  },
+  "resetToDefaults": "恢复默认",
+  "mapDataLabel": "地图数据",
+  "mapDataBody": "下载一次你的城市，地图即刻显示并可离线使用。",
+  "downloadMapArea": "下载地图区域",
+  "offlineTiles": "离线图块",
+  "demoData": "演示数据",
+  "demoDataBody": "预览几乎完全探索的东京：23个区共{walks}次生成散步和{spots}个著名地点。真实散步不受影响。",
+  "@demoDataBody": {
+    "placeholders": {
+      "walks": {
+        "type": "int"
+      },
+      "spots": {
+        "type": "int"
+      }
+    }
+  },
+  "demoDataLoaded": "已加载{count}次演示散步。删除后回到你自己的关卡。",
+  "@demoDataLoaded": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "fillTokyo": "填满东京",
+  "fillTokyoCaption": "生成的散步与地点",
+  "removeDemoData": "删除演示数据",
+  "removeDemoDataCaption": "保留真实散步",
+  "skip": "跳过",
+  "frameYourCity": "框住你的城市",
+  "mapDataOffline": "地图数据 · 离线",
+  "downloadArea": "下载区域",
+  "downloadIntroFirstRun": "保存你散步的城市，地图即刻显示且无需信号。之后也可在选项中设置。",
+  "downloadIntro": "金色框内的图块将保存在此手机上。",
+  "downloadCancelCaption": "{done} / {total} 图块 · {bytes}",
+  "@downloadCancelCaption": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      },
+      "bytes": {
+        "type": "String"
+      }
+    }
+  },
+  "tilesUnit": "图块",
+  "downloadUnit": "下载",
+  "storedUnit": "已保存",
+  "doneLabel": "完成",
+  "areaStored": "区域已保存",
+  "tooBig": "太大了",
+  "zoomInALittle": "稍微放大",
+  "downloadAnotherArea": "下载另一个区域",
+  "downloadLabel": "下载",
+  "frameSmallerArea": "框选更小的区域",
+  "zoomRangeCaption": "框内缩放级别0到14",
+  "downloadAreaSemantics": "下载区域",
+  "areasStored": "{count, plural, other{已保存{count}个区域}}",
+  "@areasStored": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "clearMapData": "清除地图数据",
+  "freesBytes": "释放{bytes}",
+  "@freesBytes": {
+    "placeholders": {
+      "bytes": {
+        "type": "String"
+      }
+    }
+  },
+  "downloading": "下载中",
+  "downloadProgressSemantics": "下载进度",
+  "percentValue": "{percent}%",
+  "@percentValue": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "areaName": "区域 {number}",
+  "@areaName": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  }
+}

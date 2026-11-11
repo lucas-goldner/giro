@@ -1,0 +1,423 @@
+{
+  "@@locale": "pt",
+  "back": "◀  VOLTAR",
+  "cancel": "Cancelar",
+  "kmUnit": "KM",
+  "kmUnitLower": "km",
+  "perKmUnit": "/km",
+  "zoneChip": "Zona 1 · Tóquio",
+  "optionsSemantics": "Opções",
+  "loadingMap": "CARREGANDO MAPA",
+  "loadingMapSemantics": "Carregando mapa",
+  "spotMarkerSemantics": "Spot",
+  "distanceKm": "{km} km",
+  "@distanceKm": {
+    "placeholders": {
+      "km": {
+        "type": "String"
+      }
+    }
+  },
+  "distanceM": "{m} m",
+  "@distanceM": {
+    "placeholders": {
+      "m": {
+        "type": "int"
+      }
+    }
+  },
+  "durationHoursMinutes": "{hours}h {minutes}min",
+  "@durationHoursMinutes": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      },
+      "minutes": {
+        "type": "String"
+      }
+    }
+  },
+  "durationMinutes": "{minutes}min",
+  "@durationMinutes": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "walksCount": "{count, plural, =1{1 caminhada} other{{count} caminhadas}}",
+  "@walksCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "spotsCount": "{count, plural, =1{1 spot} other{{count} spots}}",
+  "@spotsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "placesCount": "{count, plural, =1{1 lugar} other{{count} lugares}}",
+  "@placesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dotSeparated": "{a} · {b} · {c}",
+  "@dotSeparated": {
+    "description": "Three facts joined by middle dots",
+    "placeholders": {
+      "a": {
+        "type": "String"
+      },
+      "b": {
+        "type": "String"
+      },
+      "c": {
+        "type": "String"
+      }
+    }
+  },
+  "dotSeparatedTwo": "{a} · {b}",
+  "@dotSeparatedTwo": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      },
+      "b": {
+        "type": "String"
+      }
+    }
+  },
+  "homeStageLabel": "FASE: TÓQUIO · ESTA SEMANA",
+  "goLabel": "GO!",
+  "goCaption": "Gravar uma caminhada",
+  "goSemantics": "Gravar",
+  "importLabel": "Importar",
+  "importCaption": "Saúde",
+  "spotsLabel": "Spots",
+  "spotsSemantics": "Lugares",
+  "stagesLabel": "Fases",
+  "stagesCaption": "Todas as caminhadas",
+  "stageSelect": "SELEÇÃO DE FASE",
+  "stagesTitle": "TÓQUIO · {count} FASES",
+  "@stagesTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "stageCardTitle": "FASE {day}",
+  "@stageCardTitle": {
+    "placeholders": {
+      "day": {
+        "type": "int"
+      }
+    }
+  },
+  "stageCardMeta": "{date} · {distance} · {duration} · {spots}",
+  "@stageCardMeta": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "distance": {
+        "type": "String"
+      },
+      "duration": {
+        "type": "String"
+      },
+      "spots": {
+        "type": "String"
+      }
+    }
+  },
+  "stageSemantics": "Fase {date}, {distance}, rank {rank}",
+  "@stageSemantics": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "distance": {
+        "type": "String"
+      },
+      "rank": {
+        "type": "String"
+      }
+    }
+  },
+  "stageClear": "FASE CONCLUÍDA!",
+  "timeLabel": "Tempo",
+  "paceLabel": "Ritmo",
+  "paceValue": "{pace} /KM",
+  "@paceValue": {
+    "placeholders": {
+      "pace": {
+        "type": "String"
+      }
+    }
+  },
+  "newGroundLabel": "Terreno novo",
+  "newGroundValue": "+{km} km · {percent}%",
+  "@newGroundValue": {
+    "placeholders": {
+      "km": {
+        "type": "String"
+      },
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "noSpotsOnStage": "NENHUM SPOT NESTA FASE",
+  "spotsHeader": "SPOTS",
+  "holdToMarkOne": "Toque e segure no mapa para marcar um.",
+  "backToStageSelect": "Voltar à seleção de fase",
+  "spotCollection": "COLEÇÃO DE SPOTS",
+  "spotsTitle": "{count} SPOTS",
+  "@spotsTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "spotsHint": "Toque e segure no mapa para marcar um spot. Deslize um para removê-lo.",
+  "spotSemantics": "Spot {name}",
+  "@spotSemantics": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "spotMeta": "Marcado em {date} · visitado por {count, plural, =1{1 caminhada} other{{count} caminhadas}}",
+  "@spotMeta": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "markASpot": "MARCAR UM SPOT",
+  "markASpotBody": "Dê um nome a este lugar. As caminhadas que passarem perto contam como visita.",
+  "spotNameHint": "Nome do spot",
+  "markIt": "Marcar!",
+  "addSemantics": "Adicionar",
+  "itemBoxHealth": "ITEM BOX · SAÚDE",
+  "importWalks": "IMPORTAR CAMINHADAS",
+  "importIntro": "Caminhadas gravadas pelo seu relógio viram fases. Só rotas de relógios compatíveis trazem mapa.",
+  "healthDenied": "ACESSO AO SAÚDE NEGADO",
+  "healthDeniedBody": "Permita que o Giro leia treinos no app Saúde e volte aqui.",
+  "itemBoxClosed": "ITEM BOX FECHADA",
+  "itemBoxClosedBody": "Carregue suas caminhadas recentes para escolher as que merecem uma fase, ou importe de uma vez todas as caminhadas já gravadas.",
+  "loadWorkouts": "Carregar treinos",
+  "loadWorkoutsCaption": "Os 25 mais recentes",
+  "importEverything": "Importar tudo",
+  "importEverythingCaption": "Cada caminhada no Saúde",
+  "importing": "IMPORTANDO",
+  "importingBody": "{fetched} caminhadas lidas do Saúde, {added} fases novas até agora.",
+  "@importingBody": {
+    "placeholders": {
+      "fetched": {
+        "type": "int"
+      },
+      "added": {
+        "type": "int"
+      }
+    }
+  },
+  "nothingHere": "NADA AQUI",
+  "noWalksInHealth": "Nenhuma caminhada encontrada no Saúde.",
+  "importedLabel": "Importado",
+  "newStagesCount": "{count, plural, =1{1 fase nova} other{{count} fases novas}}",
+  "@newStagesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "pickWalks": "Escolher caminhadas",
+  "saveWalksCount": "{count, plural, =1{Salvar 1 caminhada} other{Salvar {count} caminhadas}}",
+  "@saveWalksCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "tapToSelect": "Toque em um treino para selecioná-lo",
+  "addAsStages": "Adicionar como fases",
+  "saveWalksSemantics": "Salvar caminhadas",
+  "stageCleared": "FASE CONCLUÍDA",
+  "workoutSemantics": "Treino de {date}",
+  "@workoutSemantics": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "workoutImportedSemantics": "{date}, já é uma fase",
+  "@workoutImportedSemantics": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "actRecording": "ATO 2 · GRAVANDO",
+  "actClear": "ATO 2 · CONCLUÍDO",
+  "actReady": "ATO 2 · PRONTO",
+  "liveLabel": "AO VIVO",
+  "resultLabel": "RESULTADO",
+  "pressGoToStart": "APERTE GO PARA COMEÇAR",
+  "metresNewUnit": "m novos",
+  "startRecording": "Começar a gravar",
+  "stopLabel": "Parar",
+  "finishStage": "Terminar fase",
+  "stopRecording": "Parar gravação",
+  "stageClearButton": "Fase concluída!",
+  "viewResult": "Ver resultado",
+  "viewFinishedRecording": "Ver gravação concluída",
+  "percentNewGround": "{percent} por cento de terreno novo",
+  "@percentNewGround": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsLabel": "CONFIGURAÇÕES",
+  "optionsTitle": "OPÇÕES",
+  "optionsIntro": "Ajuste como suas caminhadas aparecem no mapa. As mudanças valem em todo lugar na hora.",
+  "trailWidth": "ESPESSURA DA TRILHA",
+  "trailWidthCaption": "Espessura com que cada caminhada é desenhada.",
+  "trailWidthSemantics": "Espessura da trilha",
+  "pxValue": "{value} px",
+  "@pxValue": {
+    "placeholders": {
+      "value": {
+        "type": "int"
+      }
+    }
+  },
+  "revealRadius": "RAIO DE DESCOBERTA",
+  "revealRadiusCaption": "Até onde a névoa se dissipa ao redor de uma caminhada. Quanto maior, mais rápido a cidade se preenche.",
+  "revealRadiusSemantics": "Raio de descoberta",
+  "mValue": "{value} m",
+  "@mValue": {
+    "placeholders": {
+      "value": {
+        "type": "int"
+      }
+    }
+  },
+  "resetToDefaults": "Restaurar padrões",
+  "mapDataLabel": "DADOS DO MAPA",
+  "mapDataBody": "Baixe sua cidade uma vez para o mapa ser instantâneo e funcionar sem conexão.",
+  "downloadMapArea": "Baixar área do mapa",
+  "offlineTiles": "Tiles offline",
+  "demoData": "DADOS DE DEMO",
+  "demoDataBody": "Prévia de uma Tóquio quase toda explorada: {walks} caminhadas geradas pelos 23 distritos e {spots} spots famosos. As caminhadas reais ficam intactas.",
+  "@demoDataBody": {
+    "placeholders": {
+      "walks": {
+        "type": "int"
+      },
+      "spots": {
+        "type": "int"
+      }
+    }
+  },
+  "demoDataLoaded": "{count} caminhadas de demo carregadas. Remova-as para voltar às suas próprias fases.",
+  "@demoDataLoaded": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "fillTokyo": "Preencher Tóquio",
+  "fillTokyoCaption": "Caminhadas e spots gerados",
+  "removeDemoData": "Remover dados de demo",
+  "removeDemoDataCaption": "Mantém suas caminhadas reais",
+  "skip": "PULAR",
+  "frameYourCity": "Enquadre sua cidade",
+  "mapDataOffline": "DADOS DO MAPA · OFFLINE",
+  "downloadArea": "BAIXAR ÁREA",
+  "downloadIntroFirstRun": "Guarde a cidade onde você caminha para o mapa ser instantâneo e funcionar sem sinal. Dá para fazer isso depois em Opções.",
+  "downloadIntro": "Os tiles dentro da moldura dourada ficam guardados neste telefone.",
+  "downloadCancelCaption": "{done} / {total} tiles · {bytes}",
+  "@downloadCancelCaption": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      },
+      "bytes": {
+        "type": "String"
+      }
+    }
+  },
+  "tilesUnit": "tiles",
+  "downloadUnit": "download",
+  "storedUnit": "guardado",
+  "doneLabel": "Pronto",
+  "areaStored": "Área guardada",
+  "tooBig": "Grande demais",
+  "zoomInALittle": "Aproxime um pouco",
+  "downloadAnotherArea": "Baixar outra área",
+  "downloadLabel": "Baixar",
+  "frameSmallerArea": "Enquadre uma área menor",
+  "zoomRangeCaption": "Zoom 0 a 14 dentro da moldura",
+  "downloadAreaSemantics": "Baixar área",
+  "areasStored": "{count, plural, =1{1 área guardada} other{{count} áreas guardadas}}",
+  "@areasStored": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "clearMapData": "Apagar dados do mapa",
+  "freesBytes": "Libera {bytes}",
+  "@freesBytes": {
+    "placeholders": {
+      "bytes": {
+        "type": "String"
+      }
+    }
+  },
+  "downloading": "BAIXANDO",
+  "downloadProgressSemantics": "Progresso do download",
+  "percentValue": "{percent} por cento",
+  "@percentValue": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "areaName": "Área {number}",
+  "@areaName": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  }
+}

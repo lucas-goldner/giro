@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:giro/core/l10n.dart';
 import 'package:giro/core/model/poi.dart';
 import 'package:giro/design/sonic/sonic_theme.dart';
 import 'package:giro/core/model/geo.dart';
@@ -41,89 +42,92 @@ class _SpotDialogState extends State<_SpotDialog> {
   }
 
   @override
-  Widget build(BuildContext context) => Dialog(
-    backgroundColor: Colors.transparent,
-    insetPadding: const EdgeInsets.symmetric(horizontal: 24),
-    child: SonicPanel(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Row(
-            children: [
-              SonicSpotIcon(size: 18),
-              SizedBox(width: 10),
-              SonicHudText('MARK A SPOT', size: 30),
-            ],
-          ),
-          const SizedBox(height: 6),
-          const Text(
-            'Name this place. Spots are visited by the walks that pass them.',
-            style: SonicTheme.body,
-          ),
-          const SizedBox(height: 14),
-          TextField(
-            controller: _controller,
-            autofocus: true,
-            textInputAction: TextInputAction.done,
-            onSubmitted: (_) => _submit(),
-            style: const TextStyle(
-              fontFamily: SonicTheme.font,
-              fontWeight: FontWeight.w700,
-              fontSize: 20,
-              color: SonicTheme.white,
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    return Dialog(
+      backgroundColor: Colors.transparent,
+      insetPadding: const EdgeInsets.symmetric(horizontal: 24),
+      child: SonicPanel(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                const SonicSpotIcon(size: 18),
+                const SizedBox(width: 10),
+                SonicHudText(l10n.markASpot, size: 30),
+              ],
             ),
-            decoration: InputDecoration(
-              hintText: 'Spot name',
-              hintStyle: TextStyle(
+            const SizedBox(height: 6),
+            Text(l10n.markASpotBody, style: SonicTheme.body),
+            const SizedBox(height: 14),
+            TextField(
+              controller: _controller,
+              autofocus: true,
+              textInputAction: TextInputAction.done,
+              onSubmitted: (_) => _submit(),
+              style: const TextStyle(
                 fontFamily: SonicTheme.font,
                 fontWeight: FontWeight.w700,
                 fontSize: 20,
-                color: SonicTheme.pale.withValues(alpha: 0.5),
+                color: SonicTheme.white,
               ),
-              filled: true,
-              fillColor: SonicTheme.navyDeep,
-              contentPadding: const EdgeInsets.symmetric(
-                horizontal: 14,
-                vertical: 12,
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-                borderSide: const BorderSide(
-                  color: Color(0xFF1F3FA0),
-                  width: 2,
+              decoration: InputDecoration(
+                hintText: l10n.spotNameHint,
+                hintStyle: TextStyle(
+                  fontFamily: SonicTheme.font,
+                  fontWeight: FontWeight.w700,
+                  fontSize: 20,
+                  color: SonicTheme.pale.withValues(alpha: 0.5),
                 ),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-                borderSide: const BorderSide(color: SonicTheme.gold, width: 2),
+                filled: true,
+                fillColor: SonicTheme.navyDeep,
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 14,
+                  vertical: 12,
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  borderSide: const BorderSide(
+                    color: Color(0xFF1F3FA0),
+                    width: 2,
+                  ),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  borderSide: const BorderSide(
+                    color: SonicTheme.gold,
+                    width: 2,
+                  ),
+                ),
               ),
             ),
-          ),
-          const SizedBox(height: 16),
-          Row(
-            children: [
-              Expanded(
-                child: SonicButton(
-                  label: 'Cancel',
-                  onTap: () => Navigator.of(context).pop(),
+            const SizedBox(height: 16),
+            Row(
+              children: [
+                Expanded(
+                  child: SonicButton(
+                    label: l10n.cancel,
+                    onTap: () => Navigator.of(context).pop(),
+                  ),
                 ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                flex: 2,
-                child: SonicButton(
-                  label: 'Mark it!',
-                  semanticsLabel: 'Add',
-                  color: SonicTheme.gold,
-                  shadow: SonicTheme.goldDeep,
-                  onTap: _submit,
+                const SizedBox(width: 12),
+                Expanded(
+                  flex: 2,
+                  child: SonicButton(
+                    label: l10n.markIt,
+                    semanticsLabel: l10n.addSemantics,
+                    color: SonicTheme.gold,
+                    shadow: SonicTheme.goldDeep,
+                    onTap: _submit,
+                  ),
                 ),
-              ),
-            ],
-          ),
-        ],
+              ],
+            ),
+          ],
+        ),
       ),
-    ),
-  );
+    );
+  }
 }

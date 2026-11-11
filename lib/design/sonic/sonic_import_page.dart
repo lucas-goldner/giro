@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:giro/core/cubit/walk_routes_cubit.dart';
 import 'package:giro/core/extensions.dart';
+import 'package:giro/core/l10n.dart';
 import 'package:giro/core/model/walk_workout.dart';
 import 'package:giro/design/shared/place_line.dart';
 import 'package:giro/design/shared/route_preview.dart';
@@ -101,6 +102,7 @@ class _SonicImportState extends State<_SonicImport> {
                   final workouts = state.workouts;
                   final pending = workouts.where((w) => !_imported(w)).length;
                   final importing = state is HealthKitStateImporting;
+                  final l10n = context.l10n;
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
@@ -113,7 +115,7 @@ class _SonicImportState extends State<_SonicImport> {
                               children: [
                                 SonicHudChip(
                                   onTap: context.navigator.pop,
-                                  child: const Text('◀  BACK'),
+                                  child: Text(l10n.back),
                                 ),
                                 const SizedBox(width: 12),
                                 Expanded(
@@ -121,7 +123,7 @@ class _SonicImportState extends State<_SonicImport> {
                                     fit: BoxFit.scaleDown,
                                     alignment: Alignment.centerRight,
                                     child: Text(
-                                      'ITEM BOX · HEALTH',
+                                      l10n.itemBoxHealth,
                                       style: SonicTheme.label.copyWith(
                                         color: SonicTheme.gold,
                                       ),
@@ -131,13 +133,9 @@ class _SonicImportState extends State<_SonicImport> {
                               ],
                             ),
                             const SizedBox(height: 10),
-                            const SonicHudText('IMPORT WALKS', size: 34),
+                            SonicHudText(l10n.importWalks, size: 34),
                             const SizedBox(height: 6),
-                            const Text(
-                              'Walks recorded by your watch become stages. '
-                              'Only routes from supported watches carry a map.',
-                              style: SonicTheme.body,
-                            ),
+                            Text(l10n.importIntro, style: SonicTheme.body),
                           ],
                         ),
                       ),
@@ -149,24 +147,18 @@ class _SonicImportState extends State<_SonicImport> {
                                 ),
                               )
                             : !state.authorized
-                            ? const _Message(
-                                'HEALTH ACCESS DENIED',
-                                'Allow Giro to read workouts in the Health '
-                                    'app, then come back.',
-                              )
+                            ? _Message(l10n.healthDenied, l10n.healthDeniedBody)
                             : !_loaded
                             ? _Message(
-                                'ITEM BOX CLOSED',
-                                'Load your recent walks to pick the ones '
-                                    'worth a stage, or import every walk '
-                                    'ever recorded in one go.',
+                                l10n.itemBoxClosed,
+                                l10n.itemBoxClosedBody,
                                 action: Column(
                                   crossAxisAlignment:
                                       CrossAxisAlignment.stretch,
                                   children: [
                                     SonicButton(
-                                      label: 'Load workouts',
-                                      caption: 'The 25 most recent',
+                                      label: l10n.loadWorkouts,
+                                      caption: l10n.loadWorkoutsCaption,
                                       color: SonicTheme.gold,
                                       shadow: SonicTheme.goldDeep,
                                       height: 56,
@@ -174,9 +166,9 @@ class _SonicImportState extends State<_SonicImport> {
                                     ),
                                     const SizedBox(height: 10),
                                     SonicButton(
-                                      label: 'Import everything',
-                                      caption: 'Every walk in Health',
-                                      semanticsLabel: 'Import everything',
+                                      label: l10n.importEverything,
+                                      caption: l10n.importEverythingCaption,
+                                      semanticsLabel: l10n.importEverything,
                                       color: SonicTheme.red,
                                       shadow: SonicTheme.redDeep,
                                       height: 56,
@@ -187,9 +179,8 @@ class _SonicImportState extends State<_SonicImport> {
                               )
                             : importing
                             ? _Message(
-                                'IMPORTING',
-                                '${state.fetched} walks read from Health, '
-                                    '$_importedAll new stages so far.',
+                                l10n.importing,
+                                l10n.importingBody(state.fetched, _importedAll),
                                 action: const LinearProgressIndicator(
                                   backgroundColor: SonicTheme.navyDeep,
                                   color: SonicTheme.gold,
@@ -197,10 +188,7 @@ class _SonicImportState extends State<_SonicImport> {
                                 ),
                               )
                             : workouts.isEmpty
-                            ? const _Message(
-                                'NOTHING HERE',
-                                'No walks found in Health.',
-                              )
+                            ? _Message(l10n.nothingHere, l10n.noWalksInHealth)
                             : ListView.separated(
                                 padding: const EdgeInsets.fromLTRB(
                                   14,
@@ -233,10 +221,8 @@ class _SonicImportState extends State<_SonicImport> {
                         Padding(
                           padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
                           child: SonicRow(
-                            label: 'Imported',
-                            value:
-                                '$_importedAll new stage'
-                                '${_importedAll == 1 ? '' : 's'}',
+                            label: l10n.importedLabel,
+                            value: l10n.newStagesCount(_importedAll),
                             gold: true,
                           ),
                         ),
@@ -245,13 +231,12 @@ class _SonicImportState extends State<_SonicImport> {
                           padding: const EdgeInsets.fromLTRB(16, 8, 16, 14),
                           child: SonicButton(
                             label: _selected.isEmpty
-                                ? 'Pick walks'
-                                : 'Save ${_selected.length} '
-                                      'walk${_selected.length == 1 ? '' : 's'}',
+                                ? l10n.pickWalks
+                                : l10n.saveWalksCount(_selected.length),
                             caption: _selected.isEmpty
-                                ? 'Tap a workout to select it'
-                                : 'Add as stages',
-                            semanticsLabel: 'Save walks',
+                                ? l10n.tapToSelect
+                                : l10n.addAsStages,
+                            semanticsLabel: l10n.saveWalksSemantics,
                             color: _selected.isEmpty
                                 ? SonicTheme.blue
                                 : SonicTheme.red,
@@ -309,12 +294,18 @@ class _WorkoutCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final date = workout.startDate.toLocalizedString(context);
-    final km = (workout.totalDistance / 1000).toStringAsFixed(1);
+    final meta = l10n.dotSeparatedTwo(
+      workout.displayDuration(context),
+      context.distance(workout.totalDistance),
+    );
     return Semantics(
       button: !imported,
       selected: selected,
-      label: imported ? '$date, already a stage' : '$date workout',
+      label: imported
+          ? l10n.workoutImportedSemantics(date)
+          : l10n.workoutSemantics(date),
       child: ExcludeSemantics(
         child: Opacity(
           opacity: imported ? 0.55 : 1,
@@ -382,9 +373,9 @@ class _WorkoutCard extends StatelessWidget {
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            '${workout.displayDuration(context)} · '
-                            '$km km'
-                            '${imported ? ' · STAGE CLEARED' : ''}',
+                            imported
+                                ? l10n.dotSeparatedTwo(meta, l10n.stageCleared)
+                                : meta,
                             style: SonicTheme.body,
                           ),
                           if (workout.routes.isNotEmpty)

@@ -16,11 +16,14 @@ import 'package:giro/map/repository/healthkit_repo.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
 class GiroApp extends StatefulWidget {
-  const GiroApp({required this.loadDeps, super.key});
+  const GiroApp({required this.loadDeps, this.locale, super.key});
 
   /// Builds the platform-specific repositories (see `loadNativeDeps` and
   /// `loadWebMockDeps`).
   final AppDepsLoader loadDeps;
+
+  /// Forces a language instead of following the device (web preview).
+  final Locale? locale;
 
   @override
   State<GiroApp> createState() => _GiroAppState();
@@ -87,7 +90,7 @@ class _GiroAppState extends State<GiroApp> {
                     MapSettingsCubit(deps.mapSettingsRepo)..load(),
               ),
             ],
-            child: const AdaptiveApp(),
+            child: AdaptiveApp(locale: widget.locale),
           ),
         );
       }

@@ -1,0 +1,423 @@
+{
+  "@@locale": "ko",
+  "back": "◀  뒤로",
+  "cancel": "취소",
+  "kmUnit": "KM",
+  "kmUnitLower": "km",
+  "perKmUnit": "/km",
+  "zoneChip": "존 1 · 도쿄",
+  "optionsSemantics": "옵션",
+  "loadingMap": "지도 불러오는 중",
+  "loadingMapSemantics": "지도 불러오는 중",
+  "spotMarkerSemantics": "스팟",
+  "distanceKm": "{km} km",
+  "@distanceKm": {
+    "placeholders": {
+      "km": {
+        "type": "String"
+      }
+    }
+  },
+  "distanceM": "{m} m",
+  "@distanceM": {
+    "placeholders": {
+      "m": {
+        "type": "int"
+      }
+    }
+  },
+  "durationHoursMinutes": "{hours}시간 {minutes}분",
+  "@durationHoursMinutes": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      },
+      "minutes": {
+        "type": "String"
+      }
+    }
+  },
+  "durationMinutes": "{minutes}분",
+  "@durationMinutes": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "walksCount": "{count, plural, other{산책 {count}회}}",
+  "@walksCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "spotsCount": "{count, plural, other{스팟 {count}개}}",
+  "@spotsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "placesCount": "{count, plural, other{{count}곳}}",
+  "@placesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dotSeparated": "{a} · {b} · {c}",
+  "@dotSeparated": {
+    "description": "Three facts joined by middle dots",
+    "placeholders": {
+      "a": {
+        "type": "String"
+      },
+      "b": {
+        "type": "String"
+      },
+      "c": {
+        "type": "String"
+      }
+    }
+  },
+  "dotSeparatedTwo": "{a} · {b}",
+  "@dotSeparatedTwo": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      },
+      "b": {
+        "type": "String"
+      }
+    }
+  },
+  "homeStageLabel": "스테이지: 도쿄 · 이번 주",
+  "goLabel": "GO!",
+  "goCaption": "산책 기록",
+  "goSemantics": "기록",
+  "importLabel": "가져오기",
+  "importCaption": "건강",
+  "spotsLabel": "스팟",
+  "spotsSemantics": "장소",
+  "stagesLabel": "스테이지",
+  "stagesCaption": "모든 산책",
+  "stageSelect": "스테이지 선택",
+  "stagesTitle": "도쿄 · 스테이지 {count}개",
+  "@stagesTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "stageCardTitle": "스테이지 {day}",
+  "@stageCardTitle": {
+    "placeholders": {
+      "day": {
+        "type": "int"
+      }
+    }
+  },
+  "stageCardMeta": "{date} · {distance} · {duration} · {spots}",
+  "@stageCardMeta": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "distance": {
+        "type": "String"
+      },
+      "duration": {
+        "type": "String"
+      },
+      "spots": {
+        "type": "String"
+      }
+    }
+  },
+  "stageSemantics": "스테이지 {date}, {distance}, 랭크 {rank}",
+  "@stageSemantics": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "distance": {
+        "type": "String"
+      },
+      "rank": {
+        "type": "String"
+      }
+    }
+  },
+  "stageClear": "스테이지 클리어!",
+  "timeLabel": "시간",
+  "paceLabel": "페이스",
+  "paceValue": "{pace} /KM",
+  "@paceValue": {
+    "placeholders": {
+      "pace": {
+        "type": "String"
+      }
+    }
+  },
+  "newGroundLabel": "새로운 길",
+  "newGroundValue": "+{km} km · {percent}%",
+  "@newGroundValue": {
+    "placeholders": {
+      "km": {
+        "type": "String"
+      },
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "noSpotsOnStage": "이 스테이지에는 스팟이 없습니다",
+  "spotsHeader": "스팟",
+  "holdToMarkOne": "지도를 길게 눌러 표시하세요.",
+  "backToStageSelect": "스테이지 선택으로",
+  "spotCollection": "스팟 컬렉션",
+  "spotsTitle": "스팟 {count}개",
+  "@spotsTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "spotsHint": "지도를 길게 눌러 스팟을 표시하고, 밀어서 삭제하세요.",
+  "spotSemantics": "스팟 {name}",
+  "@spotSemantics": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "spotMeta": "{date} 표시 · {count, plural, other{산책 {count}회}} 방문",
+  "@spotMeta": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "markASpot": "스팟 표시",
+  "markASpotBody": "이 장소의 이름을 지어 주세요. 지나가는 산책이 스팟을 방문한 것으로 기록됩니다.",
+  "spotNameHint": "스팟 이름",
+  "markIt": "표시!",
+  "addSemantics": "추가",
+  "itemBoxHealth": "아이템 박스 · 건강",
+  "importWalks": "산책 가져오기",
+  "importIntro": "워치로 기록한 산책이 스테이지가 됩니다. 지원되는 워치의 경로만 지도가 있습니다.",
+  "healthDenied": "건강 접근이 거부됨",
+  "healthDeniedBody": "건강 앱에서 Giro가 운동을 읽도록 허용한 뒤 돌아오세요.",
+  "itemBoxClosed": "아이템 박스가 닫혀 있음",
+  "itemBoxClosedBody": "최근 산책을 불러와 스테이지로 만들 것을 고르거나, 기록된 모든 산책을 한 번에 가져오세요.",
+  "loadWorkouts": "운동 불러오기",
+  "loadWorkoutsCaption": "최근 25개",
+  "importEverything": "전부 가져오기",
+  "importEverythingCaption": "건강의 모든 산책",
+  "importing": "가져오는 중",
+  "importingBody": "건강에서 {fetched}개를 읽었고, 새 스테이지 {added}개.",
+  "@importingBody": {
+    "placeholders": {
+      "fetched": {
+        "type": "int"
+      },
+      "added": {
+        "type": "int"
+      }
+    }
+  },
+  "nothingHere": "아무것도 없음",
+  "noWalksInHealth": "건강에서 산책을 찾지 못했습니다.",
+  "importedLabel": "가져옴",
+  "newStagesCount": "{count, plural, other{새 스테이지 {count}개}}",
+  "@newStagesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "pickWalks": "산책 고르기",
+  "saveWalksCount": "{count, plural, other{{count}개 저장}}",
+  "@saveWalksCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "tapToSelect": "운동을 탭하여 선택",
+  "addAsStages": "스테이지로 추가",
+  "saveWalksSemantics": "산책 저장",
+  "stageCleared": "스테이지 클리어됨",
+  "workoutSemantics": "{date} 운동",
+  "@workoutSemantics": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "workoutImportedSemantics": "{date}, 이미 스테이지임",
+  "@workoutImportedSemantics": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "actRecording": "ACT 2 · 기록 중",
+  "actClear": "ACT 2 · 클리어",
+  "actReady": "ACT 2 · 준비",
+  "liveLabel": "라이브",
+  "resultLabel": "결과",
+  "pressGoToStart": "GO를 눌러 시작",
+  "metresNewUnit": "m 새 길",
+  "startRecording": "기록 시작",
+  "stopLabel": "정지",
+  "finishStage": "스테이지 종료",
+  "stopRecording": "기록 정지",
+  "stageClearButton": "스테이지 클리어!",
+  "viewResult": "결과 보기",
+  "viewFinishedRecording": "기록 결과 보기",
+  "percentNewGround": "새로운 길 {percent}퍼센트",
+  "@percentNewGround": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsLabel": "설정",
+  "optionsTitle": "옵션",
+  "optionsIntro": "지도에 산책이 표시되는 방식을 조정합니다. 변경은 즉시 모든 곳에 적용됩니다.",
+  "trailWidth": "경로 두께",
+  "trailWidthCaption": "각 산책 선의 두께.",
+  "trailWidthSemantics": "경로 두께",
+  "pxValue": "{value} px",
+  "@pxValue": {
+    "placeholders": {
+      "value": {
+        "type": "int"
+      }
+    }
+  },
+  "revealRadius": "탐험 반경",
+  "revealRadiusCaption": "산책 주변 얼마나 멀리까지 안개가 걷히는지. 클수록 도시가 빨리 채워집니다.",
+  "revealRadiusSemantics": "탐험 반경",
+  "mValue": "{value} m",
+  "@mValue": {
+    "placeholders": {
+      "value": {
+        "type": "int"
+      }
+    }
+  },
+  "resetToDefaults": "기본값으로 되돌리기",
+  "mapDataLabel": "지도 데이터",
+  "mapDataBody": "도시를 한 번 다운로드하면 지도가 즉시 뜨고 오프라인에서도 됩니다.",
+  "downloadMapArea": "지도 영역 다운로드",
+  "offlineTiles": "오프라인 타일",
+  "demoData": "데모 데이터",
+  "demoDataBody": "거의 다 탐험한 도쿄 미리보기: 23개 구 전체에 생성된 산책 {walks}회와 유명 스팟 {spots}곳. 실제 산책은 그대로입니다.",
+  "@demoDataBody": {
+    "placeholders": {
+      "walks": {
+        "type": "int"
+      },
+      "spots": {
+        "type": "int"
+      }
+    }
+  },
+  "demoDataLoaded": "데모 산책 {count}회 로드됨. 삭제하면 내 스테이지로 돌아갑니다.",
+  "@demoDataLoaded": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "fillTokyo": "도쿄 채우기",
+  "fillTokyoCaption": "생성된 산책과 스팟",
+  "removeDemoData": "데모 데이터 삭제",
+  "removeDemoDataCaption": "실제 산책은 유지",
+  "skip": "건너뛰기",
+  "frameYourCity": "도시를 틀에 맞추기",
+  "mapDataOffline": "지도 데이터 · 오프라인",
+  "downloadArea": "영역 다운로드",
+  "downloadIntroFirstRun": "걷는 도시를 저장하면 지도가 즉시 뜨고 신호 없이도 됩니다. 나중에 옵션에서도 할 수 있습니다.",
+  "downloadIntro": "금색 틀 안의 타일이 이 휴대폰에 저장됩니다.",
+  "downloadCancelCaption": "{done} / {total} 타일 · {bytes}",
+  "@downloadCancelCaption": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      },
+      "bytes": {
+        "type": "String"
+      }
+    }
+  },
+  "tilesUnit": "타일",
+  "downloadUnit": "다운로드",
+  "storedUnit": "저장됨",
+  "doneLabel": "완료",
+  "areaStored": "영역 저장됨",
+  "tooBig": "너무 큼",
+  "zoomInALittle": "조금 확대하세요",
+  "downloadAnotherArea": "다른 영역 다운로드",
+  "downloadLabel": "다운로드",
+  "frameSmallerArea": "더 작은 영역을 잡으세요",
+  "zoomRangeCaption": "틀 안의 줌 0~14",
+  "downloadAreaSemantics": "영역 다운로드",
+  "areasStored": "{count, plural, other{영역 {count}개 저장됨}}",
+  "@areasStored": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "clearMapData": "지도 데이터 삭제",
+  "freesBytes": "{bytes} 확보",
+  "@freesBytes": {
+    "placeholders": {
+      "bytes": {
+        "type": "String"
+      }
+    }
+  },
+  "downloading": "다운로드 중",
+  "downloadProgressSemantics": "다운로드 진행률",
+  "percentValue": "{percent}퍼센트",
+  "@percentValue": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "areaName": "영역 {number}",
+  "@areaName": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  }
+}

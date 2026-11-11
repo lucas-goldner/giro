@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:giro/core/l10n.dart';
 import 'package:giro/core/map/explored_mask.dart';
 import 'package:giro/core/map/fog_gpu.dart';
 import 'package:giro/core/map/giro_map_style.dart';
@@ -312,7 +313,7 @@ class _MapLibreMapViewState extends State<MapLibreMapView> {
                 onTap: marker.onTap,
                 child: Semantics(
                   button: marker.onTap != null,
-                  label: 'Spot',
+                  label: context.l10n.spotMarkerSemantics,
                   child: DecoratedBox(
                     decoration: const BoxDecoration(
                       shape: BoxShape.circle,
@@ -382,7 +383,7 @@ class _MapLibreMapViewState extends State<MapLibreMapView> {
             bottom: 16,
             child: IgnorePointer(
               child: Semantics(
-                label: 'Loading map',
+                label: context.l10n.loadingMapSemantics,
                 child: Container(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 10,
@@ -392,10 +393,10 @@ class _MapLibreMapViewState extends State<MapLibreMapView> {
                     color: SonicTheme.navy.withValues(alpha: 0.85),
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: const Row(
+                  child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      SizedBox(
+                      const SizedBox(
                         width: 12,
                         height: 12,
                         child: CircularProgressIndicator(
@@ -403,10 +404,10 @@ class _MapLibreMapViewState extends State<MapLibreMapView> {
                           color: SonicTheme.gold,
                         ),
                       ),
-                      SizedBox(width: 8),
+                      const SizedBox(width: 8),
                       Text(
-                        'LOADING MAP',
-                        style: TextStyle(
+                        context.l10n.loadingMap,
+                        style: const TextStyle(
                           fontFamily: SonicTheme.font,
                           fontWeight: FontWeight.w800,
                           fontSize: 12,

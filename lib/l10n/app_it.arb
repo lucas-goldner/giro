@@ -1,0 +1,423 @@
+{
+  "@@locale": "it",
+  "back": "◀  INDIETRO",
+  "cancel": "Annulla",
+  "kmUnit": "KM",
+  "kmUnitLower": "km",
+  "perKmUnit": "/km",
+  "zoneChip": "Zona 1 · Tokyo",
+  "optionsSemantics": "Opzioni",
+  "loadingMap": "CARICAMENTO MAPPA",
+  "loadingMapSemantics": "Caricamento mappa",
+  "spotMarkerSemantics": "Spot",
+  "distanceKm": "{km} km",
+  "@distanceKm": {
+    "placeholders": {
+      "km": {
+        "type": "String"
+      }
+    }
+  },
+  "distanceM": "{m} m",
+  "@distanceM": {
+    "placeholders": {
+      "m": {
+        "type": "int"
+      }
+    }
+  },
+  "durationHoursMinutes": "{hours}h {minutes}min",
+  "@durationHoursMinutes": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      },
+      "minutes": {
+        "type": "String"
+      }
+    }
+  },
+  "durationMinutes": "{minutes}min",
+  "@durationMinutes": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "walksCount": "{count, plural, =1{1 passeggiata} other{{count} passeggiate}}",
+  "@walksCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "spotsCount": "{count, plural, =1{1 spot} other{{count} spot}}",
+  "@spotsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "placesCount": "{count, plural, =1{1 luogo} other{{count} luoghi}}",
+  "@placesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dotSeparated": "{a} · {b} · {c}",
+  "@dotSeparated": {
+    "description": "Three facts joined by middle dots",
+    "placeholders": {
+      "a": {
+        "type": "String"
+      },
+      "b": {
+        "type": "String"
+      },
+      "c": {
+        "type": "String"
+      }
+    }
+  },
+  "dotSeparatedTwo": "{a} · {b}",
+  "@dotSeparatedTwo": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      },
+      "b": {
+        "type": "String"
+      }
+    }
+  },
+  "homeStageLabel": "STAGE: TOKYO · QUESTA SETTIMANA",
+  "goLabel": "GO!",
+  "goCaption": "Registra una passeggiata",
+  "goSemantics": "Registra",
+  "importLabel": "Importa",
+  "importCaption": "Salute",
+  "spotsLabel": "Spot",
+  "spotsSemantics": "Luoghi",
+  "stagesLabel": "Stage",
+  "stagesCaption": "Tutte le passeggiate",
+  "stageSelect": "SCELTA STAGE",
+  "stagesTitle": "TOKYO · {count} STAGE",
+  "@stagesTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "stageCardTitle": "STAGE {day}",
+  "@stageCardTitle": {
+    "placeholders": {
+      "day": {
+        "type": "int"
+      }
+    }
+  },
+  "stageCardMeta": "{date} · {distance} · {duration} · {spots}",
+  "@stageCardMeta": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "distance": {
+        "type": "String"
+      },
+      "duration": {
+        "type": "String"
+      },
+      "spots": {
+        "type": "String"
+      }
+    }
+  },
+  "stageSemantics": "Stage {date}, {distance}, rango {rank}",
+  "@stageSemantics": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "distance": {
+        "type": "String"
+      },
+      "rank": {
+        "type": "String"
+      }
+    }
+  },
+  "stageClear": "STAGE COMPLETATO!",
+  "timeLabel": "Tempo",
+  "paceLabel": "Passo",
+  "paceValue": "{pace} /KM",
+  "@paceValue": {
+    "placeholders": {
+      "pace": {
+        "type": "String"
+      }
+    }
+  },
+  "newGroundLabel": "Terreno nuovo",
+  "newGroundValue": "+{km} km · {percent}%",
+  "@newGroundValue": {
+    "placeholders": {
+      "km": {
+        "type": "String"
+      },
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "noSpotsOnStage": "NESSUNO SPOT IN QUESTO STAGE",
+  "spotsHeader": "SPOT",
+  "holdToMarkOne": "Tieni premuta la mappa per segnarne uno.",
+  "backToStageSelect": "Torna alla scelta stage",
+  "spotCollection": "COLLEZIONE SPOT",
+  "spotsTitle": "{count} SPOT",
+  "@spotsTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "spotsHint": "Tieni premuta la mappa per segnare uno spot. Scorri per rimuoverlo.",
+  "spotSemantics": "Spot {name}",
+  "@spotSemantics": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "spotMeta": "Segnato il {date} · visitato da {count, plural, =1{1 passeggiata} other{{count} passeggiate}}",
+  "@spotMeta": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "markASpot": "SEGNA UNO SPOT",
+  "markASpotBody": "Dai un nome a questo luogo. Le passeggiate che ci passano accanto lo contano come visitato.",
+  "spotNameHint": "Nome dello spot",
+  "markIt": "Segna!",
+  "addSemantics": "Aggiungi",
+  "itemBoxHealth": "ITEM BOX · SALUTE",
+  "importWalks": "IMPORTA PASSEGGIATE",
+  "importIntro": "Le passeggiate registrate dal tuo orologio diventano stage. Solo i percorsi degli orologi supportati hanno una mappa.",
+  "healthDenied": "ACCESSO A SALUTE NEGATO",
+  "healthDeniedBody": "Consenti a Giro di leggere gli allenamenti nell’app Salute, poi torna qui.",
+  "itemBoxClosed": "ITEM BOX CHIUSA",
+  "itemBoxClosedBody": "Carica le passeggiate recenti per scegliere quelle degne di uno stage, oppure importa in un colpo solo tutte quelle mai registrate.",
+  "loadWorkouts": "Carica allenamenti",
+  "loadWorkoutsCaption": "I 25 più recenti",
+  "importEverything": "Importa tutto",
+  "importEverythingCaption": "Ogni passeggiata in Salute",
+  "importing": "IMPORTAZIONE",
+  "importingBody": "{fetched} passeggiate lette da Salute, {added} nuovi stage finora.",
+  "@importingBody": {
+    "placeholders": {
+      "fetched": {
+        "type": "int"
+      },
+      "added": {
+        "type": "int"
+      }
+    }
+  },
+  "nothingHere": "NIENTE QUI",
+  "noWalksInHealth": "Nessuna passeggiata trovata in Salute.",
+  "importedLabel": "Importato",
+  "newStagesCount": "{count, plural, =1{1 nuovo stage} other{{count} nuovi stage}}",
+  "@newStagesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "pickWalks": "Scegli passeggiate",
+  "saveWalksCount": "{count, plural, =1{Salva 1 passeggiata} other{Salva {count} passeggiate}}",
+  "@saveWalksCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "tapToSelect": "Tocca un allenamento per selezionarlo",
+  "addAsStages": "Aggiungi come stage",
+  "saveWalksSemantics": "Salva passeggiate",
+  "stageCleared": "STAGE COMPLETATO",
+  "workoutSemantics": "Allenamento del {date}",
+  "@workoutSemantics": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "workoutImportedSemantics": "{date}, già uno stage",
+  "@workoutImportedSemantics": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "actRecording": "ATTO 2 · REGISTRAZIONE",
+  "actClear": "ATTO 2 · COMPLETATO",
+  "actReady": "ATTO 2 · PRONTO",
+  "liveLabel": "LIVE",
+  "resultLabel": "RISULTATO",
+  "pressGoToStart": "PREMI GO PER INIZIARE",
+  "metresNewUnit": "m nuovi",
+  "startRecording": "Avvia registrazione",
+  "stopLabel": "Stop",
+  "finishStage": "Termina stage",
+  "stopRecording": "Ferma registrazione",
+  "stageClearButton": "Stage completato!",
+  "viewResult": "Vedi risultato",
+  "viewFinishedRecording": "Vedi registrazione terminata",
+  "percentNewGround": "{percent} per cento di terreno nuovo",
+  "@percentNewGround": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsLabel": "IMPOSTAZIONI",
+  "optionsTitle": "OPZIONI",
+  "optionsIntro": "Regola come le tue passeggiate appaiono sulla mappa. Le modifiche valgono subito ovunque.",
+  "trailWidth": "SPESSORE TRACCIA",
+  "trailWidthCaption": "Quanto spessa è disegnata ogni passeggiata.",
+  "trailWidthSemantics": "Spessore traccia",
+  "pxValue": "{value} px",
+  "@pxValue": {
+    "placeholders": {
+      "value": {
+        "type": "int"
+      }
+    }
+  },
+  "revealRadius": "RAGGIO DI SCOPERTA",
+  "revealRadiusCaption": "Fin dove si dirada la nebbia attorno a una passeggiata. Più grande, più in fretta si riempie la città.",
+  "revealRadiusSemantics": "Raggio di scoperta",
+  "mValue": "{value} m",
+  "@mValue": {
+    "placeholders": {
+      "value": {
+        "type": "int"
+      }
+    }
+  },
+  "resetToDefaults": "Ripristina predefiniti",
+  "mapDataLabel": "DATI MAPPA",
+  "mapDataBody": "Scarica la tua città una volta sola: la mappa sarà istantanea e funzionerà senza connessione.",
+  "downloadMapArea": "Scarica area della mappa",
+  "offlineTiles": "Tile offline",
+  "demoData": "DATI DEMO",
+  "demoDataBody": "Anteprima di una Tokyo quasi del tutto esplorata: {walks} passeggiate generate in tutti i 23 quartieri e {spots} spot famosi. Le passeggiate vere restano intatte.",
+  "@demoDataBody": {
+    "placeholders": {
+      "walks": {
+        "type": "int"
+      },
+      "spots": {
+        "type": "int"
+      }
+    }
+  },
+  "demoDataLoaded": "{count} passeggiate demo caricate. Rimuovile per tornare ai tuoi stage.",
+  "@demoDataLoaded": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "fillTokyo": "Riempi Tokyo",
+  "fillTokyoCaption": "Passeggiate e spot generati",
+  "removeDemoData": "Rimuovi dati demo",
+  "removeDemoDataCaption": "Mantiene le passeggiate vere",
+  "skip": "SALTA",
+  "frameYourCity": "Inquadra la tua città",
+  "mapDataOffline": "DATI MAPPA · OFFLINE",
+  "downloadArea": "SCARICA AREA",
+  "downloadIntroFirstRun": "Salva la città in cui cammini: la mappa sarà istantanea e funzionerà senza segnale. Puoi farlo anche più tardi dalle Opzioni.",
+  "downloadIntro": "Le tile dentro la cornice dorata vengono salvate su questo telefono.",
+  "downloadCancelCaption": "{done} / {total} tile · {bytes}",
+  "@downloadCancelCaption": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      },
+      "bytes": {
+        "type": "String"
+      }
+    }
+  },
+  "tilesUnit": "tile",
+  "downloadUnit": "download",
+  "storedUnit": "salvato",
+  "doneLabel": "Fatto",
+  "areaStored": "Area salvata",
+  "tooBig": "Troppo grande",
+  "zoomInALittle": "Avvicina un po’",
+  "downloadAnotherArea": "Scarica un’altra area",
+  "downloadLabel": "Scarica",
+  "frameSmallerArea": "Inquadra un’area più piccola",
+  "zoomRangeCaption": "Zoom da 0 a 14 nella cornice",
+  "downloadAreaSemantics": "Scarica area",
+  "areasStored": "{count, plural, =1{1 area salvata} other{{count} aree salvate}}",
+  "@areasStored": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "clearMapData": "Cancella dati mappa",
+  "freesBytes": "Libera {bytes}",
+  "@freesBytes": {
+    "placeholders": {
+      "bytes": {
+        "type": "String"
+      }
+    }
+  },
+  "downloading": "DOWNLOAD IN CORSO",
+  "downloadProgressSemantics": "Avanzamento download",
+  "percentValue": "{percent} per cento",
+  "@percentValue": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "areaName": "Area {number}",
+  "@areaName": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  }
+}

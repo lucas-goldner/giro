@@ -15,6 +15,8 @@ dependencies:
   flutter_bloc: ^9.1.1
   flutter_gpu:
     sdk: flutter
+  flutter_localizations:
+    sdk: flutter
   geolocator: ^14.1.2
   hooks: ^2.0.2
   intl: ^0.20.3
@@ -38,6 +40,7 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  generate: true
   assets:
     # Sonic-coloured MapLibre style on OpenFreeMap tiles (tool/make_sonic_style.py).
     - assets/map/sonic_style.json
