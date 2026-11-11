@@ -1,0 +1,76 @@
+{
+  "_comment": "Marketing screenshot captions per language. Each shot: title lines (the last one is boxed in gold) and a subline. Used by tool/store_kit.mjs.",
+  "shots": ["city", "stages", "clear", "spots", "record", "offline"],
+  "en": {
+    "city":    { "lines": ["UNCOVER", "YOUR CITY"],        "sub": "Every walk paints the map. The rest stays white." },
+    "stages":  { "lines": ["EVERY WALK", "IS A STAGE"],    "sub": "Your walks, ranked S to C for new ground." },
+    "clear":   { "lines": ["STAGE", "CLEAR!"],             "sub": "Time, pace and how much of the city you uncovered." },
+    "spots":   { "lines": ["MARK", "YOUR SPOTS"],          "sub": "Press and hold the map. Walks collect them." },
+    "record":  { "lines": ["GO!", "RECORD A WALK"],        "sub": "Live fog, live stats, a ring that fills with new ground." },
+    "offline": { "lines": ["YOUR CITY,", "OFFLINE"],       "sub": "Download it once. The map is instant, no signal needed." }
+  },
+  "ja": {
+    "city":    { "lines": ["街を", "塗りつぶせ"],            "sub": "歩いた道だけ地図に色がつく。残りは真っ白。" },
+    "stages":  { "lines": ["散歩はすべて", "ステージ"],      "sub": "新しい道の割合でランクS〜Cを判定。" },
+    "clear":   { "lines": ["ステージ", "クリア!"],           "sub": "時間、ペース、どれだけ街を開拓したか。" },
+    "spots":   { "lines": ["お気に入りを", "スポットに"],    "sub": "地図を長押し。散歩が通れば訪問済み。" },
+    "record":  { "lines": ["GO!", "散歩を記録"],             "sub": "霧が晴れ、リングが新しい道で満ちていく。" },
+    "offline": { "lines": ["街まるごと", "オフライン"],      "sub": "一度ダウンロードすれば電波なしでも即表示。" }
+  },
+  "zh": {
+    "city":    { "lines": ["走出", "你的城市"],              "sub": "每一次散步都为地图上色，其余保持空白。" },
+    "stages":  { "lines": ["每次散步", "都是一关"],          "sub": "按新路线比例评定 S 到 C 级。" },
+    "clear":   { "lines": ["关卡", "通过!"],                 "sub": "时间、配速，以及你揭开了多少城市。" },
+    "spots":   { "lines": ["标记", "你的地点"],              "sub": "长按地图。经过的散步会收集它们。" },
+    "record":  { "lines": ["GO!", "记录散步"],               "sub": "实时迷雾、实时数据，新路线填满圆环。" },
+    "offline": { "lines": ["整座城市", "离线可用"],          "sub": "下载一次，地图即刻显示，无需信号。" }
+  },
+  "ko": {
+    "city":    { "lines": ["도시를", "밝혀라"],              "sub": "걸은 길만 지도에 색이 칠해집니다. 나머지는 하얗게." },
+    "stages":  { "lines": ["모든 산책이", "스테이지"],       "sub": "새로운 길의 비율로 S부터 C까지 랭크." },
+    "clear":   { "lines": ["스테이지", "클리어!"],           "sub": "시간, 페이스, 그리고 얼마나 도시를 밝혔는지." },
+    "spots":   { "lines": ["나만의", "스팟 표시"],           "sub": "지도를 길게 누르세요. 산책이 스팟을 모읍니다." },
+    "record":  { "lines": ["GO!", "산책 기록"],              "sub": "걷히는 안개, 실시간 기록, 새 길로 차오르는 링." },
+    "offline": { "lines": ["도시 전체를", "오프라인으로"],   "sub": "한 번만 다운로드. 신호 없이도 지도는 바로." }
+  },
+  "de": {
+    "city":    { "lines": ["DECK DEINE", "STADT AUF"],      "sub": "Jeder Spaziergang färbt die Karte. Der Rest bleibt weiß." },
+    "stages":  { "lines": ["JEDER WEG", "IST EINE STAGE"],  "sub": "Deine Spaziergänge, von S bis C nach neuem Terrain." },
+    "clear":   { "lines": ["STAGE", "CLEAR!"],              "sub": "Zeit, Tempo und wie viel Stadt du aufgedeckt hast." },
+    "spots":   { "lines": ["MARKIERE", "DEINE SPOTS"],      "sub": "Karte gedrückt halten. Spaziergänge sammeln sie ein." },
+    "record":  { "lines": ["GO!", "WEG AUFNEHMEN"],         "sub": "Nebel lichtet sich live, der Ring füllt sich mit Neuem." },
+    "offline": { "lines": ["DEINE STADT,", "OFFLINE"],      "sub": "Einmal laden. Die Karte ist sofort da, ohne Empfang." }
+  },
+  "fr": {
+    "city":    { "lines": ["DÉVOILE", "TA VILLE"],          "sub": "Chaque marche colore la carte. Le reste reste blanc." },
+    "stages":  { "lines": ["CHAQUE MARCHE", "EST UN STAGE"], "sub": "Tes marches, classées de S à C selon le terrain inédit." },
+    "clear":   { "lines": ["STAGE", "TERMINÉ !"],           "sub": "Temps, allure et la part de ville que tu as dévoilée." },
+    "spots":   { "lines": ["MARQUE", "TES SPOTS"],          "sub": "Appui long sur la carte. Les marches les collectent." },
+    "record":  { "lines": ["GO!", "ENREGISTRE"],            "sub": "Brouillard en direct, stats en direct, un anneau qui se remplit." },
+    "offline": { "lines": ["TA VILLE,", "HORS LIGNE"],      "sub": "Télécharge-la une fois. Carte instantanée, sans réseau." }
+  },
+  "es": {
+    "city":    { "lines": ["DESCUBRE", "TU CIUDAD"],        "sub": "Cada paseo pinta el mapa. El resto sigue en blanco." },
+    "stages":  { "lines": ["CADA PASEO", "ES UNA FASE"],    "sub": "Tus paseos, de S a C según el terreno nuevo." },
+    "clear":   { "lines": ["¡FASE", "SUPERADA!"],           "sub": "Tiempo, ritmo y cuánta ciudad has descubierto." },
+    "spots":   { "lines": ["MARCA", "TUS SPOTS"],           "sub": "Mantén pulsado el mapa. Los paseos los recogen." },
+    "record":  { "lines": ["GO!", "GRABA UN PASEO"],        "sub": "Niebla en vivo, datos en vivo, un anillo que se llena." },
+    "offline": { "lines": ["TU CIUDAD,", "SIN CONEXIÓN"],   "sub": "Descárgala una vez. Mapa instantáneo, sin cobertura." }
+  },
+  "it": {
+    "city":    { "lines": ["SCOPRI", "LA TUA CITTÀ"],       "sub": "Ogni passeggiata colora la mappa. Il resto resta bianco." },
+    "stages":  { "lines": ["OGNI PASSEGGIATA", "È UNO STAGE"], "sub": "Le tue passeggiate, da S a C per terreno nuovo." },
+    "clear":   { "lines": ["STAGE", "COMPLETATO!"],         "sub": "Tempo, passo e quanta città hai scoperto." },
+    "spots":   { "lines": ["SEGNA", "I TUOI SPOT"],         "sub": "Tieni premuta la mappa. Le passeggiate li raccolgono." },
+    "record":  { "lines": ["GO!", "REGISTRA"],              "sub": "Nebbia dal vivo, dati dal vivo, un anello che si riempie." },
+    "offline": { "lines": ["LA TUA CITTÀ,", "OFFLINE"],     "sub": "Scaricala una volta. Mappa istantanea, senza segnale." }
+  },
+  "pt": {
+    "city":    { "lines": ["DESCUBRA", "SUA CIDADE"],       "sub": "Cada caminhada pinta o mapa. O resto fica branco." },
+    "stages":  { "lines": ["CADA CAMINHADA", "É UMA FASE"], "sub": "Suas caminhadas, de S a C por terreno novo." },
+    "clear":   { "lines": ["FASE", "CONCLUÍDA!"],           "sub": "Tempo, ritmo e quanto da cidade você descobriu." },
+    "spots":   { "lines": ["MARQUE", "SEUS SPOTS"],         "sub": "Toque e segure no mapa. As caminhadas os coletam." },
+    "record":  { "lines": ["GO!", "GRAVE UMA CAMINHADA"],   "sub": "Névoa ao vivo, dados ao vivo, um anel que se enche." },
+    "offline": { "lines": ["SUA CIDADE,", "OFFLINE"],       "sub": "Baixe uma vez. Mapa instantâneo, sem sinal." }
+  }
+}
