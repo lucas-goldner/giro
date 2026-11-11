@@ -35,6 +35,24 @@ class SceneryGpu {
   /// Hard cap per frame, nearest tiles first.
   static const maxInstancesPerFrame = 7000;
 
+  /// Bytes of one batch's uniform block, padded to the 256-byte alignment
+  /// Metal and Vulkan want.
+  static const int _batchBytes = ((16 + batchSize * 8) * 4 + 255) ~/ 256 * 256;
+
+  /// One frame's worth of uniform blocks: every tree batch the budget
+  /// allows plus a batch per landmark model. It must fit one HostBuffer
+  /// block: flutter_gpu's HostBuffer, when a frame spills past its block,
+  /// returns a view the size of the whole block and allocates a new block
+  /// on every frame, so draws recorded after the spill fail and memory
+  /// grows. (That is why the landmarks, drawn last, never appeared.)
+  static const int _uniformBlockBytes =
+      (maxInstancesPerFrame ~/ batchSize + 2 + landmarkModelCount) *
+      _batchBytes;
+
+  /// `LandmarkModel.values.length`, which a const expression cannot read;
+  /// a test keeps it in step.
+  static const landmarkModelCount = 6;
+
   final repaint = RepaintSignal();
 
   gpu.ShaderLibrary? _library;
@@ -105,12 +123,19 @@ class SceneryGpu {
         if (count == 0) {
           return;
         }
+        final bytes = ByteData.sublistView(_values);
+        final placed = uniforms.emplace(bytes);
         pass
           ..bindVertexBuffer(buffers.vertices)
           ..bindIndexBuffer(buffers.indices, gpu.IndexType.int16)
           ..bindUniform(
             _uniformSlot,
-            uniforms.emplace(ByteData.sublistView(_values)),
+            // Exactly the block, whatever length the allocator reports.
+            gpu.BufferView(
+              placed.buffer,
+              offsetInBytes: placed.offsetInBytes,
+              lengthInBytes: bytes.lengthInBytes,
+            ),
           )
           ..drawIndexed(buffers.indexCount, instanceCount: count);
         count = 0;
@@ -165,8 +190,9 @@ class SceneryGpu {
     _context = context;
     _pipeline = context.createRenderPipeline(vertex, fragment);
     _uniformSlot = vertex.getUniformSlot('SceneryUniforms');
-    // Several batches per frame; each block holds a handful of them.
-    _uniforms = context.createHostBuffer(blockLengthInBytes: 64 * 1024);
+    _uniforms = context.createHostBuffer(
+      blockLengthInBytes: _uniformBlockBytes,
+    );
     _meshBuffers.clear();
     for (final key in SceneryMesh.keys) {
       final mesh = SceneryMesh.of(key);

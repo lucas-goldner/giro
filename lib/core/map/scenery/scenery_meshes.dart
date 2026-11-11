@@ -23,11 +23,12 @@ class SceneryMesh {
 
   static final _cache = <String, SceneryMesh>{};
 
-  /// Every mesh key the renderer may be asked for, trees first.
+  /// Every mesh key the renderer may be asked for. Landmarks first: they
+  /// are few and must never lose out to the tree budget.
   static final keys = <String>[
+    for (final model in LandmarkModel.values) model.meshKey,
     for (final kind in SceneryKind.values)
       if (kind != SceneryKind.landmark) kind.name,
-    for (final model in LandmarkModel.values) model.meshKey,
   ];
 
   static bool isTree(String key) => !key.startsWith('landmark.');
