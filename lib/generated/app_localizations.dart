@@ -974,6 +974,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Area {number}'**
   String areaName(int number);
+
+  /// No description provided for @graphicsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'GRAPHICS'**
+  String get graphicsLabel;
+
+  /// No description provided for @graphicsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'How the 3D city is drawn. Advanced draws the buildings itself with sun shadows, materials by building type and shadows on the streets. Experimental and heavier on the battery.'**
+  String get graphicsBody;
+
+  /// No description provided for @graphicsClassic.
+  ///
+  /// In en, this message translates to:
+  /// **'Classic'**
+  String get graphicsClassic;
+
+  /// No description provided for @graphicsClassicCaption.
+  ///
+  /// In en, this message translates to:
+  /// **'Toy city, light on the GPU'**
+  String get graphicsClassicCaption;
+
+  /// No description provided for @graphicsAdvanced.
+  ///
+  /// In en, this message translates to:
+  /// **'Advanced'**
+  String get graphicsAdvanced;
+
+  /// No description provided for @graphicsAdvancedCaption.
+  ///
+  /// In en, this message translates to:
+  /// **'Sun shadows and materials (beta)'**
+  String get graphicsAdvancedCaption;
+
+  /// No description provided for @graphicsSemantics.
+  ///
+  /// In en, this message translates to:
+  /// **'Graphics mode'**
+  String get graphicsSemantics;
 }
 
 class _AppLocalizationsDelegate

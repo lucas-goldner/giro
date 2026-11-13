@@ -419,5 +419,13 @@
         "type": "int"
       }
     }
-  }
+  },
+
+  "graphicsLabel": "GRAPHISMES",
+  "graphicsBody": "Comment la ville 3D est dessinée. Avancé dessine lui-même les bâtiments avec ombres du soleil, matériaux selon le type de bâtiment et ombres sur les rues. Expérimental et plus gourmand en batterie.",
+  "graphicsClassic": "Classique",
+  "graphicsClassicCaption": "Ville miniature, léger pour le GPU",
+  "graphicsAdvanced": "Avancé",
+  "graphicsAdvancedCaption": "Ombres du soleil et matériaux (bêta)",
+  "graphicsSemantics": "Mode graphique"
 }

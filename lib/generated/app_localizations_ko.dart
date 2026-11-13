@@ -546,4 +546,26 @@ class AppLocalizationsKo extends AppLocalizations {
   String areaName(int number) {
     return '영역 $number';
   }
+
+  @override
+  String get graphicsLabel => '그래픽';
+
+  @override
+  String get graphicsBody =>
+      '3D 도시를 그리는 방식. 고급 모드는 Giro가 직접 건물을 그려 태양 그림자, 건물 종류별 재질, 거리 위 그림자를 표현합니다. 실험적 기능이며 배터리를 더 씁니다.';
+
+  @override
+  String get graphicsClassic => '클래식';
+
+  @override
+  String get graphicsClassicCaption => '장난감 도시, GPU 부담 적음';
+
+  @override
+  String get graphicsAdvanced => '고급';
+
+  @override
+  String get graphicsAdvancedCaption => '태양 그림자와 재질(베타)';
+
+  @override
+  String get graphicsSemantics => '그래픽 모드';
 }

@@ -419,5 +419,13 @@
         "type": "int"
       }
     }
-  }
+  },
+
+  "graphicsLabel": "GRAFIK",
+  "graphicsBody": "Wie die 3D-Stadt gezeichnet wird. Erweitert zeichnet die Gebäude selbst, mit Sonnenschatten, Materialien je Gebäudetyp und Schatten auf den Straßen. Experimentell und akkuhungriger.",
+  "graphicsClassic": "Klassisch",
+  "graphicsClassicCaption": "Spielzeugstadt, schont die GPU",
+  "graphicsAdvanced": "Erweitert",
+  "graphicsAdvancedCaption": "Sonnenschatten und Materialien (Beta)",
+  "graphicsSemantics": "Grafikmodus"
 }

@@ -126,6 +126,7 @@ class _SonicRecordState extends State<_SonicRecord> {
                       },
                       revealRadiusMeters: settings.revealRadiusMeters,
                       pointRadiusMeters: settings.spotRadiusMeters,
+                      advancedGraphics: settings.advancedGraphics,
                       myLocationEnabled: true,
                     ),
                     Positioned(

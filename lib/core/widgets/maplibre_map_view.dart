@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:giro/core/l10n.dart';
+import 'package:giro/core/map/city/city_controller.dart';
+import 'package:giro/core/map/city/city_gpu.dart';
 import 'package:giro/core/map/explored_mask.dart';
 import 'package:giro/core/map/fog_gpu.dart';
 import 'package:giro/core/map/giro_map_style.dart';
@@ -34,6 +36,7 @@ class MapLibreMapView extends StatefulWidget {
     this.compassEnabled = true,
     this.fogOfWar = true,
     this.revealRadiusMeters = 90,
+    this.advancedGraphics = false,
     this.pointRadiusMeters = 72,
     this.onLongPress,
     this.onCameraMove,
@@ -47,6 +50,7 @@ class MapLibreMapView extends StatefulWidget {
   final bool compassEnabled;
   final bool fogOfWar;
   final double revealRadiusMeters;
+  final bool advancedGraphics;
   final double pointRadiusMeters;
   final void Function(LatLng)? onLongPress;
   final void Function(CameraPosition)? onCameraMove;
@@ -63,7 +67,13 @@ class _MapLibreMapViewState extends State<MapLibreMapView> {
   final _buildings = ToyBuildings();
   final _scenery = SceneryGpu();
   SceneryController? _sceneryController;
-  late final _gpuRepaint = Listenable.merge([_fog.repaint, _scenery.repaint]);
+  final _city = CityGpu();
+  CityController? _cityController;
+  late final _gpuRepaint = Listenable.merge([
+    _fog.repaint,
+    _scenery.repaint,
+    _city.repaint,
+  ]);
   ExploredMask? _mask;
   int _maskGeneration = 0;
   StreamSubscription<Position>? _locationSubscription;
@@ -82,7 +92,12 @@ class _MapLibreMapViewState extends State<MapLibreMapView> {
     unawaited(_fog.ensureLoaded());
     unawaited(_buildings.ensureLoaded());
     unawaited(_scenery.ensureLoaded());
-    _buildings.setLandmarks(_clearings());
+    if (widget.advancedGraphics) {
+      unawaited(_city.ensureLoaded());
+    }
+    _buildings
+      ..setLandmarks(_clearings())
+      ..setHidden(hidden: widget.advancedGraphics);
     unawaited(_rebuildMask());
     _updateLocationStream();
     // The idle callback is the real signal; this is the safety net.
@@ -116,7 +131,29 @@ class _MapLibreMapViewState extends State<MapLibreMapView> {
         ..setLandmarks(_landmarks())
         ..onCamera(widget.initialCameraPosition);
     }
+    _syncCity(store);
   }
+
+  TileStore? _store;
+
+  /// Starts or stops the advanced city renderer to match the setting.
+  void _syncCity(TileStore? store) {
+    _store = store;
+    final wanted = widget.advancedGraphics && store != null;
+    if (wanted && _cityController == null) {
+      unawaited(_city.ensureLoaded());
+      _cityController = CityController(gpu: _city, store: store)
+        ..onCamera(_lastCamera ?? widget.initialCameraPosition);
+      unawaited(_cityController!.setMask(_mask));
+    } else if (!wanted && _cityController != null) {
+      _cityController!.dispose();
+      _cityController = null;
+      _city.visible = const [];
+    }
+    _buildings.setHidden(hidden: wanted);
+  }
+
+  CameraPosition? _lastCamera;
 
   @override
   void didUpdateWidget(MapLibreMapView oldWidget) {
@@ -137,6 +174,9 @@ class _MapLibreMapViewState extends State<MapLibreMapView> {
     if (widget.myLocationEnabled != oldWidget.myLocationEnabled) {
       _updateLocationStream();
     }
+    if (widget.advancedGraphics != oldWidget.advancedGraphics) {
+      _syncCity(_store);
+    }
     // Screens like "Record walk" move the camera by handing in a new initial
     // position; follow it until the user takes over.
     if (!_userMovedCamera &&
@@ -153,6 +193,8 @@ class _MapLibreMapViewState extends State<MapLibreMapView> {
     _buildings.dispose();
     _sceneryController?.dispose();
     _scenery.dispose();
+    _cityController?.dispose();
+    _city.dispose();
     _mask?.dispose();
     super.dispose();
   }
@@ -196,6 +238,7 @@ class _MapLibreMapViewState extends State<MapLibreMapView> {
     _mask = mask;
     _buildings.setMask(mask);
     _sceneryController?.setMask(mask);
+    unawaited(_cityController?.setMask(mask));
     await _fog.setMask(mask);
   }
 
@@ -253,7 +296,9 @@ class _MapLibreMapViewState extends State<MapLibreMapView> {
       bearing: camera.bearing,
       tilt: camera.tilt,
     );
+    _lastCamera = position;
     _sceneryController?.onCamera(position);
+    _cityController?.onCamera(position);
     widget.onCameraMove?.call(position);
   }
 
@@ -279,6 +324,14 @@ class _MapLibreMapViewState extends State<MapLibreMapView> {
       if (marker.landmark case final model? when model.clearRadius > 0)
         LandmarkClearing(position: marker.position, radius: model.clearRadius),
   ];
+
+  /// The 3D pass: our buildings (advanced mode) then trees and landmarks.
+  void _renderMapPass(ml.MapLibreGpuRenderContext frame) {
+    if (_cityController != null) {
+      _city.render(frame);
+    }
+    _scenery.render(frame);
+  }
 
   static ml.LatLng _toMl(LatLng point) =>
       ml.LatLng(point.latitude, point.longitude);
@@ -370,7 +423,7 @@ class _MapLibreMapViewState extends State<MapLibreMapView> {
           onMapIdle: _hideLoading,
           overlayBuilder: _markerOverlay,
           userLocation: _userLocation,
-          gpuMapRenderCallback: _scenery.render,
+          gpuMapRenderCallback: _renderMapPass,
           gpuRenderCallback: widget.fogOfWar ? _fog.render : null,
           gpuRepaint: _gpuRepaint,
           gpuOverlayReadsMapColor: widget.fogOfWar,

@@ -253,6 +253,25 @@ in `ios/Runner/Info.plist`, and run `flutter gen-l10n`. The locale test in
 `test/l10n/` fails if a file is missing a key. In the web preview,
 `?lang=ja` forces a language.
 
+## Advanced graphics (beta)
+
+Options › Graphics has two modes. **Classic** (default) is the toy city
+above: MapLibre's extrusions with the toy-building shader. **Advanced**
+has Giro draw the buildings itself from the same vector tiles
+(`lib/core/map/city/`): `CityBuilder` turns the `building` layer into
+meshes in an isolate (walls as quads, roofs ear-clipped, a contact-shadow
+AO value per vertex, a material class per building by height: house,
+office, glass tower), `CityGpu` renders them inside MapLibre's 3D pass with
+a 2048² shadow map drawn from a south-west sun on a command buffer of its
+own each frame, hemisphere sky light, a highlight by material, the window
+grid, and a ground quad per tile that multiplies the shadows onto the
+streets (`shaders/city*.{vert,frag}`, `shaders/ground_shadow.*`). The
+explored mask is sampled per pixel, so unexplored buildings stay white clay
+with the same light. MapLibre's own building layer is hidden while the mode
+is on; trees and landmarks draw as before. It costs a shadow pass per frame,
+so it is off by default. Next in this direction: PLATEAU roof shapes and
+textures for central Tokyo, and glTF landmark models.
+
 ## App Store kit
 
 `docs/store/index.html` is everything for App Store Connect in the nine

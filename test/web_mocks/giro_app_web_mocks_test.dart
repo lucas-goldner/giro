@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:giro/core/cubit/map_settings_cubit.dart';
 import 'package:giro/core/model/flavor_config.dart';
 import 'package:giro/core/platform_style.dart';
 import 'package:giro/design/sonic/sonic_home.dart';
@@ -187,12 +189,31 @@ void main() {
     expect(find.text('FILL TOKYO'), findsOneWidget);
   });
 
+  testWidgets('graphics mode switches to advanced and back', (tester) async {
+    await pumpApp(tester);
+
+    await tester.tap(find.bySemanticsLabel('Options'));
+    await tester.pumpAndSettle();
+    await tester.fling(find.byType(ListView), const Offset(0, -500), 2500);
+    await tester.pumpAndSettle();
+    await tester.tap(find.bySemanticsLabel('Advanced'));
+    await tester.pumpAndSettle();
+    final context = tester.element(find.byType(SonicOptionsPage));
+    expect(context.read<MapSettingsCubit>().state.advancedGraphics, isTrue);
+    await tester.tap(find.bySemanticsLabel('Classic'));
+    await tester.pumpAndSettle();
+    expect(context.read<MapSettingsCubit>().state.advancedGraphics, isFalse);
+  });
+
   testWidgets('map download frames an area and reports progress', (
     tester,
   ) async {
     await pumpApp(tester);
 
     await tester.tap(find.bySemanticsLabel('Options'));
+    await tester.pumpAndSettle();
+    // Map data sits below the graphics section, off the first screen.
+    await tester.fling(find.byType(ListView), const Offset(0, -900), 2500);
     await tester.pumpAndSettle();
     await tester.tap(find.bySemanticsLabel('Download map area'));
     await tester.pumpAndSettle();

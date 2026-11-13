@@ -419,5 +419,13 @@
         "type": "int"
       }
     }
-  }
+  },
+
+  "graphicsLabel": "그래픽",
+  "graphicsBody": "3D 도시를 그리는 방식. 고급 모드는 Giro가 직접 건물을 그려 태양 그림자, 건물 종류별 재질, 거리 위 그림자를 표현합니다. 실험적 기능이며 배터리를 더 씁니다.",
+  "graphicsClassic": "클래식",
+  "graphicsClassicCaption": "장난감 도시, GPU 부담 적음",
+  "graphicsAdvanced": "고급",
+  "graphicsAdvancedCaption": "태양 그림자와 재질(베타)",
+  "graphicsSemantics": "그래픽 모드"
 }

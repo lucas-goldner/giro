@@ -545,4 +545,26 @@ class AppLocalizationsJa extends AppLocalizations {
   String areaName(int number) {
     return 'エリア $number';
   }
+
+  @override
+  String get graphicsLabel => 'グラフィック';
+
+  @override
+  String get graphicsBody =>
+      '3Dの街の描き方。アドバンスドでは建物をGiro自身が描画し、太陽の影、建物の種類ごとの素材、路上の影を表現します。実験的機能でバッテリーを多く使います。';
+
+  @override
+  String get graphicsClassic => 'クラシック';
+
+  @override
+  String get graphicsClassicCaption => 'トイシティ、GPUにやさしい';
+
+  @override
+  String get graphicsAdvanced => 'アドバンスド';
+
+  @override
+  String get graphicsAdvancedCaption => '太陽の影と素材（ベータ）';
+
+  @override
+  String get graphicsSemantics => 'グラフィックモード';
 }
