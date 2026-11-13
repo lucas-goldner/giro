@@ -419,5 +419,13 @@
         "type": "int"
       }
     }
-  }
+  },
+
+  "graphicsLabel": "GRAFICA",
+  "graphicsBody": "Come viene disegnata la città 3D. Avanzata disegna da sé gli edifici con ombre del sole, materiali per tipo di edificio e ombre sulle strade. Sperimentale e più pesante per la batteria.",
+  "graphicsClassic": "Classica",
+  "graphicsClassicCaption": "Città giocattolo, leggera per la GPU",
+  "graphicsAdvanced": "Avanzata",
+  "graphicsAdvancedCaption": "Ombre del sole e materiali (beta)",
+  "graphicsSemantics": "Modalità grafica"
 }

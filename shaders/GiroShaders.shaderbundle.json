@@ -18,5 +18,29 @@
   "SceneryFragment": {
     "type": "fragment",
     "file": "scenery.frag"
+  },
+  "CityVertex": {
+    "type": "vertex",
+    "file": "city.vert"
+  },
+  "CityFragment": {
+    "type": "fragment",
+    "file": "city.frag"
+  },
+  "CityShadowVertex": {
+    "type": "vertex",
+    "file": "city_shadow.vert"
+  },
+  "CityShadowFragment": {
+    "type": "fragment",
+    "file": "city_shadow.frag"
+  },
+  "GroundShadowVertex": {
+    "type": "vertex",
+    "file": "ground_shadow.vert"
+  },
+  "GroundShadowFragment": {
+    "type": "fragment",
+    "file": "ground_shadow.frag"
   }
 }

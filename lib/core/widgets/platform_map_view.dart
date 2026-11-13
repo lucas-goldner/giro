@@ -35,6 +35,7 @@ class PlatformMapView extends StatefulWidget {
     this.fogOfWar = true,
     this.revealRadiusMeters = 90,
     this.pointRadiusMeters = 72,
+    this.advancedGraphics = false,
     this.onLongPress,
     this.onCameraMove,
     super.key,
@@ -52,6 +53,9 @@ class PlatformMapView extends StatefulWidget {
 
   /// How far around a spot the fog is lifted, in metres.
   final double pointRadiusMeters;
+
+  /// Giro draws the buildings itself with sun shadows (iOS, Options).
+  final bool advancedGraphics;
   final void Function(LatLng)? onLongPress;
 
   /// Every camera change the map reports (centre, zoom, bearing, tilt).
@@ -140,6 +144,7 @@ class _PlatformMapViewState extends State<PlatformMapView> {
         fogOfWar: widget.fogOfWar,
         revealRadiusMeters: widget.revealRadiusMeters,
         pointRadiusMeters: widget.pointRadiusMeters,
+        advancedGraphics: widget.advancedGraphics,
         onLongPress: widget.onLongPress,
         onCameraMove: _onCameraMove,
       );

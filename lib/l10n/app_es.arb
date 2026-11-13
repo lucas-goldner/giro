@@ -419,5 +419,13 @@
         "type": "int"
       }
     }
-  }
+  },
+
+  "graphicsLabel": "GRÁFICOS",
+  "graphicsBody": "Cómo se dibuja la ciudad 3D. Avanzado dibuja los edificios por su cuenta con sombras del sol, materiales según el tipo de edificio y sombras en las calles. Experimental y gasta más batería.",
+  "graphicsClassic": "Clásico",
+  "graphicsClassicCaption": "Ciudad de juguete, ligera para la GPU",
+  "graphicsAdvanced": "Avanzado",
+  "graphicsAdvancedCaption": "Sombras del sol y materiales (beta)",
+  "graphicsSemantics": "Modo gráfico"
 }

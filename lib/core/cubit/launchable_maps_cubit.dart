@@ -10,7 +10,7 @@ part 'launchable_maps_state.dart';
 
 class LaunchableMapsCubit extends Cubit<LaunchableMapsState> {
   LaunchableMapsCubit(this._launchableMapsRepo)
-      : super(const LaunchableMapsInitial());
+    : super(const LaunchableMapsInitial());
 
   final LaunchableMapsRepo _launchableMapsRepo;
 
@@ -55,9 +55,8 @@ class LaunchableMapsCubit extends Cubit<LaunchableMapsState> {
 
   Future<void> _launchMapAtPOI(MapApp map, POI poi) async {
     try {
-      await MapLauncher.marker(
-        poi.coordinates.toLocation(title: poi.name),
-      ).show(map: map);
+      await MapLauncher.marker(poi.coordinates.toLocation(title: poi.name))
+          .show(map: map);
     } on MapLaunchException catch (_) {
       // The selected map app could not open the marker; nothing to recover.
     }

@@ -30,8 +30,18 @@ class ToyBuildings extends ml.FillExtrusionRenderer {
   ExploredMask? _mask;
   gpu.ShaderLibrary? _library;
   final _tiles = <ml.FillExtrusionTileKey, ml.FillExtrusionTile>{};
-  final _hidden = <ml.FillExtrusionTileKey, Set<int>>{};
+  final _hiddenParts = <ml.FillExtrusionTileKey, Set<int>>{};
   List<LandmarkClearing> _clearings = const [];
+  bool _hidden = false;
+
+  /// Hides every part (advanced graphics draws the buildings itself).
+  void setHidden({required bool hidden}) {
+    if (_hidden == hidden) {
+      return;
+    }
+    _hidden = hidden;
+    _signal.trigger();
+  }
 
   Future<void> ensureLoaded() async {
     if (_library != null) {
@@ -51,7 +61,7 @@ class ToyBuildings extends ml.FillExtrusionRenderer {
   void setLandmarks(List<LandmarkClearing> clearings) {
     _clearings = clearings;
     for (final tile in _tiles.values) {
-      _hidden[tile.key] = _hiddenParts(tile);
+      _hiddenParts[tile.key] = _partsNear(tile);
     }
     _signal.trigger();
   }
@@ -59,23 +69,23 @@ class ToyBuildings extends ml.FillExtrusionRenderer {
   @override
   void didAddTile(ml.FillExtrusionTile tile) {
     _tiles[tile.key] = tile;
-    _hidden[tile.key] = _hiddenParts(tile);
+    _hiddenParts[tile.key] = _partsNear(tile);
   }
 
   @override
   void didRemoveTile(ml.FillExtrusionTileKey key) {
     _tiles.remove(key);
-    _hidden.remove(key);
+    _hiddenParts.remove(key);
   }
 
   @override
   bool isVisible(ml.FillExtrusionPart part) =>
-      !(_hidden[part.tile]?.contains(_partId(part)) ?? false);
+      !_hidden && !(_hiddenParts[part.tile]?.contains(_partId(part)) ?? false);
 
   static int _partId(ml.FillExtrusionPart part) =>
       part.featureIndex << 8 | part.polygonIndex;
 
-  Set<int> _hiddenParts(ml.FillExtrusionTile tile) {
+  Set<int> _partsNear(ml.FillExtrusionTile tile) {
     if (_clearings.isEmpty) {
       return const {};
     }
@@ -142,7 +152,7 @@ class ToyBuildings extends ml.FillExtrusionRenderer {
 
   void dispose() {
     _tiles.clear();
-    _hidden.clear();
+    _hiddenParts.clear();
     _signal.dispose();
   }
 }

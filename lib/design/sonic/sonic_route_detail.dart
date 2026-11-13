@@ -64,6 +64,7 @@ class SonicRouteDetail extends StatelessWidget {
                   polylines: SonicMap.polylines([route], settings: settings),
                   revealRadiusMeters: settings.revealRadiusMeters,
                   pointRadiusMeters: settings.spotRadiusMeters,
+                  advancedGraphics: settings.advancedGraphics,
                   markers: {
                     for (final poi in spots)
                       MapMarker(

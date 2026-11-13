@@ -419,5 +419,13 @@
         "type": "int"
       }
     }
-  }
+  },
+
+  "graphicsLabel": "画面",
+  "graphicsBody": "3D 城市的绘制方式。高级模式由 Giro 自行绘制建筑，带有太阳阴影、按建筑类型区分的材质和街道上的阴影。实验性功能，更耗电。",
+  "graphicsClassic": "经典",
+  "graphicsClassicCaption": "玩具城市，GPU 负担小",
+  "graphicsAdvanced": "高级",
+  "graphicsAdvancedCaption": "太阳阴影与材质（测试版）",
+  "graphicsSemantics": "画面模式"
 }

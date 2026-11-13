@@ -93,6 +93,49 @@ class SonicOptionsPage extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 26),
+              Text(l10n.graphicsLabel, style: SonicTheme.label),
+              const SizedBox(height: 6),
+              Text(l10n.graphicsBody, style: SonicTheme.body),
+              const SizedBox(height: 12),
+              Semantics(
+                label: l10n.graphicsSemantics,
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: SonicButton(
+                        label: l10n.graphicsClassic,
+                        caption: l10n.graphicsClassicCaption,
+                        semanticsLabel: l10n.graphicsClassic,
+                        color: settings.advancedGraphics
+                            ? SonicTheme.blue
+                            : SonicTheme.gold,
+                        shadow: settings.advancedGraphics
+                            ? SonicTheme.blueDeep
+                            : SonicTheme.goldDeep,
+                        onTap: () =>
+                            cubit.setGraphicsMode(GraphicsMode.classic),
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: SonicButton(
+                        label: l10n.graphicsAdvanced,
+                        caption: l10n.graphicsAdvancedCaption,
+                        semanticsLabel: l10n.graphicsAdvanced,
+                        color: settings.advancedGraphics
+                            ? SonicTheme.gold
+                            : SonicTheme.blue,
+                        shadow: settings.advancedGraphics
+                            ? SonicTheme.goldDeep
+                            : SonicTheme.blueDeep,
+                        onTap: () =>
+                            cubit.setGraphicsMode(GraphicsMode.advanced),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 26),
               Text(l10n.mapDataLabel, style: SonicTheme.label),
               const SizedBox(height: 6),
               Text(l10n.mapDataBody, style: SonicTheme.body),

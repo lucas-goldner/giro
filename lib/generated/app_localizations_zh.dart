@@ -543,4 +543,26 @@ class AppLocalizationsZh extends AppLocalizations {
   String areaName(int number) {
     return '区域 $number';
   }
+
+  @override
+  String get graphicsLabel => '画面';
+
+  @override
+  String get graphicsBody =>
+      '3D 城市的绘制方式。高级模式由 Giro 自行绘制建筑，带有太阳阴影、按建筑类型区分的材质和街道上的阴影。实验性功能，更耗电。';
+
+  @override
+  String get graphicsClassic => '经典';
+
+  @override
+  String get graphicsClassicCaption => '玩具城市，GPU 负担小';
+
+  @override
+  String get graphicsAdvanced => '高级';
+
+  @override
+  String get graphicsAdvancedCaption => '太阳阴影与材质（测试版）';
+
+  @override
+  String get graphicsSemantics => '画面模式';
 }

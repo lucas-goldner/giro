@@ -419,5 +419,13 @@
         "type": "int"
       }
     }
-  }
+  },
+
+  "graphicsLabel": "グラフィック",
+  "graphicsBody": "3Dの街の描き方。アドバンスドでは建物をGiro自身が描画し、太陽の影、建物の種類ごとの素材、路上の影を表現します。実験的機能でバッテリーを多く使います。",
+  "graphicsClassic": "クラシック",
+  "graphicsClassicCaption": "トイシティ、GPUにやさしい",
+  "graphicsAdvanced": "アドバンスド",
+  "graphicsAdvancedCaption": "太陽の影と素材（ベータ）",
+  "graphicsSemantics": "グラフィックモード"
 }

@@ -419,5 +419,13 @@
         "type": "int"
       }
     }
-  }
+  },
+
+  "graphicsLabel": "GRÁFICOS",
+  "graphicsBody": "Como a cidade 3D é desenhada. Avançado desenha os prédios por conta própria com sombras do sol, materiais por tipo de prédio e sombras nas ruas. Experimental e gasta mais bateria.",
+  "graphicsClassic": "Clássico",
+  "graphicsClassicCaption": "Cidade de brinquedo, leve para a GPU",
+  "graphicsAdvanced": "Avançado",
+  "graphicsAdvancedCaption": "Sombras do sol e materiais (beta)",
+  "graphicsSemantics": "Modo gráfico"
 }

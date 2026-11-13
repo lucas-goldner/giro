@@ -56,6 +56,7 @@ class SonicHome extends StatelessWidget {
                   polylines: SonicMap.polylines(routes, settings: settings),
                   revealRadiusMeters: settings.revealRadiusMeters,
                   pointRadiusMeters: settings.spotRadiusMeters,
+                  advancedGraphics: settings.advancedGraphics,
                   markers: {
                     for (final poi in pois)
                       MapMarker(

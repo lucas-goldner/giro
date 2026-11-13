@@ -21,6 +21,9 @@ class MapSettingsCubit extends Cubit<MapSettings> {
   Future<void> setRevealRadius(double meters) =>
       update(state.copyWith(revealRadiusMeters: meters));
 
+  Future<void> setGraphicsMode(GraphicsMode mode) =>
+      update(state.copyWith(graphicsMode: mode));
+
   Future<void> markMapDownloadPrompted() =>
       update(state.copyWith(mapDownloadPrompted: true));
 }

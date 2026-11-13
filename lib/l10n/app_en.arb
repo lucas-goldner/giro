@@ -186,5 +186,13 @@
   "percentValue": "{percent} percent",
   "@percentValue": {"placeholders": {"percent": {"type": "int"}}},
   "areaName": "Area {number}",
-  "@areaName": {"placeholders": {"number": {"type": "int"}}}
+  "@areaName": {"placeholders": {"number": {"type": "int"}}},
+
+  "graphicsLabel": "GRAPHICS",
+  "graphicsBody": "How the 3D city is drawn. Advanced draws the buildings itself with sun shadows, materials by building type and shadows on the streets. Experimental and heavier on the battery.",
+  "graphicsClassic": "Classic",
+  "graphicsClassicCaption": "Toy city, light on the GPU",
+  "graphicsAdvanced": "Advanced",
+  "graphicsAdvancedCaption": "Sun shadows and materials (beta)",
+  "graphicsSemantics": "Graphics mode"
 }

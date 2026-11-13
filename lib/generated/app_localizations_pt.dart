@@ -561,4 +561,26 @@ class AppLocalizationsPt extends AppLocalizations {
   String areaName(int number) {
     return 'Área $number';
   }
+
+  @override
+  String get graphicsLabel => 'GRÁFICOS';
+
+  @override
+  String get graphicsBody =>
+      'Como a cidade 3D é desenhada. Avançado desenha os prédios por conta própria com sombras do sol, materiais por tipo de prédio e sombras nas ruas. Experimental e gasta mais bateria.';
+
+  @override
+  String get graphicsClassic => 'Clássico';
+
+  @override
+  String get graphicsClassicCaption => 'Cidade de brinquedo, leve para a GPU';
+
+  @override
+  String get graphicsAdvanced => 'Avançado';
+
+  @override
+  String get graphicsAdvancedCaption => 'Sombras do sol e materiais (beta)';
+
+  @override
+  String get graphicsSemantics => 'Modo gráfico';
 }
