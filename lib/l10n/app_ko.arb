@@ -427,5 +427,11 @@
   "graphicsClassicCaption": "장난감 도시, GPU 부담 적음",
   "graphicsAdvanced": "고급",
   "graphicsAdvancedCaption": "태양 그림자와 재질(베타)",
-  "graphicsSemantics": "그래픽 모드"
+  "graphicsSemantics": "그래픽 모드",
+
+  "importCaptionAndroid": "헬스 커넥트",
+  "itemBoxHealthAndroid": "아이템 박스 · 헬스 커넥트",
+  "healthDeniedBodyAndroid": "헬스 커넥트에서 Giro가 운동 세션과 경로를 읽도록 허용한 뒤 돌아오세요.",
+  "noWalksInHealthAndroid": "헬스 커넥트에서 산책을 찾지 못했습니다.",
+  "importEverythingCaptionAndroid": "헬스 커넥트의 모든 산책"
 }

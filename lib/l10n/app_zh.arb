@@ -427,5 +427,11 @@
   "graphicsClassicCaption": "玩具城市，GPU 负担小",
   "graphicsAdvanced": "高级",
   "graphicsAdvancedCaption": "太阳阴影与材质（测试版）",
-  "graphicsSemantics": "画面模式"
+  "graphicsSemantics": "画面模式",
+
+  "importCaptionAndroid": "Health Connect",
+  "itemBoxHealthAndroid": "道具箱 · HEALTH CONNECT",
+  "healthDeniedBodyAndroid": "请在 Health Connect 中允许 Giro 读取运动记录和路线，然后返回。",
+  "noWalksInHealthAndroid": "Health Connect 中没有找到散步。",
+  "importEverythingCaptionAndroid": "Health Connect 中的每一次散步"
 }

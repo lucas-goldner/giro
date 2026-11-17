@@ -567,4 +567,20 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get graphicsSemantics => 'グラフィックモード';
+
+  @override
+  String get importCaptionAndroid => 'ヘルスコネクト';
+
+  @override
+  String get itemBoxHealthAndroid => 'アイテムボックス · ヘルスコネクト';
+
+  @override
+  String get healthDeniedBodyAndroid =>
+      'ヘルスコネクトでGiroにエクササイズセッションとルートの読み取りを許可してから戻ってきてください。';
+
+  @override
+  String get noWalksInHealthAndroid => 'ヘルスコネクトに散歩が見つかりません。';
+
+  @override
+  String get importEverythingCaptionAndroid => 'ヘルスコネクトの全散歩';
 }

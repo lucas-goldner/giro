@@ -568,4 +568,20 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get graphicsSemantics => '그래픽 모드';
+
+  @override
+  String get importCaptionAndroid => '헬스 커넥트';
+
+  @override
+  String get itemBoxHealthAndroid => '아이템 박스 · 헬스 커넥트';
+
+  @override
+  String get healthDeniedBodyAndroid =>
+      '헬스 커넥트에서 Giro가 운동 세션과 경로를 읽도록 허용한 뒤 돌아오세요.';
+
+  @override
+  String get noWalksInHealthAndroid => '헬스 커넥트에서 산책을 찾지 못했습니다.';
+
+  @override
+  String get importEverythingCaptionAndroid => '헬스 커넥트의 모든 산책';
 }

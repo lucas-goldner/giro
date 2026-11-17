@@ -123,7 +123,7 @@ class _SonicImportState extends State<_SonicImport> {
                                     fit: BoxFit.scaleDown,
                                     alignment: Alignment.centerRight,
                                     child: Text(
-                                      l10n.itemBoxHealth,
+                                      context.healthItemBox,
                                       style: SonicTheme.label.copyWith(
                                         color: SonicTheme.gold,
                                       ),
@@ -147,7 +147,10 @@ class _SonicImportState extends State<_SonicImport> {
                                 ),
                               )
                             : !state.authorized
-                            ? _Message(l10n.healthDenied, l10n.healthDeniedBody)
+                            ? _Message(
+                                l10n.healthDenied,
+                                context.healthDeniedBody,
+                              )
                             : !_loaded
                             ? _Message(
                                 l10n.itemBoxClosed,
@@ -167,7 +170,8 @@ class _SonicImportState extends State<_SonicImport> {
                                     const SizedBox(height: 10),
                                     SonicButton(
                                       label: l10n.importEverything,
-                                      caption: l10n.importEverythingCaption,
+                                      caption:
+                                          context.healthImportEverythingCaption,
                                       semanticsLabel: l10n.importEverything,
                                       color: SonicTheme.red,
                                       shadow: SonicTheme.redDeep,
@@ -188,7 +192,7 @@ class _SonicImportState extends State<_SonicImport> {
                                 ),
                               )
                             : workouts.isEmpty
-                            ? _Message(l10n.nothingHere, l10n.noWalksInHealth)
+                            ? _Message(l10n.nothingHere, context.healthNoWalks)
                             : ListView.separated(
                                 padding: const EdgeInsets.fromLTRB(
                                   14,

@@ -427,5 +427,11 @@
   "graphicsClassicCaption": "Spielzeugstadt, schont die GPU",
   "graphicsAdvanced": "Erweitert",
   "graphicsAdvancedCaption": "Sonnenschatten und Materialien (Beta)",
-  "graphicsSemantics": "Grafikmodus"
+  "graphicsSemantics": "Grafikmodus",
+
+  "importCaptionAndroid": "Health Connect",
+  "itemBoxHealthAndroid": "ITEM BOX · HEALTH CONNECT",
+  "healthDeniedBodyAndroid": "Erlaube Giro in Health Connect, Trainings und Routen zu lesen, und komm dann zurück.",
+  "noWalksInHealthAndroid": "Keine Spaziergänge in Health Connect gefunden.",
+  "importEverythingCaptionAndroid": "Jeder Spaziergang in Health Connect"
 }

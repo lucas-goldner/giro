@@ -583,4 +583,22 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get graphicsSemantics => 'Mode graphique';
+
+  @override
+  String get importCaptionAndroid => 'Santé Connect';
+
+  @override
+  String get itemBoxHealthAndroid => 'ITEM BOX · SANTÉ CONNECT';
+
+  @override
+  String get healthDeniedBodyAndroid =>
+      'Autorisez Giro à lire les séances et les parcours dans Santé Connect, puis revenez.';
+
+  @override
+  String get noWalksInHealthAndroid =>
+      'Aucune marche trouvée dans Santé Connect.';
+
+  @override
+  String get importEverythingCaptionAndroid =>
+      'Chaque marche dans Santé Connect';
 }

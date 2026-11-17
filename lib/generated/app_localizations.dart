@@ -1016,6 +1016,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Graphics mode'**
   String get graphicsSemantics;
+
+  /// No description provided for @importCaptionAndroid.
+  ///
+  /// In en, this message translates to:
+  /// **'Health Connect'**
+  String get importCaptionAndroid;
+
+  /// No description provided for @itemBoxHealthAndroid.
+  ///
+  /// In en, this message translates to:
+  /// **'ITEM BOX · HEALTH CONNECT'**
+  String get itemBoxHealthAndroid;
+
+  /// No description provided for @healthDeniedBodyAndroid.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow Giro to read exercise sessions and routes in Health Connect, then come back.'**
+  String get healthDeniedBodyAndroid;
+
+  /// No description provided for @noWalksInHealthAndroid.
+  ///
+  /// In en, this message translates to:
+  /// **'No walks found in Health Connect.'**
+  String get noWalksInHealthAndroid;
+
+  /// No description provided for @importEverythingCaptionAndroid.
+  ///
+  /// In en, this message translates to:
+  /// **'Every walk in Health Connect'**
+  String get importEverythingCaptionAndroid;
 }
 
 class _AppLocalizationsDelegate

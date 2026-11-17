@@ -194,5 +194,11 @@
   "graphicsClassicCaption": "Toy city, light on the GPU",
   "graphicsAdvanced": "Advanced",
   "graphicsAdvancedCaption": "Sun shadows and materials (beta)",
-  "graphicsSemantics": "Graphics mode"
+  "graphicsSemantics": "Graphics mode",
+
+  "importCaptionAndroid": "Health Connect",
+  "itemBoxHealthAndroid": "ITEM BOX · HEALTH CONNECT",
+  "healthDeniedBodyAndroid": "Allow Giro to read exercise sessions and routes in Health Connect, then come back.",
+  "noWalksInHealthAndroid": "No walks found in Health Connect.",
+  "importEverythingCaptionAndroid": "Every walk in Health Connect"
 }

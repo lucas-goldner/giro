@@ -427,5 +427,11 @@
   "graphicsClassicCaption": "Cidade de brinquedo, leve para a GPU",
   "graphicsAdvanced": "Avançado",
   "graphicsAdvancedCaption": "Sombras do sol e materiais (beta)",
-  "graphicsSemantics": "Modo gráfico"
+  "graphicsSemantics": "Modo gráfico",
+
+  "importCaptionAndroid": "Conexão Saúde",
+  "itemBoxHealthAndroid": "ITEM BOX · CONEXÃO SAÚDE",
+  "healthDeniedBodyAndroid": "Permita que o Giro leia sessões de exercício e rotas no Conexão Saúde e volte aqui.",
+  "noWalksInHealthAndroid": "Nenhuma caminhada encontrada no Conexão Saúde.",
+  "importEverythingCaptionAndroid": "Cada caminhada no Conexão Saúde"
 }

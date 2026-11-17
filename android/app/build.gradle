@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.giro"
+    namespace = "com.lucasgoldner.giro"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -15,8 +15,9 @@ android {
     }
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.example.giro"
+        // Hyphens are not allowed in Android application ids, so this is
+        // the iOS bundle id without one.
+        applicationId = "com.lucasgoldner.giro"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         // maplibre_flutter_gpu needs API 29.
@@ -24,6 +25,26 @@ android {
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+        // The MapLibre bridge ships for these two ABIs only; a 32-bit ARM
+        // build would install and then have no map.
+        ndk {
+            abiFilters += ["arm64-v8a", "x86_64"]
+        }
+    }
+
+    // The same two flavors as the iOS schemes: `flutter run --flavor dev
+    // -t lib/main_dev.dart`, `flutter build apk --flavor prod -t lib/main_prod.dart`.
+    flavorDimensions += "flavor"
+    productFlavors {
+        dev {
+            dimension = "flavor"
+            applicationIdSuffix = ".dev"
+            manifestPlaceholders["appLabel"] = "Giro Dev"
+        }
+        prod {
+            dimension = "flavor"
+            manifestPlaceholders["appLabel"] = "Giro"
+        }
     }
 
     buildTypes {
@@ -43,4 +64,11 @@ kotlin {
 
 flutter {
     source = "../.."
+}
+
+dependencies {
+    // Importing walks from Health Connect (HealthConnectBridge.kt).
+    implementation("androidx.health.connect:connect-client:1.1.0")
+    implementation("androidx.activity:activity-ktx:1.10.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2")
 }
