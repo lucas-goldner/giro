@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:giro/generated/app_localizations.dart';
 import 'package:intl/intl.dart';
@@ -28,4 +29,23 @@ extension L10nContext on BuildContext {
         ? l10n.durationHoursMinutes(hours, minutes.toString().padLeft(2, '0'))
         : l10n.durationMinutes(minutes);
   }
+}
+
+/// Strings that name the health store: Apple Health on iOS, Health Connect
+/// on Android.
+extension HealthStrings on BuildContext {
+  bool get _android =>
+      !kIsWeb && defaultTargetPlatform == TargetPlatform.android;
+
+  String get healthImportCaption =>
+      _android ? l10n.importCaptionAndroid : l10n.importCaption;
+  String get healthItemBox =>
+      _android ? l10n.itemBoxHealthAndroid : l10n.itemBoxHealth;
+  String get healthDeniedBody =>
+      _android ? l10n.healthDeniedBodyAndroid : l10n.healthDeniedBody;
+  String get healthNoWalks =>
+      _android ? l10n.noWalksInHealthAndroid : l10n.noWalksInHealth;
+  String get healthImportEverythingCaption => _android
+      ? l10n.importEverythingCaptionAndroid
+      : l10n.importEverythingCaption;
 }

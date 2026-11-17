@@ -253,6 +253,33 @@ in `ios/Runner/Info.plist`, and run `flutter gen-l10n`. The locale test in
 `test/l10n/` fails if a file is missing a key. In the web preview,
 `?lang=ja` forces a language.
 
+## Android
+
+Giro builds and runs on Android with the same features as iOS:
+
+- **Map:** the MapLibre fork renders through Flutter GPU on Android too;
+  the manifest enables Impeller and Flutter GPU, and
+  `tool/fetch_maplibre_native.sh` downloads the `jniLibs` (arm64-v8a and
+  x86_64) next to the iOS frameworks. Flutter GPU needs Impeller's Vulkan
+  backend, so the map wants a 64-bit device on Android 10 or later with
+  Vulkan; the app's `minSdk` is 29 for that reason.
+- **Health:** `HealthConnectBridge.kt` is the counterpart of the HealthKit
+  bridge in `AppDelegate.swift`: same method channel, same methods, same
+  payload. It reads walking and hiking sessions from Health Connect with
+  their exercise routes (`READ_EXERCISE`, `READ_EXERCISE_ROUTES`), and the
+  distance and calories totals for each session. The Health Connect
+  permission sheet opens from the import page, the rationale intent filters
+  are declared, and the UI says "Health Connect" where iOS says "Health".
+- **Flavors:** `dev` (application id suffix `.dev`, label "Giro Dev") and
+  `prod`, matching the iOS schemes: `flutter run --flavor dev -t
+  lib/main_dev.dart`, `flutter build apk --release --flavor prod -t
+  lib/main_prod.dart`. The application id is `com.lucasgoldner.giro`
+  (Android ids cannot contain the hyphen of the iOS bundle id).
+- **Spots in map apps:** the manifest declares the package queries
+  `map_launcher` needs on Android 11+ (Google Maps, Waze, OsmAnd, MAPS.ME).
+- **CI:** the `android-apk` Codemagic workflow builds the prod release APK
+  (signed with the debug key; add a keystore before a Play release).
+
 ## Advanced graphics (beta)
 
 Options › Graphics has two modes. **Classic** (default) is the toy city

@@ -583,4 +583,22 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get graphicsSemantics => 'Modo gráfico';
+
+  @override
+  String get importCaptionAndroid => 'Conexão Saúde';
+
+  @override
+  String get itemBoxHealthAndroid => 'ITEM BOX · CONEXÃO SAÚDE';
+
+  @override
+  String get healthDeniedBodyAndroid =>
+      'Permita que o Giro leia sessões de exercício e rotas no Conexão Saúde e volte aqui.';
+
+  @override
+  String get noWalksInHealthAndroid =>
+      'Nenhuma caminhada encontrada no Conexão Saúde.';
+
+  @override
+  String get importEverythingCaptionAndroid =>
+      'Cada caminhada no Conexão Saúde';
 }

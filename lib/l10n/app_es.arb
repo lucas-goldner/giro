@@ -427,5 +427,11 @@
   "graphicsClassicCaption": "Ciudad de juguete, ligera para la GPU",
   "graphicsAdvanced": "Avanzado",
   "graphicsAdvancedCaption": "Sombras del sol y materiales (beta)",
-  "graphicsSemantics": "Modo gráfico"
+  "graphicsSemantics": "Modo gráfico",
+
+  "importCaptionAndroid": "Health Connect",
+  "itemBoxHealthAndroid": "ITEM BOX · HEALTH CONNECT",
+  "healthDeniedBodyAndroid": "Permite a Giro leer sesiones de ejercicio y rutas en Health Connect y vuelve.",
+  "noWalksInHealthAndroid": "No hay paseos en Health Connect.",
+  "importEverythingCaptionAndroid": "Cada paseo en Health Connect"
 }

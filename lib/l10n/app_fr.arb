@@ -427,5 +427,11 @@
   "graphicsClassicCaption": "Ville miniature, léger pour le GPU",
   "graphicsAdvanced": "Avancé",
   "graphicsAdvancedCaption": "Ombres du soleil et matériaux (bêta)",
-  "graphicsSemantics": "Mode graphique"
+  "graphicsSemantics": "Mode graphique",
+
+  "importCaptionAndroid": "Santé Connect",
+  "itemBoxHealthAndroid": "ITEM BOX · SANTÉ CONNECT",
+  "healthDeniedBodyAndroid": "Autorisez Giro à lire les séances et les parcours dans Santé Connect, puis revenez.",
+  "noWalksInHealthAndroid": "Aucune marche trouvée dans Santé Connect.",
+  "importEverythingCaptionAndroid": "Chaque marche dans Santé Connect"
 }

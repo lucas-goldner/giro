@@ -188,7 +188,7 @@ class SonicHome extends StatelessWidget {
                       flex: 10,
                       child: SonicButton(
                         label: l10n.importLabel,
-                        caption: l10n.importCaption,
+                        caption: context.healthImportCaption,
                         onTap: () => SonicActions.import(context),
                       ),
                     ),

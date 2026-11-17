@@ -565,4 +565,20 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get graphicsSemantics => '画面模式';
+
+  @override
+  String get importCaptionAndroid => 'Health Connect';
+
+  @override
+  String get itemBoxHealthAndroid => '道具箱 · HEALTH CONNECT';
+
+  @override
+  String get healthDeniedBodyAndroid =>
+      '请在 Health Connect 中允许 Giro 读取运动记录和路线，然后返回。';
+
+  @override
+  String get noWalksInHealthAndroid => 'Health Connect 中没有找到散步。';
+
+  @override
+  String get importEverythingCaptionAndroid => 'Health Connect 中的每一次散步';
 }

@@ -582,4 +582,22 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get graphicsSemantics => 'Modalità grafica';
+
+  @override
+  String get importCaptionAndroid => 'Health Connect';
+
+  @override
+  String get itemBoxHealthAndroid => 'ITEM BOX · HEALTH CONNECT';
+
+  @override
+  String get healthDeniedBodyAndroid =>
+      'Consenti a Giro di leggere sessioni e percorsi in Health Connect, poi torna qui.';
+
+  @override
+  String get noWalksInHealthAndroid =>
+      'Nessuna passeggiata trovata in Health Connect.';
+
+  @override
+  String get importEverythingCaptionAndroid =>
+      'Ogni passeggiata in Health Connect';
 }

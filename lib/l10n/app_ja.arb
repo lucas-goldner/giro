@@ -427,5 +427,11 @@
   "graphicsClassicCaption": "トイシティ、GPUにやさしい",
   "graphicsAdvanced": "アドバンスド",
   "graphicsAdvancedCaption": "太陽の影と素材（ベータ）",
-  "graphicsSemantics": "グラフィックモード"
+  "graphicsSemantics": "グラフィックモード",
+
+  "importCaptionAndroid": "ヘルスコネクト",
+  "itemBoxHealthAndroid": "アイテムボックス · ヘルスコネクト",
+  "healthDeniedBodyAndroid": "ヘルスコネクトでGiroにエクササイズセッションとルートの読み取りを許可してから戻ってきてください。",
+  "noWalksInHealthAndroid": "ヘルスコネクトに散歩が見つかりません。",
+  "importEverythingCaptionAndroid": "ヘルスコネクトの全散歩"
 }

@@ -427,5 +427,11 @@
   "graphicsClassicCaption": "Città giocattolo, leggera per la GPU",
   "graphicsAdvanced": "Avanzata",
   "graphicsAdvancedCaption": "Ombre del sole e materiali (beta)",
-  "graphicsSemantics": "Modalità grafica"
+  "graphicsSemantics": "Modalità grafica",
+
+  "importCaptionAndroid": "Health Connect",
+  "itemBoxHealthAndroid": "ITEM BOX · HEALTH CONNECT",
+  "healthDeniedBodyAndroid": "Consenti a Giro di leggere sessioni e percorsi in Health Connect, poi torna qui.",
+  "noWalksInHealthAndroid": "Nessuna passeggiata trovata in Health Connect.",
+  "importEverythingCaptionAndroid": "Ogni passeggiata in Health Connect"
 }

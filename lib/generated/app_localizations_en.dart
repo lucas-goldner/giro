@@ -582,4 +582,20 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get graphicsSemantics => 'Graphics mode';
+
+  @override
+  String get importCaptionAndroid => 'Health Connect';
+
+  @override
+  String get itemBoxHealthAndroid => 'ITEM BOX · HEALTH CONNECT';
+
+  @override
+  String get healthDeniedBodyAndroid =>
+      'Allow Giro to read exercise sessions and routes in Health Connect, then come back.';
+
+  @override
+  String get noWalksInHealthAndroid => 'No walks found in Health Connect.';
+
+  @override
+  String get importEverythingCaptionAndroid => 'Every walk in Health Connect';
 }
