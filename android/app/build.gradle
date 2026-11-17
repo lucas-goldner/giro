@@ -47,6 +47,14 @@ android {
         }
     }
 
+    // Flutter still packages its own 32-bit engine; drop it so the APK does
+    // not claim an ABI the MapLibre bridge has no library for.
+    packaging {
+        jniLibs {
+            excludes += ["lib/armeabi-v7a/**", "lib/x86/**"]
+        }
+    }
+
     buildTypes {
         release {
             // TODO: Add your own signing config for the release build.
