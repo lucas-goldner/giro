@@ -22,8 +22,9 @@ workflows:
       - name: Analyze and test
         script: |
           flutter analyze --no-fatal-infos
-          flutter test
-
+          export PATH="$PATH:$HOME/.pub-cache/bin"
+          dart pub global activate very_good_cli
+          very_good test
       - name: Set up code signing
         script: |
           xcode-project use-profiles
@@ -94,7 +95,9 @@ workflows:
       - name: Analyze and test
         script: |
           flutter analyze --no-fatal-infos
-          flutter test
+          export PATH="$PATH:$HOME/.pub-cache/bin"
+          dart pub global activate very_good_cli
+          very_good test
       - name: Build Android app
         script: |
           # Signed with the debug key; add a keystore before a Play release.
